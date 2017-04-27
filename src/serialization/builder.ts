@@ -1,4 +1,4 @@
-import { Claim, Block } from '../claim'
+import { Claim, Block, ClaimType } from '../claim'
 import * as common from '../common'
 import { hex } from '../common'
 import { builder, Builders } from './loaders'
@@ -12,7 +12,7 @@ export class ClaimBuilder {
   private readonly attribute = builder.attribute
   private readonly claim     = builder.claim
 
-  createSignedClaim(data: any, privateKey: string): Claim {
+  createSignedClaim(data: { type: ClaimType, attributes: any }, privateKey: string): Claim {
     const key = typeof privateKey === 'string'
               ? new bitcore.PrivateKey(privateKey)
               : privateKey
