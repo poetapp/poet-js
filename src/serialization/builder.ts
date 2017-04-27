@@ -1,5 +1,3 @@
-import * as Bluebird from 'bluebird'
-
 import { Claim, Block } from '../claim'
 import * as common from '../common'
 import { hex } from '../common'

@@ -1,4 +1,4 @@
-import * as Rx from 'rx'
+import * as Rx from 'rxjs'
 
 const createTorrentLib = require('create-torrent')
 const parseTorrent = require('parse-torrent')
@@ -38,21 +38,21 @@ export async function getHash(data: Buffer, hash: string): Promise<string> {
 }
 
 export function createObservableDownload(client: any, pathFunction: (_: string) => string, hash: string) {
-  return Rx.Observable.create((observer) => {
+  return Rx.Observable.create((observer: Rx.Subscriber<any>) => {
     const uri = 'magnet:?xt=urn:btih:' + hash
     client.add(
       uri,
       { path: pathFunction(hash) },
       (torrent: any) => {
         torrent.on('error', (error: any) => {
-          observer.onError(error)
+          observer.error(error)
         })
         torrent.on('download', () => {
-          observer.onNext(torrent.progress)
+          observer.next(torrent.progress)
         })
         torrent.on('done', () => {
           console.log(uri, 'downloaded')
-          observer.onCompleted()
+          observer.complete()
         })
       }
     )
