@@ -1,8 +1,6 @@
-import { Claim, Block, ClaimType } from '../claim'
-import * as common from '../common'
-import { hex } from '../common'
-import { builder, Builders } from './loaders'
-import { POET, VERSION } from "../common"
+import { Claims } from '../claim'
+import { builder } from './loaders'
+import { Common } from '../common'
 
 const bitcore = require('bitcore-lib')
 
@@ -12,17 +10,17 @@ export class ClaimBuilder {
   private readonly attribute = builder.attribute
   private readonly claim     = builder.claim
 
-  createSignedClaim(data: { type: ClaimType, attributes: any }, privateKey: string): Claim {
+  createSignedClaim(data: { type: Claims.ClaimType, attributes: any }, privateKey: string): Claims.Claim {
     const key = typeof privateKey === 'string'
               ? new bitcore.PrivateKey(privateKey)
               : privateKey
     const id = this.getId(data, key)
-    const signature = common.sign(key, id)
+    const signature = Common.sign(key, id)
 
     return {
-      id: hex(id),
+      id: Common.hex(id),
       publicKey: key.publicKey.toString(),
-      signature: hex(signature),
+      signature: Common.hex(signature),
 
       type: data.type,
       attributes: data.attributes
@@ -38,11 +36,11 @@ export class ClaimBuilder {
   }
 
   getId(data: any, key?: Object): Uint8Array {
-    return common.sha256(this.getEncodedForSigning(data, key))
+    return Common.sha256(this.getEncodedForSigning(data, key))
   }
 
   getIdForBlock(block: any): string {
-    return common.sha256(this.block.encode(block).finish()).toString('hex')
+    return Common.sha256(this.block.encode(block).finish()).toString('hex')
   }
 
   getAttributes(attrs: any) {
@@ -70,7 +68,7 @@ export class ClaimBuilder {
     })).finish()
   }
 
-  protoToBlockObject(proto: any): Block {
+  protoToBlockObject(proto: any): Claims.Block {
     return {
       id: proto.id.toString('hex'),
       claims: proto.claims.map(this.protoToClaimObject.bind(this))
@@ -86,14 +84,14 @@ export class ClaimBuilder {
     }
   }
 
-  serializeBlockForSave(block: Block) {
+  serializeBlockForSave(block: Claims.Block) {
     return new Buffer(this.block.encode(this.block.create({
       id: new Buffer(block.id, 'hex'),
       claims: block.claims.map(this.claimToProto.bind(this))
     })).finish())
   }
 
-  serializeClaimForSave(claim: Claim) {
+  serializeClaimForSave(claim: Claims.Claim) {
     return new Buffer(this.claim.encode(this.claimToProto(claim)).finish())
   }
 
@@ -106,7 +104,7 @@ export class ClaimBuilder {
     }
   }
 
-  protoToClaimObject(proto: any): Claim {
+  protoToClaimObject(proto: any): Claims.Claim {
     const attributes: any = {}
     proto.attributes.forEach((attr: any) => {
       attributes[attr.key] = attr.value
@@ -121,7 +119,7 @@ export class ClaimBuilder {
     }
   }
 
-  claimToProto(obj: Claim) {
+  claimToProto(obj: Claims.Claim) {
     return this.claim.create({
       id: new Buffer(obj.id, 'hex'),
       publicKey: new Buffer(obj.publicKey, 'hex'),
@@ -131,8 +129,8 @@ export class ClaimBuilder {
     })
   }
 
-  createBlock(claims: Claim[]): Block {
-    const protoClaims = claims.map((claim: Claim) => {
+  createBlock(claims: Claims.Claim[]): Claims.Block {
+    const protoClaims = claims.map((claim: Claims.Claim) => {
       return this.claimToProto(claim)
     })
     const block = this.block.create({
@@ -148,8 +146,8 @@ export class ClaimBuilder {
 
   createTransaction(blockId: string, utxos: any, changeAddress: any, privateKey: any) {
     const data = Buffer.concat([
-      POET,
-      VERSION,
+      Common.POET,
+      Common.VERSION,
       new Buffer(blockId, 'hex')
     ])
     return new bitcore.Transaction()

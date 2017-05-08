@@ -1,4 +1,4 @@
-{
+export const ClaimProto = {
   "nested": {
     "Poet": {
       "nested": {
