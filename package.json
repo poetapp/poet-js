@@ -7,25 +7,36 @@
   "author": "Poet",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "mocha --opts mocha.conf"
   },
   "dependencies": {
     "@types/bluebird": "^3.0.37",
     "@types/isomorphic-fetch": "0.0.34",
+    "@types/bluebird": "^3.0.37",
+    "@types/chai": "^3.5.2",
+    "@types/isomorphic-fetch": "0.0.32",
+    "@types/mocha": "^2.2.41",
     "@types/moment": "^2.13.0",
     "@types/xml2js": "0.0.32",
     "bitcore-explorers": "eordano/bitcore-explorers",
     "bluebird": "^3.4.7",
+    "chai": "^3.5.0",
     "create-torrent": "^3.28.0",
     "isomorphic-fetch": "^2.2.1",
+    "mocha": "^3.3.0",
     "moment": "^2.17.1",
     "parse-torrent": "^5.8.1",
     "prompt": "^1.0.0",
     "protobufjs": "=6.6.3",
     "rxjs": "^5.3.0",
+    "typescript": "^2.3.2",
     "xml2js": "^0.4.17"
   },
   "peerDependencies": {
     "bitcore-lib": "eordano/bitcore-lib#f9c9876"
+  },
+  "devDependencies": {
+    "ts-node": "^3.0.4"
   }
 }

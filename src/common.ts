@@ -25,6 +25,11 @@ export namespace Common {
     )
   }
 
+  export function hexsha256string(value: string | Uint8Array): string {
+    return sha256(new Buffer(value, 'hex')).toString('hex')
+  }
+
+
   export function sign(privateKey: string, value: Uint8Array): Uint8Array {
     const signature =  bitcore.crypto.ECDSA.sign(
       value,
