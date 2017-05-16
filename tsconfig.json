@@ -11,5 +11,6 @@
     "experimentalDecorators": true,
     "declaration": true,
     "lib": [ "DOM", "DOM.Iterable","ScriptHost", "es2017" ]
-  }
+  },
+  "exclude": ["test", "node_modules", "dist"]
 }
