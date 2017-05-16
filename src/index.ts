@@ -11,3 +11,5 @@ export * from './Price'
 export * from './LicenseType'
 
 export * from './UrlObject'
+
+export * from './Headers'
