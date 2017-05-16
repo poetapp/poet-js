@@ -9,6 +9,7 @@
     "sourceMap": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "declaration": true
+    "declaration": true,
+    "lib": [ "DOM", "DOM.Iterable","ScriptHost", "es2017" ]
   }
 }

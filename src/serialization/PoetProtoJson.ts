@@ -1,4 +1,4 @@
-export const ClaimProto = {
+export const PoetProto = {
   "nested": {
     "Poet": {
       "nested": {

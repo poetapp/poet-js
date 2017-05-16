@@ -1,6 +1,7 @@
-export * from './common'
+export * from './Common'
 
-export * from './claim'
+export * from './Claim'
 
-export * from './serialization/builder'
-export * from './serialization/loaders'
+export * from './serialization/ClaimBuilder'
+
+export * from './serialization/PoetProto'

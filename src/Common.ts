@@ -1,5 +1,10 @@
 const bitcore = require('bitcore-lib')
 
+export interface KeyValue<K = string, V = string> {
+  readonly key: K;
+  readonly value: V;
+}
+
 export namespace Common {
 
   export const POET = new Buffer('POET')
