@@ -9,3 +9,5 @@ export * from './serialization/PoetProto'
 export * from './Price'
 
 export * from './LicenseType'
+
+export * from './UrlObject'
