@@ -1,8 +1,10 @@
 export interface UrlObject {
   readonly url: string;
-  readonly query?: {
-    readonly [index: string]: string | number;
-  }
+  readonly query?: UrlObjectQuery
+}
+
+export interface UrlObjectQuery {
+  readonly [index: string]: string | number;
 }
 
 export function isUrlObject(a: any): a is UrlObject {

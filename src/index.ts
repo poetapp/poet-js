@@ -13,3 +13,5 @@ export * from './LicenseType'
 export * from './UrlObject'
 
 export * from './Headers'
+
+export * from './Api'
