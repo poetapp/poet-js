@@ -1,12 +1,29 @@
 import { HexString } from './Common'
 import { UrlObject, UrlObjectQuery } from './UrlObject'
-import { License, Profile, Work } from './Claim'
+import { Block, Claim, License, Profile, Work } from './Claim'
 
 export namespace Api {
 
   export interface Pagination extends UrlObjectQuery {
     readonly limit?: number
     readonly offset?: number
+  }
+
+  export namespace Claims {
+    export const Path = '/claims'
+
+    export function url(idOrQuery: string | Query): UrlObject
+    export function url(idOrQuery: string | Query, query?: Query): UrlObject
+    export function url(idOrQuery: string | Query, query?: Query): UrlObject {
+      return {
+        url: [Path, typeof idOrQuery === 'string' && idOrQuery].filter(a => a).join('/'),
+        query: typeof idOrQuery === 'object' ? idOrQuery : query
+      }
+    }
+
+    export interface Query extends Pagination {}
+
+    export interface Resource extends Claim {}
   }
 
   export namespace Works {
@@ -143,6 +160,19 @@ export namespace Api {
 
   export namespace Blocks {
     export const Path = '/blocks'
+
+    export function url(idOrQuery: string | Query): UrlObject
+    export function url(idOrQuery: string | Query, query?: Query): UrlObject
+    export function url(idOrQuery: string | Query, query?: Query): UrlObject {
+      return {
+        url: [Path, typeof idOrQuery === 'string' && idOrQuery].filter(a => a).join('/'),
+        query: typeof idOrQuery === 'object' ? idOrQuery : query
+      }
+    }
+
+    export interface Query extends Pagination {}
+
+    export interface Resource extends Block {}
   }
 
 }

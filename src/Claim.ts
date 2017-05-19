@@ -34,6 +34,7 @@ export namespace ClaimTypes {
 
   export type ClaimType = Work | Title | License | Offering | Profile | Certificate | Revocation
   export type Judgement = Certificate | Revocation
+  export type ClaimOrJudgement = ClaimType | Judgement
 
 }
 
