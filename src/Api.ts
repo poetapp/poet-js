@@ -9,6 +9,15 @@ export namespace Api {
     readonly offset?: number
   }
 
+  export namespace Node {
+    export const Path = '/node'
+
+    export interface Resource {
+      readonly peers: number
+      readonly status: string
+    }
+  }
+
   export namespace Claims {
     export const Path = '/claims'
 
