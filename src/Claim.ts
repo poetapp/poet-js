@@ -51,8 +51,7 @@ export interface TitleClaimAttributes extends ClaimAttributes {
   readonly status: string;
 }
 
-// TODO: these attributes are not really part of the WorkClaim,
-// they're actually what the Poet API responds
+// TODO: some (all?) of these attributes actually belong in Api.Work.Resource
 export interface Work extends Claim<WorkAttributes> {
   readonly claimInfo?: ClaimInfo
   readonly owner?: {
