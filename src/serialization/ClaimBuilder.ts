@@ -1,4 +1,4 @@
-import { Common, KeyValue } from '../Common'
+import { hex, KeyValue, POET, sha256, sign, VERSION } from '../Common'
 import { Claim, Block, ClaimAttributes } from '../Claim'
 
 import { ClaimProto, AttributeProto, BlockProto } from './PoetProto'
@@ -12,12 +12,12 @@ export namespace ClaimBuilder {
               ? new bitcore.PrivateKey(privateKey)
               : privateKey
     const id = getId({...claim, publicKey: key.publicKey})
-    const signature = Common.sign(key, id)
+    const signature = sign(key, id)
 
     return {
-      id: Common.hex(id),
+      id: hex(id),
       publicKey: key.publicKey.toString(),
-      signature: Common.hex(signature),
+      signature: hex(signature),
 
       type: claim.type,
       attributes: claim.attributes
@@ -25,11 +25,11 @@ export namespace ClaimBuilder {
   }
 
   export function getId(claim: Claim): Uint8Array {
-    return Common.sha256(getEncodedForSigning(claim))
+    return sha256(getEncodedForSigning(claim))
   }
 
   export function getIdForBlock(block: any): string {
-    return Common.sha256(BlockProto.encode(block).finish()).toString('hex')
+    return sha256(BlockProto.encode(block).finish()).toString('hex')
   }
 
   export function getEncodedForSigning(claim: Claim): string {
@@ -117,8 +117,8 @@ export namespace ClaimBuilder {
 
   export function createTransaction(blockId: string, utxos: any, changeAddress: any, privateKey: any) {
     const data = Buffer.concat([
-      Common.POET,
-      Common.VERSION,
+      POET,
+      VERSION,
       new Buffer(blockId, 'hex')
     ])
     return new bitcore.Transaction()
