@@ -15,3 +15,5 @@ export * from './UrlObject'
 export * from './Headers'
 
 export * from './Api'
+
+export * from './Fields'
