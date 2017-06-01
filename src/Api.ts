@@ -1,5 +1,5 @@
 import { HexString } from './Common'
-import { UrlObject, UrlObjectQuery } from './UrlObject'
+import { UrlObjectQuery, urlObjectToUrl } from './UrlObject'
 import { Block, Claim, License, Profile, Work } from './Claim'
 
 export namespace Api {
@@ -21,13 +21,13 @@ export namespace Api {
   export namespace Claims {
     export const Path = '/claims'
 
-    export function url(idOrQuery: string | Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject {
-      return {
+    export function url(idOrQuery: string | Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string {
+      return urlObjectToUrl({
         url: [Path, typeof idOrQuery === 'string' && idOrQuery].filter(a => a).join('/'),
         query: typeof idOrQuery === 'object' ? idOrQuery : query
-      }
+      })
     }
 
     export interface Query extends Pagination {}
@@ -38,13 +38,13 @@ export namespace Api {
   export namespace Works {
     export const Path = '/works'
 
-    export function url(idOrQuery: string | Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject {
-      return {
+    export function url(idOrQuery: string | Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string {
+      return urlObjectToUrl({
         url: [Path, typeof idOrQuery === 'string' && idOrQuery].filter(a => a).join('/'),
         query: typeof idOrQuery === 'object' ? idOrQuery : query
-      }
+      })
     }
 
     export interface Resource extends Work {}
@@ -61,13 +61,13 @@ export namespace Api {
   export namespace Licenses {
     export const Path = '/licenses'
 
-    export function url(idOrQuery: string | Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject {
-      return {
+    export function url(idOrQuery: string | Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string {
+      return urlObjectToUrl({
         url: [Path, typeof idOrQuery === 'string' && idOrQuery].filter(a => a).join('/'),
         query: typeof idOrQuery === 'object' ? idOrQuery : query
-      }
+      })
     }
 
     export interface Resource extends License {}
@@ -95,7 +95,7 @@ export namespace Api {
     export const Path = '/profiles/autocomplete/'
 
     export function url(value: string) {
-      return Path + this.props.value
+      return Path + value
     }
 
     export interface Resource {
@@ -109,11 +109,11 @@ export namespace Api {
 
     export const Path = '/notifications/'
 
-    export function url(sessionPublicKey: HexString, query?: Pagination): UrlObject {
-      return {
+    export function url(sessionPublicKey: HexString, query?: Pagination): string {
+      return urlObjectToUrl({
         url: Path + sessionPublicKey,
         query
-      }
+      })
     }
 
     export interface Resource {
@@ -129,11 +129,11 @@ export namespace Api {
 
     export const Path = '/events/'
 
-    export function url(query: Query): UrlObject {
-      return {
+    export function url(query: Query): string {
+      return urlObjectToUrl({
         url: Path,
         query
-      }
+      })
     }
 
     export interface Query extends UrlObjectQuery {
@@ -170,13 +170,13 @@ export namespace Api {
   export namespace Blocks {
     export const Path = '/blocks'
 
-    export function url(idOrQuery: string | Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject
-    export function url(idOrQuery: string | Query, query?: Query): UrlObject {
-      return {
+    export function url(idOrQuery: string | Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string
+    export function url(idOrQuery: string | Query, query?: Query): string {
+      return urlObjectToUrl({
         url: [Path, typeof idOrQuery === 'string' && idOrQuery].filter(a => a).join('/'),
         query: typeof idOrQuery === 'object' ? idOrQuery : query
-      }
+      })
     }
 
     export interface Query extends Pagination {}
