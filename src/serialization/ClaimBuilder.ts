@@ -80,6 +80,7 @@ export namespace ClaimBuilder {
 
   export function protoToClaimObject(proto: any): Claim {
     const attributes: any = {}
+
     proto.attributes.forEach((attr: any) => {
       attributes[attr.key] = attr.value
     })
@@ -129,8 +130,10 @@ export namespace ClaimBuilder {
   }
 
   // TODO: attributes should always be of type ClaimAttributes
-  function getAttributes(attributes: ClaimAttributes | ReadonlyArray<KeyValue>) {
-    const attributesArray = attributes instanceof Array ? attributes : Object.entries(attributes).map(([key, value]) => ({key, value}))
+  export function getAttributes(attributes: ClaimAttributes | ReadonlyArray<KeyValue>) {
+    const attributesArray = attributes instanceof Array
+      ? attributes
+      : Object.entries(attributes).map(([key, value]) => ({key, value}))
     return attributesArray.map(AttributeProto.create, AttributeProto)
   }
 }
