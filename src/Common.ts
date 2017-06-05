@@ -1,11 +1,17 @@
 const bitcore = require('bitcore-lib')
 
+export type HexString = string
+
 export interface KeyValue<K = string, V = string> {
   readonly key: K;
   readonly value: V;
 }
 
-export type HexString = string
+export interface Signature {
+  signature: string
+  publicKey: string
+  message: string
+}
 
 export interface ClassNameProps {
   readonly className?: string;
@@ -40,7 +46,7 @@ export function sha256(value: string | Uint8Array) {
 //}
 
 export function sign(privateKey: string, value: Uint8Array): Uint8Array {
-  const signature =  bitcore.crypto.ECDSA.sign(
+  const signature = bitcore.crypto.ECDSA.sign(
     value,
     new bitcore.PrivateKey(privateKey)
   )
@@ -93,4 +99,32 @@ export const hexRegExp = new RegExp('^[a-fA-F0-9]+$', 'gi')
 
 export function doubleSha(data: Buffer) {
   return bitcore.crypto.Hash.sha256sha256(data)
+}
+
+export function signMessage(bitcoin: boolean, key: any /* TODO: TYPE: PrivateKey */, message: string) {
+  const hash = bitcoin ? doubleSha : sha256
+  const msg = new Buffer(message, 'hex')
+  const signature = sign(key, hash(msg)) as any
+
+  return {
+    message: message,
+    publicKey: key.publicKey.toString(),
+    signature: signature.toString('hex'),
+  }
+}
+
+export function verifies(hashFn: any, encoded: Buffer, signature: string, publicKey: string) {
+  if (!encoded || !signature || !publicKey) {
+    return false
+  }
+
+  if (!verify(
+      new bitcore.PublicKey(publicKey),
+      new Buffer(signature, 'hex'),
+      hashFn(encoded)))
+  {
+    console.log('Signature is invalid')
+    return false
+  }
+  return true
 }
