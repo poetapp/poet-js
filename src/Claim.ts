@@ -39,8 +39,8 @@ export namespace ClaimTypes {
 }
 
 export interface Block {
-  id: string
-  claims: Claim[]
+  readonly id: string
+  readonly claims: ReadonlyArray<Claim>
 }
 
 export interface TitleClaim extends Claim<TitleClaimAttributes> {}
