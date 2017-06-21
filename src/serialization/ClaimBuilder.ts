@@ -11,7 +11,7 @@ export namespace ClaimBuilder {
     const key = typeof privateKey === 'string'
               ? new bitcore.PrivateKey(privateKey)
               : privateKey
-    const id = getId({...claim, publicKey: key.publicKey})
+    const id = getId({...claim, publicKey: key.publicKey.toString()})
     const signature = sign(key, id)
 
     return {
