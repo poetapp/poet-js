@@ -61,8 +61,10 @@ export function verify(publicKey: any, signature: Uint8Array, value: Uint8Array)
   )
 }
 
-export function hex(buffer: Buffer | Uint8Array): string {
-  return buffer instanceof Buffer
+export function hex(buffer: string | Buffer | Uint8Array): string {
+  return typeof buffer === 'string'
+    ? new Buffer(buffer).toString('hex')
+    : buffer instanceof Buffer
     ? buffer.toString('hex')
     : (buffer as Buffer).toString('hex')
 }
