@@ -8,6 +8,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
+    "prepublish": "npm run build",
     "test": "mocha --opts mocha.conf"
   },
   "dependencies": {
