@@ -2,7 +2,8 @@
   "name": "poet-js",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/babel",
+  "main": "dist/babel/src/index.js",
+  "types": "dist/babel/src/index.d.ts",
   "scripts": {
     "build": "npm run build-clear && npm run build-ts && npm run build-babel",
     "lint": "tslint -p .",
