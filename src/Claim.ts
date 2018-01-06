@@ -1,9 +1,8 @@
 import * as crypto from 'crypto'
-
 import * as bitcore from 'bitcore-lib'
 
-import { IllegalArgumentException } from 'Exceptions'
-import { Claim, ClaimAttributes, ClaimType } from 'Interfaces'
+import { IllegalArgumentException } from './Exceptions'
+import { Claim, ClaimAttributes, ClaimType } from './Interfaces'
 
 import { Serialization } from './Serialization'
 
