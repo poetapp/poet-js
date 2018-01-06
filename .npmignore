@@ -1,5 +1,10 @@
-node_modules
 src
 test
-mocha.conf
+typings
+dist/ts
+
 tsconfig.json
+tslint.json
+.idea
+.babelrc
+.nyc_output
