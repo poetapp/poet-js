@@ -1,7 +1,9 @@
-src
-test
-typings
-dist/ts
+/src
+/test
+/typings
+/dist/ts
+/dist/babel/test
+/dist/babel/src/*.js.map
 
 tsconfig.json
 tslint.json
