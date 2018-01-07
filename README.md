@@ -10,7 +10,7 @@ npm i poet-js
 ### Usage
 
 The main function you'll be using is `createClaim`:
-```
+```ts
 import { Claim, ClaimType, createClaim } from 'poet-js' 
 
 const workAttributes = {
@@ -29,7 +29,7 @@ const claim = createClaim(
 )
 ```
 Once this claim is created, you can publish it to a Po.et Node:
-```
+```ts
 const response = await fetch(poetNodeUrl + '/works/', {
   method: 'POST',
   headers: {
