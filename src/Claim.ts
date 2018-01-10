@@ -1,174 +1,68 @@
-import { HexString } from './Common'
+import * as crypto from 'crypto'
+import * as bitcore from 'bitcore-lib'
 
-export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
-  id?: string
+import { IllegalArgumentException } from './Exceptions'
+import { Claim, ClaimAttributes, ClaimType } from './Interfaces'
 
-  publicKey?: string
-  signature?: string
+import { Serialization } from './Serialization'
 
-  type: ClaimTypes.ClaimType
-  attributes: T
+export function getClaimId(claim: Claim): string {
+  const buffer = Buffer.from(Serialization.claimToHex({
+    ...claim,
+    id: '',
+    signature: ''
+  }), 'hex')
+  return crypto
+    .createHash('sha256')
+    .update(buffer)
+    .digest()
+    .toString('hex')
 }
 
-export interface ClaimAttributes {
-  readonly [key: string]: string;
+export function getClaimSignature(claim: Claim, privateKey: string): string {
+  if (!claim.publicKey)
+    throw new IllegalArgumentException('Cannot sign a claim that has an empty .publicKey field.')
+  if (new bitcore.PrivateKey(privateKey).publicKey.toString() !== claim.publicKey)
+    throw new IllegalArgumentException('Cannot sign this claim with the provided privateKey. It doesn\t match the claim\'s public key.')
+  if (!claim.id)
+    throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field.')
+  if (claim.id !== getClaimId(claim))
+    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
+
+  const signature = bitcore.crypto.ECDSA.sign(Buffer.from(claim.id, 'hex'), bitcore.PrivateKey(privateKey))
+  return signature.toString()
 }
 
-export namespace ClaimTypes {
-
-  export type Work = 'Work'
-  export type Title = 'Title'
-  export type License = 'License'
-  export type Offering = 'Offering'
-  export type Profile = 'Profile'
-  export type Certificate = 'Certificate'
-  export type Revocation = 'Revocation'
-
-  export const WORK: Work = 'Work'
-  export const TITLE: Title = 'Title'
-  export const LICENSE: License = 'License'
-  export const OFFERING: Offering = 'Offering'
-  export const PROFILE: Profile = 'Profile'
-  export const CERTIFICATE: Certificate = 'Certificate'
-  export const REVOCATION: Revocation = 'Revocation'
-
-  export type ClaimType = Work | Title | License | Offering | Profile | Certificate | Revocation
-  export type Judgement = Certificate | Revocation
-  export type ClaimOrJudgement = ClaimType | Judgement
-
-}
-
-export interface Block {
-  readonly id: string
-  readonly claims: ReadonlyArray<Claim>
-}
-
-export interface TitleClaim extends Claim<TitleClaimAttributes> {}
-
-export interface TitleClaimAttributes extends ClaimAttributes {
-  readonly owner: string;
-  readonly typeOfOwnership: string;
-  readonly status: string;
-}
-
-// TODO: some (all?) of these attributes actually belong in Api.Work.Resource
-export interface Work extends Claim<WorkAttributes> {
-  readonly claimInfo?: ClaimInfo
-  readonly owner?: {
-    readonly claim: HexString;
-    readonly displayName: string;
-    readonly id: HexString;
-  }
-  readonly title?: TitleClaim
-  readonly author?: {
-    readonly claim: HexString;
-    readonly displayName: string;
-    readonly id: HexString;
-  }
-  readonly offerings?: ReadonlyArray<WorkOffering>
-}
-
-export interface WorkAttributes extends ClaimAttributes {
-  readonly name: string;
-  readonly datePublished: string;
-  readonly dateCreated: string;
-  readonly author: string; // Can be a publicKey referencing a profile or a free text
-  readonly lastModified: string;
-  readonly contentHash: string;
-  readonly tags: string;
-  readonly type: string;
-  readonly articleType: string;
-  readonly content?: string;
-}
-
-export interface WorkOffering extends Claim {
-  readonly owner: string
-  readonly attributes: {
-    readonly [key: string]: string;
-    readonly licenseType: string;
-    readonly licenseDescription: string;
-    readonly pricingFrequency: string;
-    readonly pricingPriceAmount: string;
-    readonly pricingPriceCurrency: string;
-  }
-  readonly licenses: ReadonlyArray<any>
-}
-
-// TODO: what's the difference between a WorkOffering and a plain Offering?
-export interface Offering {
-  readonly id: string;
-  readonly owner: string;
-  readonly attributes: {
-    readonly licenseType: string;
-    readonly licenseDescription: string;
-  };
-}
-
-export interface Profile extends Claim<ProfileAttributes> {
-  readonly id: string
-  readonly displayName: string
-}
-
-export interface ProfileAttributes extends ClaimAttributes {
-  readonly displayName?: string;
-  readonly name?: string;
-  readonly bio?: string;
-  readonly url?: string;
-  readonly email?: string;
-  readonly location?: string;
-  readonly imageData?: string;
-}
-
-export interface License {
-  readonly id: string;
-  readonly publicKey: string;
-  readonly title: string;
-  readonly licenseType: string;
-  readonly owner: string;
-
-  readonly licenseHolder: Profile;
-
-  readonly reference: Work;
-  readonly claimInfo?: ClaimInfo
-
-  readonly referenceOffering: Offering;
-
-  readonly attributes: {
-    readonly licenseHolder: string;
-    readonly issueDate: string;
-    readonly reference: string;
+export function isValidSignature(claim: Claim): boolean {
+  try {
+    return bitcore.crypto.ECDSA.verify(
+      Buffer.from(claim.id, 'hex'),
+      bitcore.crypto.Signature.fromString(claim.signature),
+      new bitcore.PublicKey(claim.publicKey)
+    )
+  } catch (exception) {
+    return false
   }
 }
 
-export interface ClaimInfo {
-  readonly hash: string
-  readonly torrentHash: string
-  readonly timestamp?: number
-  readonly bitcoinHeight?: number
-  readonly bitcoinHash?: string
-  readonly blockHeight?: number
-  readonly blockHash?: string
-  readonly transactionOrder?: string
-  readonly transactionHash: string
-  readonly outputIndex: number
-  readonly claimOrder?: number
-}
+export function createClaim(privateKey: string, type: ClaimType, attributes: ClaimAttributes): Claim {
+  const claim: Claim = {
+    id: '',
+    publicKey: new bitcore.PrivateKey(privateKey).publicKey.toString(),
+    signature: '',
+    type,
+    dateCreated: new Date(),
+    attributes
+  }
+  const id = getClaimId(claim)
+  const signature = getClaimSignature({
+    ...claim,
+    id
+  }, privateKey)
+  return {
+    ...claim,
+    id,
+    signature
+  }
 
-export interface BlockInfo {
-  readonly torrentHash: string
-
-  readonly transactionHash?: string
-  readonly outputIndex?: number
-
-  // Only available if confirmed
-  readonly bitcoinHash?: string
-  readonly bitcoinHeight?: number
-  readonly transactionOrder?: number
-  readonly timestamp?: number
-
-  // Only available if downloaded
-  readonly hash?: string
-
-  // Only available if indexed
-  readonly height?: number
 }

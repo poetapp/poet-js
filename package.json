@@ -1,41 +1,34 @@
 {
   "name": "poet-js",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "author": "Poet",
-  "license": "MIT",
+  "main": "dist/babel/src/index.js",
+  "types": "dist/babel/src/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "prepublish": "npm run build",
-    "test": "mocha --opts mocha.conf"
+    "build": "npm run build-clear && npm run build-ts && npm run build-babel",
+    "lint": "tslint -p .",
+    "test": "nyc alsatian './dist/babel/test/**/*.js'",
+    "coverage": "nyc --reporter=lcov report && echo Report created at ./coverage/lcov-report/index.html",
+    "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
+    "build-clear": "rm -rf dist",
+    "build-ts": "tsc && npm run copy-json",
+    "build-babel": "cp .babelrc dist/ts && babel dist/ts/ -d dist/babel --copy-files"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
-    "@types/bluebird": "^3.0.37",
-    "@types/chai": "^3.5.2",
-    "@types/isomorphic-fetch": "0.0.34",
-    "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.22",
-    "@types/xml2js": "0.0.32",
-    "bitcore-explorers": "eordano/bitcore-explorers",
-    "bluebird": "^3.4.7",
-    "chai": "^3.5.0",
-    "create-torrent": "^3.28.0",
-    "isomorphic-fetch": "^2.2.1",
-    "mocha": "^3.3.0",
-    "moment": "^2.17.1",
-    "parse-torrent": "^5.8.1",
-    "prompt": "^1.0.0",
-    "protobufjs": "=6.6.3",
-    "rxjs": "^5.3.0",
-    "typescript": "^2.3.2",
-    "xml2js": "^0.4.17"
-  },
-  "peerDependencies": {
-    "bitcore-lib": "eordano/bitcore-lib#f9c9876"
+    "babel-cli": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.0.0",
+    "bitcore-lib": "^0.15.0",
+    "node-fetch": "^1.7.3",
+    "protobufjs": "^6.8.0"
   },
   "devDependencies": {
-    "ts-node": "^3.0.4"
+    "@types/node-fetch": "^1.6.7",
+    "alsatian": "^2.0.0",
+    "nyc": "^11.3.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.1"
   }
 }
