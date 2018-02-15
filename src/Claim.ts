@@ -29,7 +29,7 @@ export function getClaimSignature(claim: Claim, privateKey: string): string {
   if (claim.id !== getClaimId(claim))
     throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
 
-  const signature = bitcore.crypto.ECDSA.sign(Buffer.from(claim.id, 'hex'), bitcore.PrivateKey(privateKey))
+  const signature = bitcore.crypto.ECDSA.sign(Buffer.from(claim.id, 'hex'), new bitcore.PrivateKey(privateKey))
   return signature.toString()
 }
 
