@@ -6,14 +6,14 @@ Po.et JS is an small library that provides methods to easily create and sign Po.
 
 ### Installation
 ```
-npm i poet-js
+npm i @po.et/poet-js
 ```
 
 ### Usage
 
 The main function you'll be using is `createClaim`:
 ```ts
-import { Claim, ClaimType, createClaim } from 'poet-js' 
+import { Claim, ClaimType, createClaim } from '@po.et/poet-js' 
 
 const workAttributes = {
   name: 'The Raven',

@@ -1,6 +1,6 @@
 {
-  "name": "poet-js",
-  "version": "1.0.3",
+  "name": "@po.et/poet-js",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/babel/src/index.js",
   "types": "dist/babel/src/index.d.ts",
