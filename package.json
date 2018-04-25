@@ -19,18 +19,18 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@types/bitcore-lib": "^0.15.0",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-module-resolver": "^3.0.0",
-    "bitcore-lib": "^0.15.0",
-    "node-fetch": "^1.7.3",
-    "protobufjs": "^6.8.0"
+    "babel-cli": "6.26.0",
+    "babel-plugin-module-resolver": "3.0.0",
+    "bitcore-lib": "0.15.0",
+    "node-fetch": "1.7.3",
+    "protobufjs": "6.8.4"
   },
   "devDependencies": {
-    "@types/node-fetch": "^1.6.7",
-    "alsatian": "^2.0.0",
-    "nyc": "^11.3.0",
-    "tslint": "^5.8.0",
-    "typescript": "^2.6.1"
+    "@types/bitcore-lib": "0.15.0",
+    "@types/node-fetch": "1.6.8",
+    "alsatian": "2.0.0",
+    "nyc": "11.4.0",
+    "tslint": "5.8.0",
+    "typescript": "2.6.2"
   }
 }
