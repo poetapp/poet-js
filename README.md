@@ -6,7 +6,7 @@ Po.et JS is an small library that provides methods to easily create and sign Po.
 
 ### Installation
 ```
-npm i poet-js
+npm i @po.et/poet-js
 ```
 
 ### Usage
