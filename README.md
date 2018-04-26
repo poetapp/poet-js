@@ -1,5 +1,6 @@
 # Po.et JS
 
+[![Build Status](https://travis-ci.org/poetapp/poet-js.svg?branch=master)](https://travis-ci.org/poetapp/poet-js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/poetapp/poet-js.svg)](https://greenkeeper.io/)
 
 Po.et JS is an small library that provides methods to easily create and sign Po.et Claims. 
