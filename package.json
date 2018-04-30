@@ -6,7 +6,8 @@
   "types": "dist/babel/src/index.d.ts",
   "scripts": {
     "build": "npm run build-clear && npm run build-ts && npm run build-babel",
-    "lint": "tslint -p .",
+    "lint": "tslint -p ./tsconfig.json",
+    "lint:fix": "tslint -p ./tsconfig.json --fix",
     "test": "nyc alsatian './dist/babel/test/**/*.js'",
     "coverage": "nyc --reporter=lcov report && echo Report created at ./coverage/lcov-report/index.html",
     "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
@@ -26,11 +27,11 @@
     "protobufjs": "6.8.4"
   },
   "devDependencies": {
+    "@po.et/tslint-rules": "^1.0.0",
     "@types/bitcore-lib": "0.15.0",
     "@types/node-fetch": "1.6.8",
     "alsatian": "2.0.0",
     "nyc": "11.4.0",
-    "tslint": "5.8.0",
     "typescript": "2.6.2"
   }
 }
