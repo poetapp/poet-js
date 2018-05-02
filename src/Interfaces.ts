@@ -11,7 +11,13 @@ export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
 
 export function isClaim(object: any): object is Claim {
   // TODO: use joi or protobuf
-  return object.id && object.publicKey && object.signature && object.type && object.attributes
+  return (
+    object.id &&
+    object.publicKey &&
+    object.signature &&
+    object.type &&
+    object.attributes
+  )
 }
 
 export interface ClaimAttributes {

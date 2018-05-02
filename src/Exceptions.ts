@@ -1,3 +1,4 @@
+/* tslint:disable:max-classes-per-file */
 export class IllegalArgumentException extends Error {
   constructor(message: string) {
     super(message)

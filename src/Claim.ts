@@ -1,5 +1,6 @@
-import * as crypto from 'crypto'
+/* tslint:disable:no-relative-imports */
 import * as bitcore from 'bitcore-lib'
+import * as crypto from 'crypto'
 
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimType } from './Interfaces'
@@ -7,11 +8,14 @@ import { Claim, ClaimAttributes, ClaimType } from './Interfaces'
 import { Serialization } from './Serialization'
 
 export function getClaimId(claim: Claim): string {
-  const buffer = Buffer.from(Serialization.claimToHex({
-    ...claim,
-    id: '',
-    signature: ''
-  }), 'hex')
+  const buffer = Buffer.from(
+    Serialization.claimToHex({
+      ...claim,
+      id: '',
+      signature: ''
+    }),
+    'hex'
+  )
   return crypto
     .createHash('sha256')
     .update(buffer)
@@ -21,15 +25,28 @@ export function getClaimId(claim: Claim): string {
 
 export function getClaimSignature(claim: Claim, privateKey: string): string {
   if (!claim.publicKey)
-    throw new IllegalArgumentException('Cannot sign a claim that has an empty .publicKey field.')
-  if (new bitcore.PrivateKey(privateKey).publicKey.toString() !== claim.publicKey)
-    throw new IllegalArgumentException('Cannot sign this claim with the provided privateKey. It doesn\t match the claim\'s public key.')
+    throw new IllegalArgumentException(
+      'Cannot sign a claim that has an empty .publicKey field.'
+    )
+  if (
+    new bitcore.PrivateKey(privateKey).publicKey.toString() !== claim.publicKey
+  )
+    throw new IllegalArgumentException(
+      "Cannot sign this claim with the provided privateKey. It doesn\t match the claim's public key."
+    )
   if (!claim.id)
-    throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field.')
+    throw new IllegalArgumentException(
+      'Cannot sign a claim that has an empty .id field.'
+    )
   if (claim.id !== getClaimId(claim))
-    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
+    throw new IllegalArgumentException(
+      'Cannot sign a claim whose id has been altered or generated incorrectly.'
+    )
 
-  const signature = bitcore.crypto.ECDSA.sign(Buffer.from(claim.id, 'hex'), new bitcore.PrivateKey(privateKey))
+  const signature = bitcore.crypto.ECDSA.sign(
+    Buffer.from(claim.id, 'hex'),
+    new bitcore.PrivateKey(privateKey)
+  )
   return signature.toString()
 }
 
@@ -45,7 +62,11 @@ export function isValidSignature(claim: Claim): boolean {
   }
 }
 
-export function createClaim(privateKey: string, type: ClaimType, attributes: ClaimAttributes): Claim {
+export function createClaim(
+  privateKey: string,
+  type: ClaimType,
+  attributes: ClaimAttributes
+): Claim {
   const claim: Claim = {
     id: '',
     publicKey: new bitcore.PrivateKey(privateKey).publicKey.toString(),
@@ -55,14 +76,16 @@ export function createClaim(privateKey: string, type: ClaimType, attributes: Cla
     attributes
   }
   const id = getClaimId(claim)
-  const signature = getClaimSignature({
-    ...claim,
-    id
-  }, privateKey)
+  const signature = getClaimSignature(
+    {
+      ...claim,
+      id
+    },
+    privateKey
+  )
   return {
     ...claim,
     id,
     signature
   }
-
 }

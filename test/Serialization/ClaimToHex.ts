@@ -1,12 +1,12 @@
+/* tslint:disable:no-relative-imports */
 import { Expect, Test, TestCase } from 'alsatian'
 
-import { Serialization } from 'Serialization'
 import { Claim, ClaimAttributes, ClaimType, Work } from 'Interfaces'
+import { Serialization } from 'Serialization'
 
 import { TheRaven, TheRavenHex } from '../Claims'
 
 export class ClaimToHex {
-
   @Test()
   @TestCase(TheRaven)
   public claimToHex(work: Work) {
@@ -19,64 +19,85 @@ export class ClaimToHex {
   public claimToHexFailIfChangedAttribute(work: Work) {
     // Changing any field should change the serialized too
 
-    Expect(Serialization.claimToHex(editAttributes(work, {
-      name: 'Nevermore'
-    }))).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex(
+        editAttributes(work, {
+          name: 'Nevermore'
+        })
+      )
+    ).not.toBe(TheRavenHex)
 
-    Expect(Serialization.claimToHex(editAttributes(work, {
-      author: 'E.A.P.'
-    }))).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex(
+        editAttributes(work, {
+          author: 'E.A.P.'
+        })
+      )
+    ).not.toBe(TheRavenHex)
 
-    Expect(Serialization.claimToHex(editAttributes(work, {
-      dateCreated: (new Date()).toISOString()
-    }))).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex(
+        editAttributes(work, {
+          dateCreated: new Date().toISOString()
+        })
+      )
+    ).not.toBe(TheRavenHex)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimToHexFailIfChangedClaimId(work: Work) {
-    Expect(Serialization.claimToHex({
-      ...work,
-      id: 'X' + work.id.slice(1)
-    })).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex({
+        ...work,
+        id: 'X' + work.id.slice(1)
+      })
+    ).not.toBe(TheRavenHex)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimToHexFailIfChangedClaimPublicKey(work: Work) {
-    Expect(Serialization.claimToHex({
-      ...work,
-      publicKey: 'a' + work.publicKey.slice(1)
-    })).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex({
+        ...work,
+        publicKey: 'a' + work.publicKey.slice(1)
+      })
+    ).not.toBe(TheRavenHex)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimToHexFailIfChangedClaimSignature(work: Work) {
-    Expect(Serialization.claimToHex({
-      ...work,
-      signature: 'b' + work.signature.slice(1)
-    })).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex({
+        ...work,
+        signature: 'b' + work.signature.slice(1)
+      })
+    ).not.toBe(TheRavenHex)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimToHexFailIfChangedClaimType(work: Work) {
-    Expect(Serialization.claimToHex({
-      ...work,
-      type: 'Asd' as ClaimType
-    })).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex({
+        ...work,
+        type: 'Asd' as ClaimType
+      })
+    ).not.toBe(TheRavenHex)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimToHexFailIfChangedClaimDate(work: Work) {
-    Expect(Serialization.claimToHex({
-      ...work,
-      dateCreated: new Date()
-    })).not.toBe(TheRavenHex)
+    Expect(
+      Serialization.claimToHex({
+        ...work,
+        dateCreated: new Date()
+      })
+    ).not.toBe(TheRavenHex)
   }
-
 }
 
 /**

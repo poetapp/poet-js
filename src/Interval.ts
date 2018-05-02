@@ -16,5 +16,4 @@ export class Interval {
     clearInterval(this.timerId)
     this.timerId = null
   }
-
 }

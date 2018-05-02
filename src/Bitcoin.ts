@@ -1,3 +1,4 @@
+/* tslint:disable:no-relative-imports */
 import * as bitcore from 'bitcore-lib'
 
 import { TransactionPoetTimestamp } from './Interfaces'
@@ -5,20 +6,24 @@ import { TransactionPoetTimestamp } from './Interfaces'
 export const PREFIX_POET = Buffer.from('POET')
 export const PREFIX_BARD = Buffer.from('BARD')
 
-export function getPoetTimestamp(tx: bitcore.Transaction): TransactionPoetTimestamp {
+export function getPoetTimestamp(
+  tx: bitcore.Transaction
+): TransactionPoetTimestamp {
   const poetOutput = tx.outputs
     .filter(isOutputDataOut)
     .find(isOutputCorrectNetwork)
 
   const poetTimestampBuffer: Buffer = poetOutput && poetOutput.script.getData()
 
-  return poetTimestampBuffer && {
-    transactionId: tx.id,
-    outputIndex: tx.outputs.indexOf(poetOutput),
-    prefix: poetTimestampBuffer.slice(0, 4).toString(),
-    version: Array.from(poetTimestampBuffer.slice(4, 8)),
-    ipfsHash: poetTimestampBuffer.slice(8).toString()
-  }
+  return (
+    poetTimestampBuffer && {
+      transactionId: tx.id,
+      outputIndex: tx.outputs.indexOf(poetOutput),
+      prefix: poetTimestampBuffer.slice(0, 4).toString(),
+      version: Array.from(poetTimestampBuffer.slice(4, 8)),
+      ipfsHash: poetTimestampBuffer.slice(8).toString()
+    }
+  )
 }
 
 function isOutputDataOut(output: bitcore.Output) {
@@ -27,6 +32,5 @@ function isOutputDataOut(output: bitcore.Output) {
 
 function isOutputCorrectNetwork(output: bitcore.Output) {
   const data: Buffer = output.script.getData()
-  return data.indexOf(PREFIX_POET) === 0
-    || data.indexOf(PREFIX_BARD) === 0
+  return data.indexOf(PREFIX_POET) === 0 || data.indexOf(PREFIX_BARD) === 0
 }

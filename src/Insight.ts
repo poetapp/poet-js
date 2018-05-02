@@ -1,3 +1,5 @@
+/* tslint:disable:no-console */
+/* tslint:disable:max-classes-per-file */
 import * as bitcore from 'bitcore-lib'
 import fetch from 'node-fetch'
 
@@ -8,11 +10,12 @@ export class InsightClient {
     this.url = url
   }
 
-  getUtxo = async (address: string): Promise<ReadonlyArray<bitcore.Transaction.UnspentOutput>> => {
+  getUtxo = async (
+    address: string
+  ): Promise<ReadonlyArray<bitcore.Transaction.UnspentOutput>> => {
     const response = await fetch(`${this.url}/addrs/${address}/utxo`)
 
-    if (!response.ok)
-      throwError(await response.text())
+    if (!response.ok) throwError(await response.text())
 
     const rawutxo = await response.json()
 
@@ -22,7 +25,9 @@ export class InsightClient {
         message: 'Expected server response to be an Array. ',
         actualResponse: rawutxo
       })
-      throw new UnexpectedResponseError('InsightHelper.getUtxo was expecting server response to be an Array. ')
+      throw new UnexpectedResponseError(
+        'InsightHelper.getUtxo was expecting server response to be an Array. '
+      )
     }
 
     return rawutxo.map(_ => new bitcore.Transaction.UnspentOutput(_))
@@ -39,8 +44,7 @@ export class InsightClient {
       }
     })
 
-    if (!response.ok)
-      throwError(await response.text())
+    if (!response.ok) throwError(await response.text())
 
     return await response.json()
   }
@@ -51,8 +55,7 @@ export class InsightClient {
   getBlockHash = async (height: number): Promise<string> => {
     const response = await fetch(`${this.url}/block-index/${height}`)
 
-    if (!response.ok)
-      throwError(await response.text())
+    if (!response.ok) throwError(await response.text())
 
     const json = await response.json()
 
@@ -62,8 +65,7 @@ export class InsightClient {
   getBlock = async (hash: string): Promise<bitcore.Block> => {
     const response = await fetch(`${this.url}/rawblock/${hash}`)
 
-    if (!response.ok)
-      throwError(await response.text())
+    if (!response.ok) throwError(await response.text())
 
     const json = await response.json()
 
@@ -80,9 +82,9 @@ export class InsightError extends Error {
   }
 }
 
-export class UnexpectedResponseError extends InsightError { }
+export class UnexpectedResponseError extends InsightError {}
 
-export class BlockHeightOutOfRangeError extends InsightError { }
+export class BlockHeightOutOfRangeError extends InsightError {}
 
 function throwError(serverResponse: string) {
   if (serverResponse === 'Block height out of range. Code:-8')
