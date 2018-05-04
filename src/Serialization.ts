@@ -1,10 +1,10 @@
+/* tslint:disable:no-relative-imports */
 import { Message } from 'protobufjs'
 
 import { Claim, ClaimAttributes } from './Interfaces'
 import { ClaimProto, AttributeProto } from './Serialization/PoetProto'
 
 export namespace Serialization {
-
   export function protoToClaim(proto: any): Claim {
     const attributes: any = {}
 
@@ -34,7 +34,9 @@ export namespace Serialization {
   }
 
   export function claimToHex(claim: Claim) {
-    return new Buffer(ClaimProto.encode(claimToProto(claim)).finish()).toString('hex')
+    return new Buffer(ClaimProto.encode(claimToProto(claim)).finish()).toString(
+      'hex'
+    )
   }
 
   export function hexToClaim(claim: string): Claim {
@@ -42,13 +44,13 @@ export namespace Serialization {
     return protoToClaim(decoded)
   }
 
-  function attributesToProtos(attributes: ClaimAttributes): ReadonlyArray<Message<any>> {
-    const attributeArray = Object
-      .entries(attributes)
-      .map(([key, value]) => ({key, value}))
-      .map(({key, value}) => ({key: key.toLowerCase(), value}))
+  function attributesToProtos(
+    attributes: ClaimAttributes
+  ): ReadonlyArray<Message<any>> {
+    const attributeArray = Object.entries(attributes)
+      .map(([key, value]) => ({ key, value }))
+      .map(({ key, value }) => ({ key: key.toLowerCase(), value }))
       .sort((a, b) => a.key.localeCompare(b.key))
     return attributeArray.map(AttributeProto.create, AttributeProto)
   }
-
 }

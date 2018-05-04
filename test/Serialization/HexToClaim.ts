@@ -1,12 +1,12 @@
+/* tslint:disable:no-relative-imports */
 import { Expect, Test, TestCase } from 'alsatian'
 
-import { Serialization } from 'Serialization'
 import { Work } from 'Interfaces'
+import { Serialization } from 'Serialization'
 
 import { TheRaven, TheRavenHex } from '../Claims'
 
 export class HexToClaim {
-
   @Test()
   @TestCase(TheRaven, TheRavenHex)
   public hexToClaimMatchId(work: Work, hex: string) {
@@ -34,6 +34,8 @@ export class HexToClaim {
   @Test()
   @TestCase(TheRaven, TheRavenHex)
   public hexToClaimDateCreated(work: Work, hex: string) {
-    Expect(Serialization.hexToClaim(hex).dateCreated.getTime()).toBe(work.dateCreated.getTime())
+    Expect(Serialization.hexToClaim(hex).dateCreated.getTime()).toBe(
+      work.dateCreated.getTime()
+    )
   }
 }

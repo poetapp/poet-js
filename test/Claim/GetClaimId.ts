@@ -1,12 +1,17 @@
+/* tslint:disable:no-relative-imports */
 import { Expect, Test, TestCase } from 'alsatian'
 
 import { getClaimId } from 'Claim'
 import { Claim, ClaimType, Work } from 'Interfaces'
 
-import { AStudyInScarlet, makeClaim, TheMurdersInTheRueMorgue, TheRaven } from '../Claims'
+import {
+  AStudyInScarlet,
+  makeClaim,
+  TheMurdersInTheRueMorgue,
+  TheRaven
+} from '../Claims'
 
 export class GetClaimId {
-
   @Test()
   @TestCase(TheRaven)
   public claimId(work: Work) {
@@ -39,42 +44,54 @@ export class GetClaimId {
   @Test()
   @TestCase(TheRaven)
   public claimIdIncludesPublicKey(work: Work) {
-    Expect(getClaimId({
-      ...work,
-      publicKey: '123'
-    })).not.toBe(work.id)
+    Expect(
+      getClaimId({
+        ...work,
+        publicKey: '123'
+      })
+    ).not.toBe(work.id)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimIdIncludesType(work: Work) {
-    Expect(getClaimId({
-      ...work,
-      type: 'Asd' as ClaimType
-    })).not.toBe(work.id)
+    Expect(
+      getClaimId({
+        ...work,
+        type: 'Asd' as ClaimType
+      })
+    ).not.toBe(work.id)
   }
 
   @Test()
   @TestCase(TheRaven)
   public claimIdIncludesDate(work: Work) {
-    Expect(getClaimId({
-      ...work,
-      dateCreated: new Date()
-    })).not.toBe(work.id)
+    Expect(
+      getClaimId({
+        ...work,
+        dateCreated: new Date()
+      })
+    ).not.toBe(work.id)
   }
 
   @Test()
   @TestCase(TheRaven.attributes.name, TheRaven.attributes.author)
-  @TestCase(TheMurdersInTheRueMorgue.attributes.name, TheMurdersInTheRueMorgue.attributes.author)
+  @TestCase(
+    TheMurdersInTheRueMorgue.attributes.name,
+    TheMurdersInTheRueMorgue.attributes.author
+  )
   @TestCase(AStudyInScarlet.attributes.name, AStudyInScarlet.attributes.author)
-  public claimIdShouldNotChangeWithAttributeOrdering(name: string, author: string) {
+  public claimIdShouldNotChangeWithAttributeOrdering(
+    name: string,
+    author: string
+  ) {
     const work1: Claim = makeClaim({
       name,
-      author,
+      author
     })
     const work2: Claim = makeClaim({
       author,
-      name,
+      name
     })
 
     Expect(getClaimId(work1)).toBe(getClaimId(work2))
@@ -82,19 +99,24 @@ export class GetClaimId {
 
   @Test()
   @TestCase(TheRaven.attributes.name, TheRaven.attributes.author)
-  @TestCase(TheMurdersInTheRueMorgue.attributes.name, TheMurdersInTheRueMorgue.attributes.author)
+  @TestCase(
+    TheMurdersInTheRueMorgue.attributes.name,
+    TheMurdersInTheRueMorgue.attributes.author
+  )
   @TestCase(AStudyInScarlet.attributes.name, AStudyInScarlet.attributes.author)
-  public claimIdShouldNotChangeWithAttributeKeyCasing(name: string, author: string) {
+  public claimIdShouldNotChangeWithAttributeKeyCasing(
+    name: string,
+    author: string
+  ) {
     const work1: Claim = makeClaim({
       name,
-      author,
+      author
     })
     const work2: Claim = makeClaim({
       Author: author,
-      NAME: name,
+      NAME: name
     })
 
     Expect(getClaimId(work1)).toBe(getClaimId(work2))
   }
-
 }
