@@ -12,7 +12,7 @@ export function getClaimId(claim: Claim): string {
     Serialization.claimToHex({
       ...claim,
       id: '',
-      signature: ''
+      signature: '',
     }),
     'hex'
   )
@@ -24,29 +24,16 @@ export function getClaimId(claim: Claim): string {
 }
 
 export function getClaimSignature(claim: Claim, privateKey: string): string {
-  if (!claim.publicKey)
-    throw new IllegalArgumentException(
-      'Cannot sign a claim that has an empty .publicKey field.'
-    )
-  if (
-    new bitcore.PrivateKey(privateKey).publicKey.toString() !== claim.publicKey
-  )
+  if (!claim.publicKey) throw new IllegalArgumentException('Cannot sign a claim that has an empty .publicKey field.')
+  if (new bitcore.PrivateKey(privateKey).publicKey.toString() !== claim.publicKey)
     throw new IllegalArgumentException(
       "Cannot sign this claim with the provided privateKey. It doesn\t match the claim's public key."
     )
-  if (!claim.id)
-    throw new IllegalArgumentException(
-      'Cannot sign a claim that has an empty .id field.'
-    )
+  if (!claim.id) throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field.')
   if (claim.id !== getClaimId(claim))
-    throw new IllegalArgumentException(
-      'Cannot sign a claim whose id has been altered or generated incorrectly.'
-    )
+    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
 
-  const signature = bitcore.crypto.ECDSA.sign(
-    Buffer.from(claim.id, 'hex'),
-    new bitcore.PrivateKey(privateKey)
-  )
+  const signature = bitcore.crypto.ECDSA.sign(Buffer.from(claim.id, 'hex'), new bitcore.PrivateKey(privateKey))
   return signature.toString()
 }
 
@@ -62,30 +49,26 @@ export function isValidSignature(claim: Claim): boolean {
   }
 }
 
-export function createClaim(
-  privateKey: string,
-  type: ClaimType,
-  attributes: ClaimAttributes
-): Claim {
+export function createClaim(privateKey: string, type: ClaimType, attributes: ClaimAttributes): Claim {
   const claim: Claim = {
     id: '',
     publicKey: new bitcore.PrivateKey(privateKey).publicKey.toString(),
     signature: '',
     type,
     dateCreated: new Date(),
-    attributes
+    attributes,
   }
   const id = getClaimId(claim)
   const signature = getClaimSignature(
     {
       ...claim,
-      id
+      id,
     },
     privateKey
   )
   return {
     ...claim,
     id,
-    signature
+    signature,
   }
 }

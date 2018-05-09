@@ -6,12 +6,8 @@ import { TransactionPoetTimestamp } from './Interfaces'
 export const PREFIX_POET = Buffer.from('POET')
 export const PREFIX_BARD = Buffer.from('BARD')
 
-export function getPoetTimestamp(
-  tx: bitcore.Transaction
-): TransactionPoetTimestamp {
-  const poetOutput = tx.outputs
-    .filter(isOutputDataOut)
-    .find(isOutputCorrectNetwork)
+export function getPoetTimestamp(tx: bitcore.Transaction): TransactionPoetTimestamp {
+  const poetOutput = tx.outputs.filter(isOutputDataOut).find(isOutputCorrectNetwork)
 
   const poetTimestampBuffer: Buffer = poetOutput && poetOutput.script.getData()
 
@@ -21,7 +17,7 @@ export function getPoetTimestamp(
       outputIndex: tx.outputs.indexOf(poetOutput),
       prefix: poetTimestampBuffer.slice(0, 4).toString(),
       version: Array.from(poetTimestampBuffer.slice(4, 8)),
-      ipfsHash: poetTimestampBuffer.slice(8).toString()
+      ipfsHash: poetTimestampBuffer.slice(8).toString(),
     }
   )
 }

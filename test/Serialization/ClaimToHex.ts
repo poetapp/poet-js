@@ -22,7 +22,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex(
         editAttributes(work, {
-          name: 'Nevermore'
+          name: 'Nevermore',
         })
       )
     ).not.toBe(TheRavenHex)
@@ -30,7 +30,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex(
         editAttributes(work, {
-          author: 'E.A.P.'
+          author: 'E.A.P.',
         })
       )
     ).not.toBe(TheRavenHex)
@@ -38,7 +38,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex(
         editAttributes(work, {
-          dateCreated: new Date().toISOString()
+          dateCreated: new Date().toISOString(),
         })
       )
     ).not.toBe(TheRavenHex)
@@ -50,7 +50,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex({
         ...work,
-        id: 'X' + work.id.slice(1)
+        id: 'X' + work.id.slice(1),
       })
     ).not.toBe(TheRavenHex)
   }
@@ -61,7 +61,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex({
         ...work,
-        publicKey: 'a' + work.publicKey.slice(1)
+        publicKey: 'a' + work.publicKey.slice(1),
       })
     ).not.toBe(TheRavenHex)
   }
@@ -72,7 +72,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex({
         ...work,
-        signature: 'b' + work.signature.slice(1)
+        signature: 'b' + work.signature.slice(1),
       })
     ).not.toBe(TheRavenHex)
   }
@@ -83,7 +83,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex({
         ...work,
-        type: 'Asd' as ClaimType
+        type: 'Asd' as ClaimType,
       })
     ).not.toBe(TheRavenHex)
   }
@@ -94,7 +94,7 @@ export class ClaimToHex {
     Expect(
       Serialization.claimToHex({
         ...work,
-        dateCreated: new Date()
+        dateCreated: new Date(),
       })
     ).not.toBe(TheRavenHex)
   }
@@ -109,7 +109,7 @@ function editAttributes(claim: Claim, attributes: ClaimAttributes): Claim {
     ...claim,
     attributes: {
       ...claim.attributes,
-      ...attributes
-    }
+      ...attributes,
+    },
   }
 }
