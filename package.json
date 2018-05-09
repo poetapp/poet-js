@@ -31,7 +31,7 @@
     "@types/bitcore-lib": "0.15.0",
     "@types/node-fetch": "1.6.8",
     "alsatian": "2.0.0",
-    "nyc": "11.4.0",
+    "nyc": "11.7.2",
     "typescript": "2.6.2"
   }
 }
