@@ -35,7 +35,7 @@ export interface WorkAttributes extends ClaimAttributes {
   readonly datePublished: string
   readonly dateCreated: string
   readonly author: string
-  readonly tags: string
+  readonly tags?: string
   readonly content: string
 }
 
