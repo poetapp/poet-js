@@ -34,8 +34,6 @@ export class HexToClaim {
   @Test()
   @TestCase(TheRaven, TheRavenHex)
   public hexToClaimDateCreated(work: Work, hex: string) {
-    Expect(Serialization.hexToClaim(hex).dateCreated.getTime()).toBe(
-      work.dateCreated.getTime()
-    )
+    Expect(Serialization.hexToClaim(hex).dateCreated.getTime()).toBe(work.dateCreated.getTime())
   }
 }

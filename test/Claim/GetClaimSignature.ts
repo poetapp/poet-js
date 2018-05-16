@@ -16,9 +16,7 @@ export class GetClaimSignature {
   @Test()
   @TestCase(TheRaven)
   public signatureMissingId(work: Work) {
-    Expect(() =>
-      getClaimSignature({ ...work, id: '' }, PrivateKeyEAP)
-    ).toThrowError(
+    Expect(() => getClaimSignature({ ...work, id: '' }, PrivateKeyEAP)).toThrowError(
       IllegalArgumentException,
       'Cannot sign a claim that has an empty .id field.'
     )
@@ -31,14 +29,11 @@ export class GetClaimSignature {
       getClaimSignature(
         {
           ...work,
-          id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102'
+          id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102',
         },
         PrivateKeyEAP
       )
-    ).toThrowError(
-      IllegalArgumentException,
-      'Cannot sign a claim whose id has been altered or generated incorrectly.'
-    )
+    ).toThrowError(IllegalArgumentException, 'Cannot sign a claim whose id has been altered or generated incorrectly.')
   }
 
   @Test()
@@ -48,14 +43,11 @@ export class GetClaimSignature {
       getClaimSignature(
         {
           ...work,
-          publicKey: undefined
+          publicKey: undefined,
         },
         PrivateKeyEAP
       )
-    ).toThrowError(
-      IllegalArgumentException,
-      'Cannot sign a claim that has an empty .publicKey field.'
-    )
+    ).toThrowError(IllegalArgumentException, 'Cannot sign a claim that has an empty .publicKey field.')
   }
 
   @Test()
@@ -65,8 +57,7 @@ export class GetClaimSignature {
       getClaimSignature(
         {
           ...work,
-          publicKey:
-            '03f0dc475e93105bdc7701b40003200039202ffd4a0789696c78f9b34d5518aef9'
+          publicKey: '03f0dc475e93105bdc7701b40003200039202ffd4a0789696c78f9b34d5518aef9',
         },
         PrivateKeyEAP
       )
