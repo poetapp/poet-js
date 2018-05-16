@@ -29,7 +29,6 @@
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.2.0",
-    "@types/bitcore-lib": "0.15.0",
     "@types/node-fetch": "1.6.8",
     "alsatian": "2.0.0",
     "nyc": "11.4.0",
