@@ -1,6 +1,6 @@
 {
   "name": "@po.et/poet-js",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "",
   "main": "dist/babel/src/index.js",
   "types": "dist/babel/src/index.d.ts",
@@ -20,6 +20,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@types/bitcore-lib": "0.15.0",
     "babel-cli": "6.26.0",
     "babel-plugin-module-resolver": "3.0.0",
     "bitcore-lib": "0.15.0",
@@ -28,7 +29,6 @@
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.1.0",
-    "@types/bitcore-lib": "0.15.0",
     "@types/node-fetch": "1.6.8",
     "alsatian": "2.0.0",
     "nyc": "11.7.2",
