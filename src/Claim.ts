@@ -72,7 +72,5 @@ export function createClaim(privateKey: string, type: ClaimType, attributes: Cla
   }
 }
 
-export function isValidClaim(claim = {}): boolean {
-  if (!isClaim(claim)) return false
-  return isValidSignature(claim) && getClaimId(claim) === claim.id
-}
+export const isValidClaim = (claim = {}): boolean =>
+  !!isClaim(claim) && isValidSignature(claim) && getClaimId(claim) === claim.id
