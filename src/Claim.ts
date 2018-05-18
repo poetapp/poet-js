@@ -4,7 +4,6 @@ import * as crypto from 'crypto'
 
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
-
 import { Serialization } from './Serialization'
 
 export function getClaimId(claim: Claim): string {
@@ -75,6 +74,5 @@ export function createClaim(privateKey: string, type: ClaimType, attributes: Cla
 
 export function isValidClaim(claim = {}): boolean {
   if (!isClaim(claim)) return false
-  if (!isValidSignature(claim)) return false
-  return getClaimId(claim) === claim.id ? true : false
+  return isValidSignature(claim) && getClaimId(claim) === claim.id
 }

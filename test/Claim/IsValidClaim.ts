@@ -3,11 +3,10 @@ import { Expect, Test, TestCase } from 'alsatian'
 
 import { isValidClaim } from 'Claim'
 import { Claim } from 'Interfaces'
-//
 import { TheRaven } from '../Claims'
 
 export class IsValidClaim {
-  @Test('isValidClaim() : Given a valid cliam : should return true')
+  @Test('isValidClaim() : Given a valid claim : should return true')
   @TestCase(TheRaven)
   public correctClaim(claim: Claim) {
     Expect(isValidClaim(claim)).toBe(true)
@@ -16,7 +15,7 @@ export class IsValidClaim {
   @Test('isValidClaim() : Given an object that is not a claim : should return false')
   @TestCase()
   @TestCase({ foo: 'bar' })
-  public notClaimObject(claim: Claim) {
+  public notClaimObject(claim: any) {
     Expect(isValidClaim(claim)).toBe(false)
   }
 
