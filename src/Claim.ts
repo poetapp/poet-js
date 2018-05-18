@@ -3,7 +3,7 @@ import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
 
 import { IllegalArgumentException } from './Exceptions'
-import { Claim, ClaimAttributes, ClaimType } from './Interfaces'
+import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
 
 import { Serialization } from './Serialization'
 
@@ -71,4 +71,10 @@ export function createClaim(privateKey: string, type: ClaimType, attributes: Cla
     id,
     signature,
   }
+}
+
+export function isValidClaim(claim = {}): boolean {
+  if (!isClaim(claim)) return false
+  if (!isValidSignature(claim)) return false
+  return getClaimId(claim) === claim.id ? true : false
 }
