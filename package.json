@@ -25,7 +25,7 @@
     "babel-plugin-module-resolver": "3.0.0",
     "bitcore-lib": "0.15.0",
     "node-fetch": "1.7.3",
-    "protobufjs": "6.8.4"
+    "protobufjs": "6.8.6"
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.2.0",
