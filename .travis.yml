@@ -11,3 +11,6 @@ script:
   - npm run build
 after_script:
   - greenkeeper-lockfile-upload
+after_success:
+  - '[[ $TRAVIS_BRANCH = "master" && $TRAVIS_PULL_REQUEST_BRANCH = "" ]] &&
+    (npm install -g travis-deploy-once && travis-deploy-once "npm run semantic-release")'

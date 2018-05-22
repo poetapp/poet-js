@@ -1,7 +1,7 @@
 {
   "name": "@po.et/poet-js",
   "version": "1.1.0",
-  "description": "",
+  "description": "Po.et - poet-js is a small library that provides methods to easily create and sign Po.et Claims.",
   "main": "dist/babel/src/index.js",
   "types": "dist/babel/src/index.d.ts",
   "scripts": {
@@ -14,7 +14,20 @@
     "build-clear": "rm -rf dist",
     "build-ts": "tsc && npm run copy-json",
     "build-babel": "cp .babelrc dist/ts && babel dist/ts/ -d dist/babel --copy-files",
-    "prepublish": "npm run build && npm test"
+    "prepublish": "npm run build && npm test",
+    "semantic-release": "semantic-release",
+    "precommit": "npm run build && lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "npm run lint",
+      "npm run test",
+      "git add"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poetapp/poet-js.git"
   },
   "keywords": [],
   "author": "",
@@ -31,7 +44,13 @@
     "@po.et/tslint-rules": "1.2.0",
     "@types/node-fetch": "1.6.8",
     "alsatian": "2.0.0",
+    "husky": "0.14.3",
+    "lint-staged": "7.1.2",
     "nyc": "11.7.2",
+    "semantic-release": "15.5.0",
     "typescript": "2.6.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
