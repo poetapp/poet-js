@@ -20,8 +20,6 @@
     "build-babel": "cp .babelrc dist/ts && babel dist/ts/ -d dist/babel --copy-files",
     "prepublish": "npm run build && npm test",
     "semantic-release": "semantic-release",
-    "commit": "git-cz",
-    "commitmsg": "commitlint -e $GIT_PARAMS",
     "precommit": "npm run build && lint-staged"
   },
   "lint-staged": {
@@ -47,13 +45,9 @@
     "protobufjs": "6.8.6"
   },
   "devDependencies": {
-    "@commitlint/cli": "6.2.0",
-    "@commitlint/config-angular": "6.1.3",
     "@po.et/tslint-rules": "1.2.0",
     "@types/node-fetch": "1.6.8",
     "alsatian": "2.0.0",
-    "commitizen": "2.9.6",
-    "cz-conventional-changelog": "2.1.0",
     "husky": "0.14.3",
     "lint-staged": "7.1.2",
     "nyc": "11.7.2",
@@ -62,10 +56,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
   }
 }
