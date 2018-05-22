@@ -3,8 +3,7 @@ import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
 
 import { IllegalArgumentException } from './Exceptions'
-import { Claim, ClaimAttributes, ClaimType } from './Interfaces'
-
+import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
 import { Serialization } from './Serialization'
 
 export function getClaimId(claim: Claim): string {
@@ -72,3 +71,6 @@ export function createClaim(privateKey: string, type: ClaimType, attributes: Cla
     signature,
   }
 }
+
+export const isValidClaim = (claim = {}): boolean =>
+  !!isClaim(claim) && isValidSignature(claim) && getClaimId(claim) === claim.id
