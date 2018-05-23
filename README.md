@@ -71,3 +71,4 @@ TravisCI will run all tests automatically for all pull requests submitted.
 
 ### Code Style
 Please run `npm run lint`. The linting configuration still needs some tweaking, and it'll be added to Travis in the future.
+
