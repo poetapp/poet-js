@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.2.0",
-    "@types/node-fetch": "1.6.8",
+    "@types/node-fetch": "2.1.0",
     "alsatian": "2.0.0",
     "husky": "0.14.3",
     "lint-staged": "7.1.2",
