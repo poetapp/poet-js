@@ -36,4 +36,13 @@ export class IsValidClaim {
   public invalidSignature(claim: Claim) {
     Expect(isValidClaim(claim)).toBe(false)
   }
+
+  @Test('isValidClaim() : Given a claim with an invalid date : should return false')
+  @TestCase({ ...TheRaven, dateCreated: '' })
+  @TestCase({ ...TheRaven, dateCreated: false })
+  @TestCase({ ...TheRaven, dateCreated: null })
+  @TestCase({ ...TheRaven, dateCreated: undefined })
+  public invalidDate(claim: Claim) {
+    Expect(isValidClaim(claim)).toBe(false)
+  }
 }
