@@ -9,6 +9,7 @@
     "lint": "tslint -p ./tsconfig.json",
     "lint:fix": "tslint -p ./tsconfig.json --fix",
     "test": "nyc alsatian './dist/babel/test/**/*.js'",
+    "test:unit": "ts-node ./tests/unit/index.ts",
     "coverage": "nyc --reporter=lcov report && echo Report created at ./coverage/lcov-report/index.html",
     "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
     "build-clear": "rm -rf dist",
@@ -47,7 +48,10 @@
     "husky": "0.14.3",
     "lint-staged": "7.2.0",
     "nyc": "11.7.2",
+    "riteway": "2.0.4",
     "semantic-release": "15.5.4",
+    "sinon": "6.0.0",
+    "ts-node": "6.1.1",
     "typescript": "2.6.2"
   },
   "publishConfig": {
