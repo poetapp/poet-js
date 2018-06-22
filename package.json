@@ -9,7 +9,7 @@
     "lint": "tslint -p ./tsconfig.json",
     "lint:fix": "tslint -p ./tsconfig.json --fix",
     "test": "nyc alsatian './dist/babel/test/**/*.js'",
-    "test:unit": "ts-node ./tests/unit/index.ts",
+    "test:unit": "ts-node --files ./tests/unit/index.ts",
     "coverage": "nyc --reporter=lcov report && echo Report created at ./coverage/lcov-report/index.html",
     "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
     "build-clear": "rm -rf dist",
