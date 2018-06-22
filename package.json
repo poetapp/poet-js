@@ -51,7 +51,7 @@
     "riteway": "2.0.4",
     "semantic-release": "15.6.0",
     "sinon": "6.0.0",
-    "ts-node": "6.1.2",
+    "ts-node": "6.2.0",
     "typescript": "2.6.2"
   },
   "publishConfig": {
