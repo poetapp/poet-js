@@ -1,6 +1,5 @@
 export * from './Insight'
 export * from './Interfaces'
-export * from './Bitcoin'
 export * from './Claim'
 export * from './Interval'
 export * from './Exceptions'
