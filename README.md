@@ -50,7 +50,7 @@ Notice you don't need to wait for the server's response to know the claim's Id. 
 Run `npm run build` to compile the source. This will run TypeScript on the source files and place the output in `dist/ts`, and then it'll run Babel and place the output in `dist/babel`.
 
 Currently, we're only using Babel to support [absolute import paths](https://github.com/tleunen/babel-plugin-module-resolver) in the unit tests. 
-> Absolute paths are only used in the tests. This is due to how Typescript and Babel process absolute paths: on build, Typescript transforms the .ts files into .js and places type definitions in .d.ts files. Babel, with the module-resolver plugin, will then transform the absolute paths in these .js files into relative paths, but will leave the .d.ts unchanged — which still have absolute paths. This causes issues with clients of the library that want to use these typescript definitions.    
+> Absolute paths are only used in the tests. This is due to how Typescript and Babel process absolute paths: on build, Typescript transforms the .ts files into .js and places type definitions in .d.ts files. Babel, with the module-resolver plugin, will then transform the absolute paths in these .js files into relative paths, but will leave the .d.ts unchanged — which still have absolute paths. This causes issues with clients of the library that want to use these typescript definitions.   
 
 ### Tests
 Run all tests with `npm test`.
