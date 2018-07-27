@@ -4,7 +4,11 @@
 
 <!-- Describe your changes below in a reasonable amount of detail -->
 
+### Release
 
+Semantic release is enabled for this repository. Make sure you follow the right commit message convention. 
+
+We're using semantic-release's default — [Angular Commit Message Conventions](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#-git-commit-guidelines).
 
 <!-- For the PR reviewer: -->
 
