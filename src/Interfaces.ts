@@ -49,10 +49,11 @@ export interface TransactionPoetTimestamp {
   readonly outputIndex: number
   readonly prefix: string
   readonly version: ReadonlyArray<number>
-  readonly ipfsHash: string
+  readonly ipfsDirectoryHash: string
 }
 
 export interface PoetTimestamp extends TransactionPoetTimestamp {
   readonly blockHeight: number
   readonly blockHash: string
+  readonly ipfsFileHash?: string
 }
