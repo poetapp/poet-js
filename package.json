@@ -8,7 +8,6 @@
     "build": "npm run build-clear && npm run build-ts && npm run build-babel",
     "lint": "tslint -p ./tsconfig.json",
     "lint:fix": "tslint -p ./tsconfig.json --fix",
-    "test": "nyc alsatian './dist/babel/test/**/*.js'",
     "test:unit": "ts-node --files ./tests/unit/index.ts",
     "coverage": "nyc --report-dir ./.coverage npm run test:unit",
     "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
@@ -22,7 +21,7 @@
   "lint-staged": {
     "*.{ts,tsx}": [
       "npm run lint",
-      "npm run test",
+      "npm run test:unit",
       "git add"
     ]
   },
@@ -44,7 +43,6 @@
   "devDependencies": {
     "@po.et/tslint-rules": "1.4.0",
     "@types/node-fetch": "1.6.8",
-    "alsatian": "2.0.0",
     "husky": "0.14.3",
     "lint-staged": "7.2.0",
     "nyc": "github:poetapp/nyc#fbc2ed1",
