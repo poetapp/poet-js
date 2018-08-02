@@ -17,6 +17,7 @@
         "text",
         "text-summary"
     ],
+    "cache": false,
     "all": true,
     "esModules": true,
     "staticType": "typescript",
