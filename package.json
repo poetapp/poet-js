@@ -52,7 +52,7 @@
     "semantic-release": "15.9.5",
     "sinon": "6.0.1",
     "ts-node": "7.0.0",
-    "typescript": "2.6.2"
+    "typescript": "3.0.1"
   },
   "publishConfig": {
     "access": "public"
