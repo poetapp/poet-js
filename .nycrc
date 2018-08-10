@@ -12,11 +12,11 @@
         "./coverage/**/*.*"
     ],
     "reporter": [
-        "lcov",
         "html",
         "text",
         "text-summary"
     ],
+    "cache": false,
     "all": true,
     "esModules": true,
     "staticType": "typescript",
