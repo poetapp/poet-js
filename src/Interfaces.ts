@@ -1,4 +1,5 @@
 export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
+  readonly '@context'?: ClaimContext
   readonly id?: string
 
   readonly publicKey?: string
@@ -27,6 +28,15 @@ export interface ClaimAttributes {
 
 export enum ClaimType {
   Work = 'Work',
+}
+
+export interface ClaimContext {
+  id?: string
+  publicKey?: string
+  signature?: string
+  dateCreated?: string
+  type: string
+  attributes: string
 }
 
 export interface Work extends Claim<WorkAttributes> {}

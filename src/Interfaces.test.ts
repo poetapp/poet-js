@@ -1,6 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
-import { ClaimType, isClaim, Work } from './Interfaces'
+import { ClaimContext, ClaimType, isClaim, Work } from './Interfaces'
 
 const TheRaven: Work = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
@@ -27,6 +27,22 @@ describe('Interfaces', async (should: any) => {
       given: 'a valid claim',
       should: 'return true',
       actual: isClaim(TheRaven),
+      expected: true,
+    })
+  }
+
+  {
+    const claimContext: ClaimContext = {
+      publicKey: 'http://schema.org/Text',
+      dateCreated: 'http://schema.org/dateCreated',
+      type: 'http://schema.org/additionalType',
+      attributes: 'http://schema.org/CreativeWork',
+    }
+
+    assert({
+      given: 'a valid claim with a context',
+      should: 'return true',
+      actual: isClaim({ '@context': claimContext, ...TheRaven }),
       expected: true,
     })
   }
