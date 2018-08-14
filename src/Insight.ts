@@ -82,7 +82,7 @@ export class UnexpectedResponseError extends InsightError {}
 
 export class BlockHeightOutOfRangeError extends InsightError {}
 
-function throwError(serverResponse: string) {
+export function throwError(serverResponse: string) {
   if (serverResponse === 'Block height out of range. Code:-8') throw new BlockHeightOutOfRangeError()
   throw new InsightError(serverResponse)
 }
