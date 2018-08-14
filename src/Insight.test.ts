@@ -1,7 +1,14 @@
 /* tslint:disable:no-relative-imports */
 import { describe, Try } from 'riteway'
 
-import { responseNotOk, isNotArray, UnexpectedResponseError } from './Insight'
+import {
+  responseNotOk,
+  isNotArray,
+  UnexpectedResponseError,
+  throwError,
+  InsightError,
+  BlockHeightOutOfRangeError,
+} from './Insight'
 
 describe('responseNotOk()', async (should: any) => {
   const { assert } = should()
@@ -78,5 +85,23 @@ describe('isNotArray()', async (should: any) => {
     should: 'should throw new UnexpectedResponseError',
     actual: Try(isNotArray),
     expected: new UnexpectedResponseError('InsightHelper.getUtxo was expecting server response to be an Array. '),
+  })
+})
+
+describe('throwError', async (should: any) => {
+  const { assert } = should()
+
+  assert({
+    given: 'random string',
+    should: 'throw new InsightError with random string',
+    actual: Try(throwError, 'random'),
+    expected: new InsightError('random'),
+  })
+
+  assert({
+    given: 'Block height out of range. Code:-8',
+    should: 'throw new BlockHeightOutOfRangeError',
+    actual: Try(throwError, 'Block height out of range. Code:-8'),
+    expected: new BlockHeightOutOfRangeError(),
   })
 })
