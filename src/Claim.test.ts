@@ -40,7 +40,7 @@ const TheRaven: Work = {
   },
 }
 
-const expandedRaven = [
+const expandedRaven = JSON.stringify([
   {
     'http://schema.org/CreativeWork': [
       {
@@ -92,7 +92,7 @@ const expandedRaven = [
       },
     ],
   },
-]
+])
 
 const canonicalRaven =
   '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
@@ -126,10 +126,11 @@ describe('Claim', async (should: any) => {
   const returnError = (err: Error): Error => err
 
   {
+    const expandedClaim = await expandClaim(TheRaven)
     assert({
-      given: 'a complete claim, expaindClaim:',
+      given: 'a complete claim, expandClaim:',
       should: 'return a valid expanded document',
-      actual: await expandClaim(TheRaven),
+      actual: JSON.stringify(expandedClaim),
       expected: expandedRaven,
     })
   }
