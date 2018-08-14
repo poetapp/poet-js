@@ -23,13 +23,23 @@ const makeClaim = (attributes: ClaimAttributes) => {
   }
 }
 
+const convertDateToUTC = (date: Date): Date =>
+  new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  )
+
 const TheRaven: Work = {
-  id: '86542f4ec9dfb6463631f0a759edba3c73301dd9858b02f3239d176d73fbb246',
+  id: 'c76146528c62dac83429217b6a7e159542b7a2d0c06432d6b7c9ba9cb3ebd39a',
   publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
   signature:
-    '30450221008924492f1888eba787ca97fb57dc62521a5dafecb486a71a7f745bf56174792502204e0b7ce778c4fc5a2995fe4a97cf9d0e0886573cdc6334520a74c68b3d47e5fd',
+    '3045022100fb95297b8ad91073dc94acc3a6dc72b8740bd67887fd18be1e08a2b347ebd6f202204d4e931537b5a5d7394972046506678a68426e20478e3dd2972f51cc73d20062',
   type: ClaimType.Work,
-  created: new Date('2017-11-13T15:00:00.000Z'),
+  created: convertDateToUTC(new Date('2017-11-13T15:00:00.000Z')),
   attributes: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
@@ -78,7 +88,7 @@ const expandedRaven = JSON.stringify([
     ],
     'http://purl.org/dcterms/created': [
       {
-        '@value': 'Mon Nov 13 2017 07:00:00 GMT-0800 (PST)',
+        '@value': 'Mon Nov 13 2017 15:00:00 GMT+0000 (UTC)',
       },
     ],
     'http://schema.org/Text': [
@@ -95,24 +105,24 @@ const expandedRaven = JSON.stringify([
 ])
 
 const canonicalRaven =
-  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n0 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n0 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n0 <http://schema.org/keyword> "poem" .\n' +
-  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n0 <http://schema.org/text> "Once upon a midnight dreary..." .\n' +
-  '_:c14n1 <http://purl.org/dcterms/created> "Mon Nov 13 2017 07:00:00 GMT-0800 (PST)" .\n' +
-  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/Text> "02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2" .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
-
-const expectedCanonicalDoc =
-  '_:c14n0 <http://purl.org/dcterms/created> "Mon Dec 11 2017 14:54:40 GMT-0800 (PST)" .\n' +
+  '_:c14n0 <http://purl.org/dcterms/created> "Mon Nov 13 2017 15:00:00 GMT+0000 (UTC)" .\n' +
   '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
-  '_:c14n0 <http://schema.org/Text> "02db393ae2d566ceddd95a97fd88bc2897a0818528158261cec45087a58786f09d" .\n' +
+  '_:c14n0 <http://schema.org/Text> "02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2" .\n' +
   '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
   '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n1 <http://schema.org/name> "The Raven" .\n'
+  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
+  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
+  '_:c14n1 <http://schema.org/keyword> "poem" .\n' +
+  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
+  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
+
+const expectedCanonicalDoc =
+  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
+  '_:c14n1 <http://purl.org/dcterms/created> "Mon Dec 11 2017 22:54:40 GMT+0000 (UTC)" .\n' +
+  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
+  '_:c14n1 <http://schema.org/Text> "02db393ae2d566ceddd95a97fd88bc2897a0818528158261cec45087a58786f09d" .\n' +
+  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
 
 const Key = {
   privateKey: 'L1mptZyB6aWkiJU7dvAK4UUjLSaqzcRNYJn3KuAA7oEVyiNn3ZPF',
@@ -212,7 +222,7 @@ describe('Claim', async (should: any) => {
       given: 'A claim',
       should: 'generate an id for the claim',
       actual: await getClaimId(claim),
-      expected: 'a633a579c4ee656dfeb9fceae15643681dbc957dac910dcd346458ab555c832e',
+      expected: 'ffac51b3dea6c99587f0d4af0985b693e1afe681d834b5898425dafbb11baed4',
     })
   }
 
