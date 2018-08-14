@@ -1,11 +1,9 @@
 export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
-  readonly '@context'?: ClaimContext
+  readonly '@context'?: T
   readonly id?: string
-
   readonly publicKey?: string
   readonly signature?: string
-  readonly dateCreated?: Date
-
+  readonly created?: Date
   readonly type: ClaimType
   readonly attributes: T
 }
@@ -18,7 +16,7 @@ export function isClaim(object: any): object is Claim {
     object.signature &&
     object.type &&
     object.attributes &&
-    object.dateCreated instanceof Date
+    object.created instanceof Date
   )
 }
 
@@ -30,25 +28,16 @@ export enum ClaimType {
   Work = 'Work',
 }
 
-export interface ClaimContext {
-  id?: string
-  publicKey?: string
-  signature?: string
-  dateCreated?: string
-  type: string
-  attributes: string
-}
-
-export interface Work extends Claim<WorkAttributes> {}
-
 export interface WorkAttributes extends ClaimAttributes {
   readonly name: string
   readonly datePublished: string
   readonly dateCreated: string
   readonly author: string
   readonly tags?: string
-  readonly content: string
+  readonly text: string
 }
+
+export interface Work extends Claim<WorkAttributes> {}
 
 export function isWork(claim: Claim): claim is Work {
   return claim.type === ClaimType.Work

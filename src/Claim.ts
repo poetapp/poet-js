@@ -3,20 +3,26 @@ import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
 import { canonize, expand } from 'jsonld'
 import { IllegalArgumentException } from './Exceptions'
-import { Claim, ClaimAttributes, ClaimContext, ClaimType, isClaim } from './Interfaces'
+import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
 import { loadContext } from './util/ContextLoader'
 
 loadContext()
-const claimContex: ClaimContext = {
-  publicKey: 'http://schema.org/Text',
-  dateCreated: 'http://schema.org/dateCreated',
-  type: 'http://schema.org/additionalType',
+const claimContex = {
   attributes: 'http://schema.org/CreativeWork',
+  author: 'http://schema.org/author',
+  text: 'http://schema.org/text',
+  created: 'http://purl.org/dcterms/created',
+  dateCreated: 'http://schema.org/dateCreated',
+  datePublished: 'http://schema.org/datePublished',
+  name: 'http://schema.org/name',
+  tags: 'http://schema.org/keyword',
+  type: 'http://schema.org/additionalType',
+  publicKey: 'http://schema.org/Text',
 }
 
 export const expandAndCanonizeClaim = async (claim: Claim): Promise<string> => {
   const contextualClaim = { '@context': claimContex, ...claim }
-  return await canonize(await expand(contextualClaim))
+  return canonize(await expand(contextualClaim))
 }
 
 export const getClaimId = async (claim: Claim): Promise<string> => {
@@ -66,7 +72,7 @@ export const createClaim = async (privateKey: string, type: ClaimType, attribute
     publicKey: new bitcore.PrivateKey(privateKey).publicKey.toString(),
     signature: '',
     type,
-    dateCreated: new Date(),
+    created: new Date(),
     attributes,
   }
   const id = await getClaimId(claim)
@@ -88,5 +94,6 @@ export const createClaim = async (privateKey: string, type: ClaimType, attribute
   }
 }
 
-export const isValidClaim = async (claim = {}): Promise<boolean> =>
-  !!isClaim(claim) && (await isValidSignature(claim)) && (await getClaimId(claim)) === claim.id
+export const isValidClaim = async (claim: {}): Promise<boolean> => {
+  return !!isClaim(claim) && (await isValidSignature(claim)) && (await getClaimId(claim)) === claim.id
+}

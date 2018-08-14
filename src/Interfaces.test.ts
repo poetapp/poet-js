@@ -1,6 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
-import { ClaimContext, ClaimType, isClaim, Work } from './Interfaces'
+import { ClaimType, isClaim, Work } from './Interfaces'
 
 const TheRaven: Work = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
@@ -8,14 +8,14 @@ const TheRaven: Work = {
   signature:
     '3045022100e020a7ffeffa5d40ffde618c6c861678e38de69fd377028ec57ad93893883b3702201f085284a9064bab7e1cd39349e65d136d8f67e4b6b897c3e7db6b400ed91034',
   type: ClaimType.Work,
-  dateCreated: new Date('2017-11-13T15:00:00.000Z'),
+  created: new Date('2017-11-13T15:00:00.000Z'),
   attributes: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
     tags: 'poem',
     dateCreated: '',
     datePublished: '1845-01-29T03:00:00.000Z',
-    content: 'Once upon a midnight dreary...',
+    text: 'Once upon a midnight dreary...',
   },
 }
 
@@ -32,17 +32,10 @@ describe('Interfaces', async (should: any) => {
   }
 
   {
-    const claimContext: ClaimContext = {
-      publicKey: 'http://schema.org/Text',
-      dateCreated: 'http://schema.org/dateCreated',
-      type: 'http://schema.org/additionalType',
-      attributes: 'http://schema.org/CreativeWork',
-    }
-
     assert({
       given: 'a valid claim with a context',
       should: 'return true',
-      actual: isClaim({ '@context': claimContext, ...TheRaven }),
+      actual: isClaim(TheRaven),
       expected: true,
     })
   }
@@ -52,7 +45,7 @@ describe('Interfaces', async (should: any) => {
       assert({
         given: 'a claim with an invalid date',
         should: `return false`,
-        actual: isClaim({ ...TheRaven, dateCreated: value }),
+        actual: isClaim({ ...TheRaven, created: value }),
         expected: false,
       })
     }
