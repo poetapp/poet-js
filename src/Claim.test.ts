@@ -6,7 +6,8 @@ import {
   getClaimId,
   getClaimSignature,
   isValidClaim,
-  expandAndCanonizeClaim,
+  expandClaim,
+  canonizeClaim,
 } from './Claim'
 import { Claim, ClaimType, ClaimAttributes, Work } from './Interfaces'
 
@@ -38,6 +39,60 @@ const TheRaven: Work = {
     text: 'Once upon a midnight dreary...',
   },
 }
+
+const expandedRaven = [
+  {
+    'http://schema.org/CreativeWork': [
+      {
+        'http://schema.org/author': [
+          {
+            '@value': 'Edgar Allan Poe',
+          },
+        ],
+        'http://schema.org/dateCreated': [
+          {
+            '@value': '',
+          },
+        ],
+        'http://schema.org/datePublished': [
+          {
+            '@value': '1845-01-29T03:00:00.000Z',
+          },
+        ],
+        'http://schema.org/name': [
+          {
+            '@value': 'The Raven',
+          },
+        ],
+        'http://schema.org/keyword': [
+          {
+            '@value': 'poem',
+          },
+        ],
+        'http://schema.org/text': [
+          {
+            '@value': 'Once upon a midnight dreary...',
+          },
+        ],
+      },
+    ],
+    'http://purl.org/dcterms/created': [
+      {
+        '@value': 'Mon Nov 13 2017 07:00:00 GMT-0800 (PST)',
+      },
+    ],
+    'http://schema.org/Text': [
+      {
+        '@value': '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
+      },
+    ],
+    'http://schema.org/additionalType': [
+      {
+        '@value': 'Work',
+      },
+    ],
+  },
+]
 
 const canonicalRaven =
   '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
@@ -72,9 +127,18 @@ describe('Claim', async (should: any) => {
 
   {
     assert({
+      given: 'a complete claim, expaindClaim:',
+      should: 'return a valid expanded document',
+      actual: await expandClaim(TheRaven),
+      expected: expandedRaven,
+    })
+  }
+
+  {
+    assert({
       given: 'a complete claim',
       should: 'include all items in canonical doc',
-      actual: await expandAndCanonizeClaim(TheRaven),
+      actual: await canonizeClaim(TheRaven),
       expected: canonicalRaven,
     })
   }
@@ -88,7 +152,7 @@ describe('Claim', async (should: any) => {
     assert({
       given: 'a claim',
       should: 'create a canonical string document',
-      actual: await expandAndCanonizeClaim(claim).catch(returnError),
+      actual: await canonizeClaim(claim).catch(returnError),
       expected: expectedCanonicalDoc,
     })
   }
@@ -104,8 +168,8 @@ describe('Claim', async (should: any) => {
       name: TheRaven.attributes.name,
     })
 
-    const canonicalDocument1 = await expandAndCanonizeClaim(work1).catch(returnError)
-    const canonicalDocument2 = await expandAndCanonizeClaim(work2).catch(returnError)
+    const canonicalDocument1 = await canonizeClaim(work1).catch(returnError)
+    const canonicalDocument2 = await canonizeClaim(work2).catch(returnError)
 
     assert({
       given: 'two claims with disordered keys',
@@ -126,8 +190,8 @@ describe('Claim', async (should: any) => {
       NAME: TheRaven.attributes.name,
     })
 
-    const canonicalDocument1 = await expandAndCanonizeClaim(work1).catch(returnError)
-    const canonicalDocument2 = await expandAndCanonizeClaim(work2).catch(returnError)
+    const canonicalDocument1 = await canonizeClaim(work1).catch(returnError)
+    const canonicalDocument2 = await canonizeClaim(work2).catch(returnError)
 
     assert({
       given: 'two claims with keys casing',

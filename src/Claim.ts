@@ -20,14 +20,18 @@ const claimContex = {
   publicKey: 'http://schema.org/Text',
 }
 
-export const expandAndCanonizeClaim = async (claim: Claim): Promise<string> => {
+export const expandClaim = async (claim: Claim): Promise<any> => {
   const contextualClaim = { '@context': claimContex, ...claim }
-  return canonize(await expand(contextualClaim))
+  return expand(contextualClaim)
+}
+
+export const canonizeClaim = async (claim: Claim): Promise<string> => {
+  return canonize(await expandClaim(claim))
 }
 
 export const getClaimId = async (claim: Claim): Promise<string> => {
   try {
-    const canonizedClaim = await expandAndCanonizeClaim(claim)
+    const canonizedClaim = await canonizeClaim(claim)
     const buffer = Buffer.from(canonizedClaim)
     return crypto
       .createHash('sha256')
