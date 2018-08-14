@@ -133,34 +133,26 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    try {
-      const claim = await createClaim(Key.privateKey, ClaimType.Work, TheRaven.attributes)
+    const claim = await createClaim(Key.privateKey, ClaimType.Work, TheRaven.attributes)
 
-      assert({
-        given: 'the public key of a Claim',
-        should: 'be equal to public key of key',
-        actual: claim.publicKey,
-        expected: Key.publicKey,
-      })
-    } catch (e) {
-      throw e
-    }
+    assert({
+      given: 'the public key of a Claim',
+      should: 'be equal to public key of key',
+      actual: claim.publicKey,
+      expected: Key.publicKey,
+    })
   }
 
   {
-    try {
-      const claim = await createClaim(Key.privateKey, ClaimType.Work, TheRaven.attributes)
-      const isValid = await isValidSignature(claim)
+    const claim = await createClaim(Key.privateKey, ClaimType.Work, TheRaven.attributes)
+    const isValid = await isValidSignature(claim)
 
-      assert({
-        given: 'the result of isValidSignature of Claim with a valid signature',
-        should: 'should return true',
-        actual: isValid,
-        expected: true,
-      })
-    } catch (e) {
-      throw e
-    }
+    assert({
+      given: 'the result of isValidSignature of Claim with a valid signature',
+      should: 'should return true',
+      actual: isValid,
+      expected: true,
+    })
   }
 
   {
@@ -274,84 +266,64 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    try {
-      const signature = await getClaimSignature(TheRaven, PrivateKeyEAP)
+    const signature = await getClaimSignature(TheRaven, PrivateKeyEAP)
 
-      assert({
-        given: 'a signature of a Claim',
-        should: 'be the signature equal to of work signature',
-        actual: signature,
-        expected: TheRaven.signature,
-      })
-    } catch (e) {
-      throw e
-    }
+    assert({
+      given: 'a signature of a Claim',
+      should: 'be the signature equal to of work signature',
+      actual: signature,
+      expected: TheRaven.signature,
+    })
   }
 
   {
-    const expected = 'Cannot sign a claim that has an empty .id field.'
+    const expectedMessage = 'Cannot sign a claim that has an empty .id field.'
 
-    try {
-      await getClaimSignature({ ...TheRaven, id: '' }, PrivateKeyEAP)
-    } catch (e) {
-      assert({
-        given: 'a claim without id',
-        should: `throw an error with the message ${expected}`,
-        actual: e.message,
-        expected,
-      })
-    }
+    assert({
+      given: 'a claim without id',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await getClaimSignature({ ...TheRaven, id: '' }, PrivateKeyEAP).catch(returnError),
+      expected: new Error(expectedMessage),
+    })
   }
 
   {
-    const expected = 'Cannot sign a claim whose id has been altered or generated incorrectly.'
+    const expectedMessage = 'Cannot sign a claim whose id has been altered or generated incorrectly.'
 
-    try {
-      await getClaimSignature(
+    assert({
+      given: 'a claim without id',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await getClaimSignature(
         { ...TheRaven, id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102' },
         PrivateKeyEAP
-      )
-    } catch (e) {
-      assert({
-        given: 'a claim without id',
-        should: `throw an error with the message ${expected}`,
-        actual: e.message,
-        expected,
-      })
-    }
+      ).catch(returnError),
+      expected: new Error(expectedMessage),
+    })
   }
 
   {
-    const expected = 'Cannot sign a claim that has an empty .publicKey field.'
+    const expectedMessage = 'Cannot sign a claim that has an empty .publicKey field.'
 
-    try {
-      await getClaimSignature({ ...TheRaven, publicKey: undefined }, PrivateKeyEAP)
-    } catch (e) {
-      assert({
-        given: 'a claim with publicKey undefined',
-        should: `throw an error with the message ${expected}`,
-        actual: e.message,
-        expected,
-      })
-    }
+    assert({
+      given: 'a claim with publicKey undefined',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await getClaimSignature({ ...TheRaven, publicKey: undefined }, PrivateKeyEAP).catch(returnError),
+      expected: new Error(expectedMessage)
+    })
   }
 
   {
-    const expected = `Cannot sign this claim with the provided privateKey. It doesn\t match the claim's public key.`
+    const expectedMessage = `Cannot sign this claim with the provided privateKey. It doesn\t match the claim's public key.`
 
-    try {
-      await getClaimSignature(
+    assert({
+      given: 'a claim with a different publicKey',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await getClaimSignature(
         { ...TheRaven, publicKey: '03f0dc475e93105bdc7701b40003200039202ffd4a0789696c78f9b34d5518aef9' },
         PrivateKeyEAP
-      )
-    } catch (e) {
-      assert({
-        given: 'a claim with a different publicKey',
-        should: `throw an error with the message ${expected}`,
-        actual: e.message,
-        expected,
-      })
-    }
+      ).catch(returnError),
+      expected: new Error(expectedMessage)
+    })
   }
 
   {
