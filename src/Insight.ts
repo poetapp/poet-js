@@ -3,6 +3,21 @@
 import * as bitcore from 'bitcore-lib'
 import fetch from 'node-fetch'
 
+export const responseNotOk = async (response: any) => {
+  if (!response.ok) throwError(await response.text())
+}
+
+export const isNotArray = (json: any) => {
+  if (!Array.isArray(json)) {
+    console.error({
+      action: 'InsightHelper.getUtxo',
+      message: 'Expected server response to be an Array. ',
+      actualResponse: json,
+    })
+    throw new UnexpectedResponseError('InsightHelper.getUtxo was expecting server response to be an Array. ')
+  }
+}
+
 export class InsightClient {
   private readonly url: string
 
@@ -13,20 +28,15 @@ export class InsightClient {
   getUtxo = async (address: string): Promise<ReadonlyArray<bitcore.Transaction.UnspentOutput>> => {
     const response = await fetch(`${this.url}/addrs/${address}/utxo`)
 
-    if (!response.ok) throwError(await response.text())
+    responseNotOk(response)
+      .then()
+      .catch(e => e)
 
     const rawutxo = await response.json()
 
-    if (!Array.isArray(rawutxo)) {
-      console.error({
-        action: 'InsightHelper.getUtxo',
-        message: 'Expected server response to be an Array. ',
-        actualResponse: rawutxo,
-      })
-      throw new UnexpectedResponseError('InsightHelper.getUtxo was expecting server response to be an Array. ')
-    }
+    isNotArray(rawutxo)
 
-    return rawutxo.map(_ => new bitcore.Transaction.UnspentOutput(_))
+    return rawutxo.map((_: any) => new bitcore.Transaction.UnspentOutput(_))
   }
 
   broadcastTx = async (transaction: bitcore.Transaction): Promise<string> => {
@@ -40,7 +50,9 @@ export class InsightClient {
       },
     })
 
-    if (!response.ok) throwError(await response.text())
+    responseNotOk(response)
+      .then()
+      .catch(e => e)
 
     return await response.json()
   }
@@ -51,7 +63,9 @@ export class InsightClient {
   getBlockHash = async (height: number): Promise<string> => {
     const response = await fetch(`${this.url}/block-index/${height}`)
 
-    if (!response.ok) throwError(await response.text())
+    responseNotOk(response)
+      .then()
+      .catch(e => e)
 
     const json = await response.json()
 
@@ -61,7 +75,9 @@ export class InsightClient {
   getBlock = async (hash: string): Promise<bitcore.Block> => {
     const response = await fetch(`${this.url}/rawblock/${hash}`)
 
-    if (!response.ok) throwError(await response.text())
+    responseNotOk(response)
+      .then()
+      .catch(e => e)
 
     const json = await response.json()
 
