@@ -1,11 +1,12 @@
 /* tslint:disable:no-relative-imports */
 import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
-import { expand, canonize } from 'jsonld'
-
+import { canonize, expand } from 'jsonld'
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimContext, ClaimType, isClaim } from './Interfaces'
+import { loadContext } from './util/ContextLoader'
 
+loadContext()
 const claimContex: ClaimContext = {
   publicKey: 'http://schema.org/Text',
   dateCreated: 'http://schema.org/dateCreated',
