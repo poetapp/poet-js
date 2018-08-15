@@ -4,9 +4,7 @@ import * as crypto from 'crypto'
 import { canonize, expand } from 'jsonld'
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
-import { loadContext } from './util/ContextLoader'
 
-loadContext()
 const claimContex = {
   attributes: 'http://schema.org/CreativeWork',
   author: 'http://schema.org/author',
@@ -58,7 +56,7 @@ export const getClaimSignature = async (claim: Claim, privateKey: string): Promi
   return signature.toString()
 }
 
-export const isValidSignature = async (claim: Claim): Promise<boolean> => {
+export const isValidSignature = (claim: Claim): boolean => {
   try {
     return bitcore.crypto.ECDSA.verify(
       Buffer.from(claim.id, 'hex'),
@@ -98,6 +96,5 @@ export const createClaim = async (privateKey: string, type: ClaimType, attribute
   }
 }
 
-export const isValidClaim = async (claim: {}): Promise<boolean> => {
-  return !!isClaim(claim) && (await isValidSignature(claim)) && (await getClaimId(claim)) === claim.id
-}
+export const isValidClaim = async (claim: {}): Promise<boolean> =>
+  !!isClaim(claim) && isValidSignature(claim) && (await getClaimId(claim)) === claim.id
