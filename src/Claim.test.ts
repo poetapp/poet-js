@@ -239,12 +239,11 @@ describe('Claim', async (should: any) => {
 
   {
     const claim = await createClaim(Key.privateKey, ClaimType.Work, TheRaven.attributes)
-    const isValid = await isValidSignature(claim)
 
     assert({
       given: 'the result of isValidSignature of Claim with a valid signature',
       should: 'should return true',
-      actual: isValid,
+      actual: isValidSignature(claim),
       expected: true,
     })
   }
