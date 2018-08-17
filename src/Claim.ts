@@ -2,6 +2,7 @@
 import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
 import { canonize, expand } from 'jsonld'
+
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
 
@@ -28,17 +29,13 @@ export const canonizeClaim = async (claim: Claim): Promise<string> => {
 }
 
 export const getClaimId = async (claim: Claim): Promise<string> => {
-  try {
-    const canonizedClaim = await canonizeClaim(claim)
-    const buffer = Buffer.from(canonizedClaim)
-    return crypto
-      .createHash('sha256')
-      .update(buffer)
-      .digest()
-      .toString('hex')
-  } catch (e) {
-    throw e
-  }
+  const canonizedClaim = await canonizeClaim(claim)
+  const buffer = Buffer.from(canonizedClaim)
+  return crypto
+    .createHash('sha256')
+    .update(buffer)
+    .digest()
+    .toString('hex')
 }
 
 export const getClaimSignature = async (claim: Claim, privateKey: string): Promise<string> => {
@@ -78,21 +75,17 @@ export const createClaim = async (privateKey: string, type: ClaimType, attribute
     attributes,
   }
   const id = await getClaimId(claim)
-  try {
-    const signature = await getClaimSignature(
-      {
-        ...claim,
-        id,
-      },
-      privateKey
-    )
-    return {
+  const signature = await getClaimSignature(
+    {
       ...claim,
       id,
-      signature,
-    }
-  } catch (e) {
-    throw e
+    },
+    privateKey
+  )
+  return {
+    ...claim,
+    id,
+    signature,
   }
 }
 
