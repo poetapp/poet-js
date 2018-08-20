@@ -48,7 +48,7 @@
     "lint-staged": "7.2.1",
     "nyc": "github:poetapp/nyc#fbc2ed1",
     "riteway": "2.0.4",
-    "semantic-release": "15.9.8",
+    "semantic-release": "15.9.9",
     "sinon": "6.0.1",
     "ts-node": "7.0.1",
     "typescript": "3.0.1"
