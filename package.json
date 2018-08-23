@@ -1,7 +1,7 @@
 {
   "name": "@po.et/poet-js",
   "version": "1.1.0",
-  "description": "Po.et - poet-js is a small library that provides methods to easily create and sign Po.et Claims.",
+  "description": "poet-js is a small library that provides methods to easily create and sign Po.et Claims.",
   "main": "dist/babel/src/index.js",
   "types": "dist/babel/src/index.d.ts",
   "scripts": {
@@ -29,9 +29,10 @@
     "type": "git",
     "url": "git+https://github.com/poetapp/poet-js.git"
   },
-  "keywords": [],
-  "author": "",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/poetapp/poet-js/issues"
+  },
   "dependencies": {
     "@types/bitcore-lib": "0.15.0",
     "babel-cli": "6.26.0",
