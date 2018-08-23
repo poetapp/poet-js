@@ -42,7 +42,7 @@
     "protobufjs": "6.8.7"
   },
   "devDependencies": {
-    "@po.et/tslint-rules": "1.4.0",
+    "@po.et/tslint-rules": "1.4.1",
     "@types/node-fetch": "1.6.8",
     "husky": "0.14.3",
     "lint-staged": "7.2.1",
