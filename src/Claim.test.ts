@@ -1,14 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
-import {
-  createClaim,
-  isValidSignature,
-  getClaimId,
-  getClaimSignature,
-  isValidClaim,
-  expandClaim,
-  canonizeClaim,
-} from './Claim'
+import { createClaim, isValidSignature, getClaimId, getClaimSignature, isValidClaim, canonizeClaim } from './Claim'
 import { Claim, ClaimType, ClaimAttributes, Work } from './Interfaces'
 
 const makeClaim = (attributes: ClaimAttributes) => {
@@ -50,60 +42,6 @@ const TheRaven: Work = {
   },
 }
 
-const expandedRaven = JSON.stringify([
-  {
-    'http://schema.org/CreativeWork': [
-      {
-        'http://schema.org/author': [
-          {
-            '@value': 'Edgar Allan Poe',
-          },
-        ],
-        'http://schema.org/dateCreated': [
-          {
-            '@value': '',
-          },
-        ],
-        'http://schema.org/datePublished': [
-          {
-            '@value': '1845-01-29T03:00:00.000Z',
-          },
-        ],
-        'http://schema.org/name': [
-          {
-            '@value': 'The Raven',
-          },
-        ],
-        'http://schema.org/keyword': [
-          {
-            '@value': 'poem',
-          },
-        ],
-        'http://schema.org/text': [
-          {
-            '@value': 'Once upon a midnight dreary...',
-          },
-        ],
-      },
-    ],
-    'http://purl.org/dcterms/created': [
-      {
-        '@value': 'Mon Nov 13 2017 15:00:00 GMT+0000 (UTC)',
-      },
-    ],
-    'http://schema.org/Text': [
-      {
-        '@value': '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
-      },
-    ],
-    'http://schema.org/additionalType': [
-      {
-        '@value': 'Work',
-      },
-    ],
-  },
-])
-
 const canonicalRaven =
   '_:c14n0 <http://purl.org/dcterms/created> "Mon Nov 13 2017 15:00:00 GMT+0000 (UTC)" .\n' +
   '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
@@ -134,16 +72,6 @@ const PrivateKeyEAP = 'KxuZJmgVAipi9hfYXHTyGYmmhkbG7fBzmkyVnj6t9j9rDR1nN1vN'
 describe('Claim', async (should: any) => {
   const { assert } = should('')
   const returnError = (err: Error): Error => err
-
-  {
-    const expandedClaim = await expandClaim(TheRaven)
-    assert({
-      given: 'a complete claim, expandClaim:',
-      should: 'return a valid expanded document',
-      actual: JSON.stringify(expandedClaim),
-      expected: expandedRaven,
-    })
-  }
 
   {
     assert({

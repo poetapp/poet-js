@@ -1,7 +1,7 @@
 /* tslint:disable:no-relative-imports */
 import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
-import { canonize, expand } from 'jsonld'
+import { canonize } from 'jsonld'
 
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
@@ -19,13 +19,9 @@ const claimContex = {
   publicKey: 'http://schema.org/Text',
 }
 
-export const expandClaim = async (claim: Claim): Promise<any> => {
-  const contextualClaim = { '@context': claimContex, ...claim }
-  return expand(contextualClaim)
-}
-
 export const canonizeClaim = async (claim: Claim): Promise<string> => {
-  return canonize(await expandClaim(claim))
+  const contextualClaim = { '@context': claimContex, ...claim }
+  return canonize(contextualClaim)
 }
 
 export const getClaimId = async (claim: Claim): Promise<string> => {
