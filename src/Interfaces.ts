@@ -26,6 +26,7 @@ export interface ClaimAttributes {
 }
 
 export enum ClaimType {
+  Identity = 'Identity',
   Work = 'Work',
 }
 
@@ -40,8 +41,19 @@ export interface WorkAttributes extends ClaimAttributes {
   readonly content: string
 }
 
+export interface Identity extends Claim<IdentityAttributes> {}
+
+export interface IdentityAttributes extends ClaimAttributes {
+  readonly profileUrl?: string
+  readonly publicKey: string
+}
+
 export function isWork(claim: Claim): claim is Work {
   return claim.type === ClaimType.Work
+}
+
+export function isIdentity(claim: Claim): claim is Identity {
+  return claim.type === ClaimType.Identity
 }
 
 export interface TransactionPoetTimestamp {
