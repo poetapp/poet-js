@@ -55,7 +55,7 @@ import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
 const identityAttributes = {
   publicKey: ''
 }
-const Issuer = 'po.et://entities/<idp identity claim id>
+const Issuer = 'po.et://entities/<idp identity claim id>'
 
 const claim = createClaim(
   Issuer,
