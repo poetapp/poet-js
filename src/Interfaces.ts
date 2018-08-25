@@ -20,6 +20,24 @@ export function isClaim(object: any): object is Claim {
   )
 }
 
+// This MUST account for all the attributes in a Claim, not just ClaimAttributes.
+export function getClaimContext(): any {
+  return {
+    '@context': {
+      attributes: 'http://schema.org/CreativeWork',
+      author: 'http://schema.org/author',
+      text: 'http://schema.org/text',
+      created: 'http://purl.org/dcterms/created',
+      dateCreated: 'http://schema.org/dateCreated',
+      datePublished: 'http://schema.org/datePublished',
+      name: 'http://schema.org/name',
+      tags: 'http://schema.org/keyword',
+      type: 'http://schema.org/additionalType',
+      publicKey: 'http://schema.org/Text',
+    },
+  }
+}
+
 export interface ClaimAttributes {
   readonly [key: string]: string
 }

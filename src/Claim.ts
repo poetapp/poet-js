@@ -4,23 +4,10 @@ import * as crypto from 'crypto'
 import { canonize } from 'jsonld'
 
 import { IllegalArgumentException } from './Exceptions'
-import { Claim, ClaimAttributes, ClaimType, isClaim } from './Interfaces'
-
-const claimContex = {
-  attributes: 'http://schema.org/CreativeWork',
-  author: 'http://schema.org/author',
-  text: 'http://schema.org/text',
-  created: 'http://purl.org/dcterms/created',
-  dateCreated: 'http://schema.org/dateCreated',
-  datePublished: 'http://schema.org/datePublished',
-  name: 'http://schema.org/name',
-  tags: 'http://schema.org/keyword',
-  type: 'http://schema.org/additionalType',
-  publicKey: 'http://schema.org/Text',
-}
+import { Claim, ClaimAttributes, ClaimType, getClaimContext, isClaim } from './Interfaces'
 
 export const canonizeClaim = async (claim: Claim): Promise<string> => {
-  const contextualClaim = { '@context': claimContex, ...claim }
+  const contextualClaim = { ...claim, ...getClaimContext() }
   return canonize(contextualClaim)
 }
 
