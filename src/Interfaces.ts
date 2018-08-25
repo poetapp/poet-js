@@ -1,6 +1,8 @@
 export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly id?: string
 
+  readonly issuer?: string
+  readonly issanceDate?: Date
   readonly publicKey?: string
   readonly signature?: string
   readonly dateCreated?: Date
