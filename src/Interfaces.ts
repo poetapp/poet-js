@@ -20,7 +20,9 @@ export function isClaim(object: any): object is Claim {
   )
 }
 
-// This MUST account for all the attributes in a Claim, not just ClaimAttributes.
+// WARNING: This MUST account for all the attributes in a Claim, not just ClaimAttributes.
+// Otherwise those attributes without context will be left out of the canonized/signed claim
+// Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
 export function getClaimContext(): any {
   return {
     '@context': {
