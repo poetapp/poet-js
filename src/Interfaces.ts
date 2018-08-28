@@ -2,13 +2,13 @@ export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly id?: string
 
   readonly issuer?: string
-  readonly issanceDate?: Date // should replace dateCreated... or created... once we remove protobufs
+  readonly issuanceDate?: Date // should replace dateCreated... or created... once we remove protobufs
   readonly publicKey?: string
   readonly signature?: string
   readonly dateCreated?: Date
 
   readonly type: ClaimType
-  readonly attributes: T
+  readonly attributes: T // TODO: replace attributes with claim, once we remove protobufs
 }
 
 export function isClaim(object: any): object is Claim {
