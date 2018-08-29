@@ -4,10 +4,10 @@ import * as crypto from 'crypto'
 import { canonize } from 'jsonld'
 
 import { IllegalArgumentException } from './Exceptions'
-import { Claim, ClaimAttributes, ClaimType, getClaimContext, isClaim } from './Interfaces'
+import { Claim, ClaimAttributes, ClaimType, ClaimContext, isClaim } from './Interfaces'
 
 export const canonizeClaim = async (claim: Claim): Promise<string> => {
-  const contextualClaim = { ...claim, ...getClaimContext() }
+  const contextualClaim = { ...ClaimContext, ...claim }
   return canonize(contextualClaim)
 }
 
@@ -54,7 +54,7 @@ export const createClaim = async (privateKey: string, type: ClaimType, attribute
     publicKey: new bitcore.PrivateKey(privateKey).publicKey.toString(),
     signature: '',
     type,
-    created: new Date(),
+    created: new Date().toISOString(),
     attributes,
   }
   const id = await getClaimId(claim)
