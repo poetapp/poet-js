@@ -8,7 +8,7 @@
     "build": "npm run build-clear && npm run build-ts && npm run build-babel",
     "lint": "tslint -p ./tsconfig.json",
     "lint:fix": "tslint -p ./tsconfig.json --fix",
-    "test:unit": "TZ=UTC ts-node --files ./tests/unit/index.ts",
+    "test:unit": "ts-node --files ./tests/unit/index.ts",
     "coverage": "nyc --report-dir ./.coverage npm run test:unit",
     "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
     "build-clear": "rm -rf dist",
