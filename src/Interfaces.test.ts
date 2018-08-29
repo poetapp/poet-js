@@ -31,6 +31,17 @@ const Me: Identity = {
   },
 }
 
+const InvalidClaim = {
+  id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
+  signature:
+    '3045022100e020a7ffeffa5d40ffde618c6c861678e38de69fd377028ec57ad93893883b3702201f085284a9064bab7e1cd39349e65d136d8f67e4b6b897c3e7db6b400ed91034',
+  type: ClaimType.Identity,
+  dateCreated: new Date('2017-11-13T15:00:00.000Z'),
+  attributes: {
+    publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
+  },
+}
+
 describe('Interfaces', async (should: any) => {
   const { assert } = should('')
 
@@ -40,6 +51,13 @@ describe('Interfaces', async (should: any) => {
       should: 'return true',
       actual: isClaim(TheRaven),
       expected: true,
+    })
+
+    assert({
+      given: 'an invalid claim, isClaim',
+      should: 'return false',
+      actual: isClaim(InvalidClaim),
+      expected: false,
     })
   }
 
@@ -58,6 +76,13 @@ describe('Interfaces', async (should: any) => {
       should: 'return true',
       actual: isIdentity(Me),
       expected: true,
+    })
+
+    assert({
+      given: 'a valid Work claim, isIdentity',
+      should: 'return false',
+      actual: isIdentity(TheRaven),
+      expected: false,
     })
   }
 
