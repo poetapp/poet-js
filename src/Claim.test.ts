@@ -16,10 +16,10 @@ const makeClaim = (attributes: ClaimAttributes) => {
 }
 
 const TheRaven: Work = {
-  id: 'cc5d8cde00a0d050bc64bb5e65bca0a4434cab8c1c6a1738dabe50ec7c4f2f30',
+  id: '3181a2f4de0c25a4c6e6acdab993d08dd80ff83cdefe1ab39846c9c984e4fff1',
   publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
   signature:
-    '3045022100f9cab29963ec092424e36d03939d50e2aa2b5f09115024b9736f8e6250742699022049c4b7feeaf6de786a6ed657e99d2ca244f102108b2ea97e8ebbaad3b57fd241',
+    '3044022054a342c1629d3046992ba53077064201808c695399741ed002377526080f12990220242a22cb34da1362efd770eb6fb03baf29d1fe5d006c31b3e9a108f9f301c17e',
   type: ClaimType.Work,
   created: '2017-11-13T15:00:00.000Z',
   attributes: {
@@ -33,19 +33,19 @@ const TheRaven: Work = {
 }
 
 const canonicalRaven =
-  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n0 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n0 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n0 <http://schema.org/keyword> "poem" .\n' +
-  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n0 <http://schema.org/text> "Once upon a midnight dreary..." .\n' +
-  '_:c14n1 <http://purl.org/dcterms/created> "2017-11-13T15:00:00.000Z" .\n' +
-  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/Text> "02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2" .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
+  '_:c14n0 <http://purl.org/dc/terms/created> "2017-11-13T15:00:00.000Z" .\n' +
+  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
+  '_:c14n0 <http://schema.org/Text> "02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2" .\n' +
+  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
+  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
+  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
+  '_:c14n1 <http://schema.org/keywords> "poem" .\n' +
+  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
+  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
 
 const expectedCanonicalDoc =
-  '_:c14n0 <http://purl.org/dcterms/created> "2017-12-11T22:54:40.261Z" .\n' +
+  '_:c14n0 <http://purl.org/dc/terms/created> "2017-12-11T22:54:40.261Z" .\n' +
   '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
   '_:c14n0 <http://schema.org/Text> "02db393ae2d566ceddd95a97fd88bc2897a0818528158261cec45087a58786f09d" .\n' +
   '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
@@ -140,7 +140,7 @@ describe('Claim', async (should: any) => {
       given: 'A claim',
       should: 'generate an id for the claim',
       actual: await getClaimId(claim),
-      expected: '8bd45514f3888542fc830e99496be03f0ec44f2d83dd96d26d6f0f1fbeb2ac12',
+      expected: '817436801385c4227718448cc909a591c7193428a8dccfea5eee22534029ec34',
     })
   }
 
