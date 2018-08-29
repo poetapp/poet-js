@@ -1,10 +1,10 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
 import { createClaim, isValidSignature, getClaimId, getClaimSignature, isValidClaim, canonizeClaim } from './Claim'
-import { Claim, ClaimType, ClaimAttributes, Work } from './Interfaces'
+import { Claim, ClaimType, ClaimAttributes, isClaim, Work } from './Interfaces'
 
 const makeClaim = (attributes: ClaimAttributes) => {
-  const created = new Date('2017-12-11T22:54:40.261Z')
+  const created = '2017-12-11T22:54:40.261Z'
   const publicKey = '02db393ae2d566ceddd95a97fd88bc2897a0818528158261cec45087a58786f09d'
   const type = ClaimType.Work
   return {
@@ -15,23 +15,13 @@ const makeClaim = (attributes: ClaimAttributes) => {
   }
 }
 
-const convertDateToUTC = (date: Date): Date =>
-  new Date(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds()
-  )
-
 const TheRaven: Work = {
-  id: 'c76146528c62dac83429217b6a7e159542b7a2d0c06432d6b7c9ba9cb3ebd39a',
+  id: 'cc5d8cde00a0d050bc64bb5e65bca0a4434cab8c1c6a1738dabe50ec7c4f2f30',
   publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
   signature:
-    '3045022100fb95297b8ad91073dc94acc3a6dc72b8740bd67887fd18be1e08a2b347ebd6f202204d4e931537b5a5d7394972046506678a68426e20478e3dd2972f51cc73d20062',
+    '3045022100f9cab29963ec092424e36d03939d50e2aa2b5f09115024b9736f8e6250742699022049c4b7feeaf6de786a6ed657e99d2ca244f102108b2ea97e8ebbaad3b57fd241',
   type: ClaimType.Work,
-  created: convertDateToUTC(new Date('2017-11-13T15:00:00.000Z')),
+  created: '2017-11-13T15:00:00.000Z',
   attributes: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
@@ -43,24 +33,24 @@ const TheRaven: Work = {
 }
 
 const canonicalRaven =
-  '_:c14n0 <http://purl.org/dcterms/created> "Mon Nov 13 2017 15:00:00 GMT+0000 (UTC)" .\n' +
-  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
-  '_:c14n0 <http://schema.org/Text> "02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2" .\n' +
-  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n1 <http://schema.org/keyword> "poem" .\n' +
-  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
+  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n0 <http://schema.org/dateCreated> "" .\n' +
+  '_:c14n0 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
+  '_:c14n0 <http://schema.org/keyword> "poem" .\n' +
+  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
+  '_:c14n0 <http://schema.org/text> "Once upon a midnight dreary..." .\n' +
+  '_:c14n1 <http://purl.org/dcterms/created> "2017-11-13T15:00:00.000Z" .\n' +
+  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
+  '_:c14n1 <http://schema.org/Text> "02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2" .\n' +
+  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
 
 const expectedCanonicalDoc =
-  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n1 <http://purl.org/dcterms/created> "Mon Dec 11 2017 22:54:40 GMT+0000 (UTC)" .\n' +
-  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/Text> "02db393ae2d566ceddd95a97fd88bc2897a0818528158261cec45087a58786f09d" .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
+  '_:c14n0 <http://purl.org/dcterms/created> "2017-12-11T22:54:40.261Z" .\n' +
+  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
+  '_:c14n0 <http://schema.org/Text> "02db393ae2d566ceddd95a97fd88bc2897a0818528158261cec45087a58786f09d" .\n' +
+  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
+  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n1 <http://schema.org/name> "The Raven" .\n'
 
 const Key = {
   privateKey: 'L1mptZyB6aWkiJU7dvAK4UUjLSaqzcRNYJn3KuAA7oEVyiNn3ZPF',
@@ -150,7 +140,7 @@ describe('Claim', async (should: any) => {
       given: 'A claim',
       should: 'generate an id for the claim',
       actual: await getClaimId(claim),
-      expected: 'ffac51b3dea6c99587f0d4af0985b693e1afe681d834b5898425dafbb11baed4',
+      expected: '8bd45514f3888542fc830e99496be03f0ec44f2d83dd96d26d6f0f1fbeb2ac12',
     })
   }
 
@@ -226,7 +216,7 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    const claimId = await getClaimId({ ...TheRaven, created: new Date() }).catch(returnError)
+    const claimId = await getClaimId({ ...TheRaven, created: '2017-09-13T15:00:00.000Z' }).catch(returnError)
 
     assert({
       given: 'a claim with extra dateCreated, the new dateCreated',
@@ -343,9 +333,9 @@ describe('Claim', async (should: any) => {
 
   {
     assert({
-      given: 'a valid claim, isValidClaim',
+      given: 'a valid claim, isClaim',
       should: `return true`,
-      actual: await isValidClaim(TheRaven),
+      actual: isClaim(TheRaven),
       expected: true,
     })
   }

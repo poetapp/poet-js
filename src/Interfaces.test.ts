@@ -8,7 +8,7 @@ const TheRaven: Work = {
   signature:
     '3045022100e020a7ffeffa5d40ffde618c6c861678e38de69fd377028ec57ad93893883b3702201f085284a9064bab7e1cd39349e65d136d8f67e4b6b897c3e7db6b400ed91034',
   type: ClaimType.Work,
-  created: new Date('2017-11-13T15:00:00.000Z'),
+  created: '2017-11-13T15:00:00.000Z',
   attributes: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
