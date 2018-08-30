@@ -13,6 +13,8 @@ npm i @po.et/poet-js
 ### Usage
 
 The main function you'll be using is `createClaim`:
+
+#### Example 1: createClaim for Work Claims
 ```ts
 import { Claim, ClaimType, createClaim } from '@po.et/poet-js' 
 
@@ -24,13 +26,15 @@ const workAttributes = {
   datePublished: '1845-01-29T03:00:00.000Z',
   content: 'Once upon a midnight dreary...'
 }
-const privateKey = ''
+const Issuer = 'po.et://entities/<identity claim id>'
+ 
 const claim = createClaim(
-  privateKey,
+  Issuer,
   ClaimType.Work,
   workAttributes
 )
 ```
+
 Once this claim is created, you can publish it to a Po.et Node:
 ```ts
 const response = await fetch(poetNodeUrl + '/works/', {
@@ -42,6 +46,37 @@ const response = await fetch(poetNodeUrl + '/works/', {
   body: JSON.stringify(claim)
 })
 ```
+Note, if you are creating an identity claim, your IDP will be the issuer of the claim. If you are self-serving your own 
+IDP, you will have to create an IdentityClaim for the IDP from which you can issue all further identities.
+
+#### Example 2: createClaim for Identity Claims
+```ts
+import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
+
+const identityAttributes = {
+  publicKey: ''
+}
+const Issuer = 'po.et://entities/<idp identity claim id>'
+
+const claim = createClaim(
+  Issuer,
+  ClaimType.Identity,
+  identityAttributes
+) 
+```
+Once this claim is created, you can publish it to a Po.et Node:
+```ts
+const response = await fetch(poetNodeUrl + '/identities/', {
+  method: 'POST',
+  headers: {
+	'Accept': 'application/json',
+	'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(claim)
+})
+```
+
+
 Notice you don't need to wait for the server's response to know the claim's Id. You don't even need to publish it! `claim.id` is readily available right after calling `createClaim`.
 
 ## Contributing

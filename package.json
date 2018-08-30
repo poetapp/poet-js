@@ -14,7 +14,7 @@
     "build-clear": "rm -rf dist",
     "build-ts": "tsc && npm run copy-json",
     "build-babel": "cp .babelrc dist/ts && babel dist/ts/ -d dist/babel --copy-files",
-    "prepublish": "npm run build && npm test",
+    "prepublish": "npm run build && npm run test:unit",
     "semantic-release": "semantic-release",
     "precommit": "npm run build && lint-staged"
   },
@@ -38,6 +38,7 @@
     "babel-cli": "6.26.0",
     "babel-plugin-module-resolver": "3.0.0",
     "bitcore-lib": "0.15.0",
+    "jsonld": "1.0.2",
     "node-fetch": "1.7.3",
     "protobufjs": "6.8.7"
   },
