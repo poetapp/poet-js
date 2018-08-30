@@ -8,14 +8,14 @@ const TheRaven: Work = {
   signature:
     '3045022100e020a7ffeffa5d40ffde618c6c861678e38de69fd377028ec57ad93893883b3702201f085284a9064bab7e1cd39349e65d136d8f67e4b6b897c3e7db6b400ed91034',
   type: ClaimType.Work,
-  dateCreated: new Date('2017-11-13T15:00:00.000Z'),
+  created: '2017-11-13T15:00:00.000Z',
   attributes: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
     tags: 'poem',
     dateCreated: '',
     datePublished: '1845-01-29T03:00:00.000Z',
-    content: 'Once upon a midnight dreary...',
+    text: 'Once upon a midnight dreary...',
   },
 }
 
@@ -31,12 +31,21 @@ describe('Interfaces', async (should: any) => {
     })
   }
 
+  {
+    assert({
+      given: 'a valid claim with a context',
+      should: 'return true',
+      actual: isClaim(TheRaven),
+      expected: true,
+    })
+  }
+
   ;['', false, null, undefined].forEach(value => {
     {
       assert({
         given: 'a claim with an invalid date',
         should: `return false`,
-        actual: isClaim({ ...TheRaven, dateCreated: value }),
+        actual: isClaim({ ...TheRaven, created: value }),
         expected: false,
       })
     }
