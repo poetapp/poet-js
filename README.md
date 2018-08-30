@@ -36,6 +36,7 @@ const claim = createClaim(
   workAttributes
 )
 ```
+
 Once this claim is created, you can publish it to a Po.et Node:
 ```ts
 const response = await fetch(poetNodeUrl + '/works/', {
