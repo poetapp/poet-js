@@ -14,7 +14,7 @@
     "build-clear": "rm -rf dist",
     "build-ts": "tsc && npm run copy-json",
     "build-babel": "cp .babelrc dist/ts && babel dist/ts/ -d dist/babel --copy-files",
-    "prepublish": "npm run build && TZ=UTC npm run test:unit",
+    "prepublish": "npm run build && npm run test:unit",
     "semantic-release": "semantic-release",
     "precommit": "npm run build && lint-staged"
   },
