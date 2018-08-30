@@ -1,11 +1,14 @@
 export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly '@context'?: any
   readonly id?: string
+
+  readonly issuer?: string
+  readonly issuanceDate?: Date // should replace dateCreated... or created... once we remove protobufs
   readonly publicKey?: string
   readonly signature?: string
   readonly created?: string
   readonly type: ClaimType
-  readonly attributes: T
+  readonly attributes: T // TODO: replace attributes with claim, once we remove protobufs
 }
 
 interface ClaimContext {
@@ -42,6 +45,7 @@ export interface ClaimAttributes {
 }
 
 export enum ClaimType {
+  Identity = 'Identity',
   Work = 'Work',
 }
 
@@ -56,8 +60,19 @@ export interface WorkAttributes extends ClaimAttributes {
 
 export interface Work extends Claim<WorkAttributes> {}
 
+export interface Identity extends Claim<IdentityAttributes> {}
+
+export interface IdentityAttributes extends ClaimAttributes {
+  readonly profileUrl?: string
+  readonly publicKey: string
+}
+
 export function isWork(claim: Claim): claim is Work {
   return claim.type === ClaimType.Work
+}
+
+export function isIdentity(claim: Claim): claim is Identity {
+  return claim.type === ClaimType.Identity
 }
 
 export interface TransactionPoetTimestamp {
