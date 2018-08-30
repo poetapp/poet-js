@@ -5,4 +5,3 @@
 import '../../src/Claim.test'
 import '../../src/Insight.test'
 import '../../src/Interfaces.test'
-import '../../src/Serialization.test'
