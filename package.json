@@ -36,7 +36,7 @@
   "dependencies": {
     "@types/bitcore-lib": "0.15.1",
     "babel-cli": "6.26.0",
-    "babel-plugin-module-resolver": "3.0.0",
+    "babel-plugin-module-resolver": "3.1.1",
     "bitcore-lib": "0.15.0",
     "jsonld": "1.0.2",
     "node-fetch": "1.7.3",
