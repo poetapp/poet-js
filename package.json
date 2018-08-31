@@ -39,12 +39,12 @@
     "babel-plugin-module-resolver": "3.1.1",
     "bitcore-lib": "0.15.0",
     "jsonld": "1.0.4",
-    "node-fetch": "1.7.3",
+    "node-fetch": "2.2.0",
     "protobufjs": "6.8.7"
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.4.1",
-    "@types/node-fetch": "1.6.9",
+    "@types/node-fetch": "2.1.2",
     "husky": "0.14.3",
     "lint-staged": "7.2.2",
     "nyc": "github:poetapp/nyc#fbc2ed1",
