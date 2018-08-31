@@ -5,15 +5,10 @@ before_install:
   - sudo apt-get install gcc-5 g++-5
   - sudo rm /usr/bin/g++
   - sudo ln -s /usr/bin/g++-5 /usr/bin/g++
-  - npm install -g greenkeeper-lockfile@1
-before_script:
-  - greenkeeper-lockfile-update
 script:
   - npm run lint
   - npm run build
   - npm run coverage
-after_script:
-  - greenkeeper-lockfile-upload
 after_success:
   - '[[ $TRAVIS_BRANCH = "master" && $TRAVIS_PULL_REQUEST_BRANCH = "" ]] &&
     (npm install -g travis-deploy-once && travis-deploy-once "npm run semantic-release")'
