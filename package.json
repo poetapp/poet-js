@@ -39,6 +39,7 @@
     "babel-plugin-module-resolver": "3.1.1",
     "bitcore-lib": "0.15.0",
     "jsonld": "1.0.4",
+    "jsonld-signatures": "2.3.0",
     "node-fetch": "1.7.3",
     "protobufjs": "6.8.8"
   },
