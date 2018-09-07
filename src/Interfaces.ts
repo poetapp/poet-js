@@ -67,7 +67,9 @@ const claimSchema = Joi.object({
     .min(64),
   issuer: Joi.string()
     .required()
-    .uri(),
+    .uri({
+      scheme: ['po.et', 'http', 'https', 'did'],
+    }),
   issued: Joi.string()
     .required()
     .isoDate(),
