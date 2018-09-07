@@ -1,14 +1,33 @@
 /* tslint:disable:no-relative-imports */
-import * as bitcore from 'bitcore-lib'
 import * as crypto from 'crypto'
-import { canonize } from 'jsonld'
+import * as jsonld from 'jsonld'
+import * as jsig from 'jsonld-signatures'
 
-import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimAttributes, ClaimType, ClaimContext, isClaim } from './Interfaces'
 
-export const canonizeClaim = async (claim: Claim): Promise<string> => {
-  const contextualClaim = { ...ClaimContext, ...claim }
-  return canonize(contextualClaim)
+jsig.use('jsonld', jsonld)
+
+export const canonizeClaim = async ({ type, issuer, issued, claim }: Claim): Promise<string> => {
+  const contextualClaim = { ...ClaimContext, type, issuer, issued, claim }
+  return jsonld.canonize(contextualClaim)
+}
+
+/*
+  signClaim = (signingOptions: any) => async (document: Claim): Promise<Claim>
+    signingOptions:
+      algorithm: 'Ed25519VerificationKey2018'
+      creator: 'po.et://entities/:entityid/publicKey -OR- did:po.et:<publicKeyValue>
+      privateKeyBase58: base58 rendition of an Ed22159 private key
+    document: any valid Claim
+  NOTE: If you choose to use a different signing algorhithm, the other signingOption keys may differ.
+  Refer to the jsonld-signatures library for more detail
+*/
+export const signClaim = (signingOptions: any) => async (document: Claim): Promise<Claim> =>
+  await jsig.sign({ ...document }, signingOptions)
+
+export const isValidSignature = (verfiedOptions: any) => async (claim: Claim): Promise<boolean> => {
+  const results = await jsig.verify({ ...claim }, verfiedOptions)
+  return results.verified
 }
 
 export const getClaimId = async (claim: Claim): Promise<string> => {
@@ -21,56 +40,22 @@ export const getClaimId = async (claim: Claim): Promise<string> => {
     .toString('hex')
 }
 
-export const getClaimSignature = async (claim: Claim, privateKey: string): Promise<string> => {
-  if (!claim.publicKey) throw new IllegalArgumentException('Cannot sign a claim that has an empty .publicKey field.')
-  if (new bitcore.PrivateKey(privateKey).publicKey.toString() !== claim.publicKey)
-    throw new IllegalArgumentException(
-      "Cannot sign this claim with the provided privateKey. It doesn\t match the claim's public key."
-    )
-  const generatedClaimId = await getClaimId(claim)
-  if (!claim.id) throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field.')
-  if (claim.id !== generatedClaimId)
-    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
-
-  const signature = bitcore.crypto.ECDSA.sign(Buffer.from(claim.id, 'hex'), new bitcore.PrivateKey(privateKey))
-  return signature.toString()
-}
-
-export const isValidSignature = (claim: Claim): boolean => {
-  try {
-    return bitcore.crypto.ECDSA.verify(
-      Buffer.from(claim.id, 'hex'),
-      bitcore.crypto.Signature.fromString(claim.signature),
-      new bitcore.PublicKey(claim.publicKey)
-    )
-  } catch (exception) {
-    return false
-  }
-}
-
-export const createClaim = async (privateKey: string, type: ClaimType, attributes: ClaimAttributes): Promise<Claim> => {
+export const createClaim = async (issuer: any, type: ClaimType, claimAttributes: ClaimAttributes): Promise<Claim> => {
   const claim: Claim = {
     id: '',
-    publicKey: new bitcore.PrivateKey(privateKey).publicKey.toString(),
-    signature: '',
     type,
-    created: new Date().toISOString(),
-    attributes,
+    issuer: issuer.id,
+    issued: new Date().toISOString(),
+    claim: { ...claimAttributes },
   }
   const id = await getClaimId(claim)
-  const signature = await getClaimSignature(
-    {
-      ...claim,
-      id,
-    },
-    privateKey
-  )
-  return {
+  const sign = signClaim(issuer.signingOptions)
+  return await sign({
     ...claim,
     id,
-    signature,
-  }
+  })
 }
 
+// Duplicate of poet-js?
 export const isValidClaim = async (claim: {}): Promise<boolean> =>
-  !!isClaim(claim) && isValidSignature(claim) && (await getClaimId(claim)) === claim.id
+  isClaim(claim) && isValidSignature(claim) && (await getClaimId(claim)) === claim.id
