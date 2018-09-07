@@ -59,12 +59,12 @@ describe('Interfaces', async (should: any) => {
   const { assert } = should('')
 
   {
-    // assert({
-    //   given: 'a valid claim',
-    //   should: 'return true',
-    //   actual: isClaim(TheRaven),
-    //   expected: true,
-    // })
+    assert({
+      given: 'a valid claim',
+      should: 'return true',
+      actual: isClaim(TheRaven),
+      expected: true,
+    })
 
     assert({
       given: 'an invalid claim, isClaim',
@@ -74,14 +74,14 @@ describe('Interfaces', async (should: any) => {
     })
   }
 
-  // {
-  //   assert({
-  //     given: 'a valid Identity claim, isClaim',
-  //     should: 'return true',
-  //     actual: isClaim(Me),
-  //     expected: true,
-  //   })
-  // }
+  {
+    assert({
+      given: 'a valid Identity claim, isClaim',
+      should: 'return true',
+      actual: isClaim(Me),
+      expected: true,
+    })
+  }
 
   {
     assert({
@@ -99,14 +99,14 @@ describe('Interfaces', async (should: any) => {
     })
   }
 
-  // {
-  //   assert({
-  //     given: 'a valid claim with a context',
-  //     should: 'return true',
-  //     actual: isClaim(TheRaven),
-  //     expected: true,
-  //   })
-  // }
+  {
+    assert({
+      given: 'a valid claim with a context',
+      should: 'return true',
+      actual: isClaim(TheRaven),
+      expected: true,
+    })
+  }
 
   ;['', false, null, undefined].forEach(value => {
     {

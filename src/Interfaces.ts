@@ -44,7 +44,7 @@ interface ClaimContext {
 
 const signatureSchema = {
   '@graph': Joi.object().keys({
-    '@type': Joi.string().only(Object.keys(jsigs.suites)),
+    '@type': Joi.string().only(Object.keys(jsigs.suites).map(suite => `https://w3id.org/security#${suite}`)),
     created: Joi.object().keys({
       '@type': Joi.string().uri(),
       '@value': Joi.string()
