@@ -4,7 +4,7 @@ import { describe } from 'riteway'
 
 // import { createClaim, isValidSignature, getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
 import { getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
-import { Claim, ClaimType, ClaimAttributes, Work } from './Interfaces'
+import { Claim, ClaimType, ClaimAttributes, Work, isClaim } from './Interfaces'
 
 // Generated:
 // const forge = require('node-forge')
@@ -18,10 +18,10 @@ export const testPublicKeyEd25519Base58: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKM
 export const testPrivateKeyEd25519Base58: string =
   'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
-const testOwnerUrl = 'po.et//entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8'
+const testOwnerUrl = 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8'
 
 export const TestPublicKeyUrl =
-  'po.et//entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8#publicKey'
+  'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8#publicKey'
 
 export const testPublicKeyEd25519: any = {
   '@context': jsig.SECURITY_CONTEXT_URL,
@@ -64,9 +64,9 @@ const makeClaim = (claim: ClaimAttributes) => {
 }
 
 const TheRaven: Work = {
-  id: 'de604cae82fa038b8ce1e5c52563bfadfbbb526f2d2b59a485972bb62d30e970',
+  id: '8500395b29e3ce3dee704cd5ad1dadc7daf0a49e481761a03582807f54bfdfc1',
   type: ClaimType.Work,
-  issuer: 'po.et//entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
+  issuer: 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   issued: '2017-11-13T15:00:00.000Z',
   claim: {
     name: 'The Raven',
@@ -103,23 +103,23 @@ export const VerificationOptions: object = {
 //
 
 const canonicalRaven =
-  '_:c14n0 <http://purl.org/dc/terms/created> "2017-11-13T15:00:00.000Z" .\n' +
-  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
-  '_:c14n0 <http://schema.org/Organization> "po.et//entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n' +
-  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n1 <http://schema.org/keywords> "poem" .\n' +
-  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
+  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n0 <http://schema.org/dateCreated> "" .\n' +
+  '_:c14n0 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
+  '_:c14n0 <http://schema.org/keywords> "poem" .\n' +
+  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
+  '_:c14n0 <http://schema.org/text> "Once upon a midnight dreary..." .\n' +
+  '_:c14n1 <http://purl.org/dc/terms/created> "2017-11-13T15:00:00.000Z" .\n' +
+  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
+  '_:c14n1 <http://schema.org/Organization> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n' +
+  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
 
 const expectedCanonicalDoc =
   '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
   '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
   '_:c14n1 <http://purl.org/dc/terms/created> "2017-12-11T22:54:40.261Z" .\n' +
   '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/Organization> "po.et//entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n' +
+  '_:c14n1 <http://schema.org/Organization> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n' +
   '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
 
 const sign = signClaim(signingOptions)
@@ -205,7 +205,7 @@ describe('Claim', async (should: any) => {
       given: 'A claim',
       should: 'generate an id for the claim',
       actual: await getClaimId(claim),
-      expected: 'de604cae82fa038b8ce1e5c52563bfadfbbb526f2d2b59a485972bb62d30e970',
+      expected: '8500395b29e3ce3dee704cd5ad1dadc7daf0a49e481761a03582807f54bfdfc1',
     })
   }
 
@@ -293,49 +293,49 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    // const work1: Claim = makeClaim({
-    //   name: TheRaven.claim.name,
-    //   author: TheRaven.claim.author,
-    // })
-    //
-    // const work2: Claim = makeClaim({
-    //   author: TheRaven.claim.author,
-    //   name: TheRaven.claim.name,
-    // })
-    //
-    // const claimId1 = await getClaimId(work1).catch(returnError)
-    // const claimId2 = await getClaimId(work2).catch(returnError)
-    //
-    // assert({
-    //   given: 'two claims with disordered keys',
-    //   should: 'have the same claims id',
-    //   actual: claimId1 === claimId2,
-    //   expected: true,
-    // })
+    const work1: Claim = makeClaim({
+      name: TheRaven.claim.name,
+      author: TheRaven.claim.author,
+    })
+
+    const work2: Claim = makeClaim({
+      author: TheRaven.claim.author,
+      name: TheRaven.claim.name,
+    })
+
+    const claimId1 = await getClaimId(work1).catch(returnError)
+    const claimId2 = await getClaimId(work2).catch(returnError)
+
+    assert({
+      given: 'two claims with disordered keys',
+      should: 'have the same claims id',
+      actual: claimId1 === claimId2,
+      expected: true,
+    })
   }
 
   {
-    // const work1: Claim = makeClaim({
-    //   name: TheRaven.claim.name,
-    //   author: TheRaven.claim.author,
-    // })
-    //
-    // const work2: Claim = makeClaim({
-    //   author: TheRaven.claim.author,
-    //   nAME: TheRaven.claim.name,
-    //   dateCreated: TheRaven.claim.dateCreated,
-    //   datePublished: TheRaven.claim.datePublished,
-    // })
-    //
-    // const claimId1 = await getClaimId(work1).catch(returnError)
-    // const claimId2 = await getClaimId(work2).catch(returnError)
-    //
-    // assert({
-    //   given: 'two claims with keys casing',
-    //   should: 'NOT have the same claims id',
-    //   actual: claimId1 !== claimId2,
-    //   expected: true,
-    // })
+    const work1: Claim = makeClaim({
+      name: TheRaven.claim.name,
+      author: TheRaven.claim.author,
+    })
+
+    const work2: Claim = makeClaim({
+      author: TheRaven.claim.author,
+      nAME: TheRaven.claim.name,
+      dateCreated: TheRaven.claim.dateCreated,
+      datePublished: TheRaven.claim.datePublished,
+    })
+
+    const claimId1 = await getClaimId(work1).catch(returnError)
+    const claimId2 = await getClaimId(work2).catch(returnError)
+
+    assert({
+      given: 'two claims with keys casing',
+      should: 'NOT have the same claims id',
+      actual: claimId1 !== claimId2,
+      expected: true,
+    })
   }
 
   {
@@ -395,14 +395,14 @@ describe('Claim', async (should: any) => {
     })
   }
 
-  // {
-  //   assert({
-  //     given: 'a valid claim, isClaim',
-  //     should: `return true`,
-  //     actual: isClaim(TheRaven),
-  //     expected: true,
-  //   })
-  // }
+  {
+    assert({
+      given: 'a valid claim, isClaim',
+      should: `return true`,
+      actual: isClaim(TheRaven),
+      expected: true,
+    })
+  }
 
   {
     assert({
