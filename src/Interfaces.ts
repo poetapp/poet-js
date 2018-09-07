@@ -1,14 +1,39 @@
+import * as Joi from 'joi'
+import * as jsigs from 'jsonld-signatures'
+
+export enum ClaimType {
+  Identity = 'Identity',
+  Work = 'Work',
+}
+
+export interface ClaimAttributes {
+  readonly [key: string]: string
+}
+
+export interface ClaimSignature {
+  readonly '@graph': {
+    readonly [key: string]: any
+  }
+}
+
 export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly '@context'?: any
   readonly id?: string
-
-  readonly issuer?: string
-  readonly issuanceDate?: Date // should replace dateCreated... or created... once we remove protobufs
-  readonly publicKey?: string
-  readonly signature?: string
-  readonly created?: string
+  readonly issuer: string
+  readonly issued: string
   readonly type: ClaimType
-  readonly attributes: T // TODO: replace attributes with claim, once we remove protobufs
+  readonly 'https://w3id.org/security#proof'?: any
+  readonly claim: T
+}
+
+export interface SignedClaim<T extends ClaimAttributes = ClaimAttributes> {
+  readonly '@context': any
+  readonly id: string
+  readonly issuer: string
+  readonly issued: string
+  readonly type: ClaimType
+  readonly 'https://w3id.org/security#proof': any
+  readonly claim: T
 }
 
 interface ClaimContext {
@@ -17,9 +42,44 @@ interface ClaimContext {
   }
 }
 
+const signatureSchema = {
+  '@graph': Joi.object().keys({
+    '@type': Joi.string().only(Object.keys(jsigs.suites)),
+    created: Joi.object().keys({
+      '@type': Joi.string().uri(),
+      '@value': Joi.string()
+        .required()
+        .isoDate(),
+    }),
+    'http://purl.org/dc/terms/creator': Joi.object({
+      '@id': Joi.string()
+        .required()
+        .uri(),
+    }).required(),
+    'https://w3id.org/security#jws': Joi.string(),
+  }),
+}
+
+const claimSchema = Joi.object({
+  id: Joi.string()
+    .required()
+    .alphanum()
+    .min(64),
+  issuer: Joi.string()
+    .required()
+    .uri(),
+  issued: Joi.string()
+    .required()
+    .isoDate(),
+  type: Joi.string()
+    .required()
+    .only([ClaimType.Identity, ClaimType.Work]),
+  claim: Joi.object().required(),
+  'https://w3id.org/security#proof': Joi.object(signatureSchema).required(),
+})
+
 export function isClaim(object: any): object is Claim {
-  // TODO: use joi or protobuf
-  return !!(object.id && object.publicKey && object.signature && object.type && object.attributes && object.created)
+  return Joi.validate(object, claimSchema).error === null
 }
 
 // WARNING: This MUST account for ALL of the attributes in a Claim, except for id, @context, and signature.
@@ -27,35 +87,28 @@ export function isClaim(object: any): object is Claim {
 // Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
 export const ClaimContext: ClaimContext = {
   '@context': {
-    attributes: 'http://schema.org/CreativeWork',
+    issuer: 'http://schema.org/Organization',
+    issued: 'http://purl.org/dc/terms/created',
+    type: 'http://schema.org/additionalType',
+    claim: 'http://schema.org/CreativeWork',
     author: 'http://schema.org/author',
-    text: 'http://schema.org/text',
-    created: 'http://purl.org/dc/terms/created',
     dateCreated: 'http://schema.org/dateCreated',
     datePublished: 'http://schema.org/datePublished',
     name: 'http://schema.org/name',
-    tags: 'http://schema.org/keywords',
-    type: 'http://schema.org/additionalType',
-    publicKey: 'http://schema.org/Text',
+    keywords: 'http://schema.org/keywords',
+    text: 'http://schema.org/text',
+    url: 'http://schema.org/url',
   },
 }
 
-export interface ClaimAttributes {
-  readonly [key: string]: string
-}
-
-export enum ClaimType {
-  Identity = 'Identity',
-  Work = 'Work',
-}
-
 export interface WorkAttributes extends ClaimAttributes {
-  readonly name: string
-  readonly datePublished: string
-  readonly dateCreated: string
   readonly author: string
-  readonly tags?: string
-  readonly text: string
+  readonly dateCreated: string
+  readonly datePublished: string
+  readonly keywords?: string
+  readonly name: string
+  readonly text?: string
+  readonly url?: string
 }
 
 export interface Work extends Claim<WorkAttributes> {}
