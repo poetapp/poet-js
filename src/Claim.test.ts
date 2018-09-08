@@ -6,16 +6,18 @@ import { describe } from 'riteway'
 import { getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
 import { Claim, ClaimType, ClaimAttributes, Work, isClaim } from './Interfaces'
 
+// const returnError = (error: any) => error
+
 // Generated:
 // const forge = require('node-forge')
 // const ed25519 = forge.pki.ed25519
 // const keypair = ed25519.generateKeyPair()
 // const bs58 = require('bs58')
 // bs58.encode(keypair.publicKey)
-export const testPublicKeyEd25519Base58: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe'
+const testPublicKeyEd25519Base58: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe'
 
 // bs58.encode(keypair.privateKey)
-export const testPrivateKeyEd25519Base58: string =
+const testPrivateKeyEd25519Base58: string =
   'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
 const testOwnerUrl = 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8'
@@ -87,8 +89,8 @@ const TheRaven: Work = {
         '@id': testPublicKeyEd25519.id,
       },
       'https://w3id.org/security#jws':
-        'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..neh08G8ljeqeEnqq' +
-        'PS06tgV7OGrlVRDa6ZfidRy8cGztWX9QbzwYz5VXtdO8SLy-H8alKeRiwGy67Q_QyEtuCg',
+        'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
+        'gzo084pGpKmbOewYFrXfmAVhXnC4UPzaPUjaU9BDw',
     },
   },
 }
