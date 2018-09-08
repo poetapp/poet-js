@@ -3,10 +3,8 @@ import * as jsig from 'jsonld-signatures'
 import { describe } from 'riteway'
 
 // import { createClaim, isValidSignature, getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
-import { getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
+import { createClaim, isValidSignature, getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
 import { Claim, ClaimType, ClaimAttributes, Work, isClaim } from './Interfaces'
-
-// const returnError = (error: any) => error
 
 // Generated:
 // const forge = require('node-forge')
@@ -66,7 +64,7 @@ const makeClaim = (claim: ClaimAttributes) => {
 }
 
 const TheRaven: Work = {
-  id: '8500395b29e3ce3dee704cd5ad1dadc7daf0a49e481761a03582807f54bfdfc1',
+  id: 'c00eead2e2db1f37f1750d98356c389f5f6fc0ee5f376a34597615da62689dd8',
   type: ClaimType.Work,
   issuer: 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   issued: '2017-11-13T15:00:00.000Z',
@@ -100,9 +98,7 @@ export const VerificationOptions: object = {
   publicKeyOwner: testPublicKeyEd25519Owner,
 }
 
-// const doesExist = (value: string, options: object) => value !== null && value !== undefined
-// const fails = (value: string, options: object) => false
-//
+const verifier = isValidSignature(VerificationOptions)
 
 const canonicalRaven =
   '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
@@ -211,37 +207,36 @@ describe('Claim', async (should: any) => {
     })
   }
 
-  // {
-  //   const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
-  //   // console.log(`madeClaim: ${JSON.stringify(claim)}`)
-  //
-  //   assert({
-  //     given: 'the public key of a Claim',
-  //     should: 'be equal to public key of key',
-  //     actual: claim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
-  //     expected: TestPublicKeyUrl,
-  //   })
-  // }
+  {
+    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
 
-  // {
-  //   const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
-  //
-  //   assert({
-  //     given: 'the result of isValidSignature of Claim with a valid signature',
-  //     should: 'should return true',
-  //     actual: isValidSignature(claim),
-  //     expected: true,
-  //   })
-  // }
-  //
-  // {
-  //   assert({
-  //     given: 'a claim id',
-  //     should: 'be equal to the work id',
-  //     actual: await getClaimId(TheRaven).catch(returnError),
-  //     expected: TheRaven.id,
-  //   })
-  // }
+    assert({
+      given: 'the public key of a Claim',
+      should: 'be equal to public key of key',
+      actual: claim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
+      expected: TestPublicKeyUrl,
+    })
+  }
+
+  {
+    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+
+    assert({
+      given: 'the result of isValidSignature of Claim with a valid signature',
+      should: 'should return true',
+      actual: await verifier(claim),
+      expected: true,
+    })
+  }
+
+  {
+    assert({
+      given: 'a claim id',
+      should: 'be equal to the work id',
+      actual: await getClaimId(TheRaven).catch(returnError),
+      expected: TheRaven.id,
+    })
+  }
 
   // {
   //   assert({
@@ -260,17 +255,6 @@ describe('Claim', async (should: any) => {
   //     expected: TheRaven.id,
   //   })
   // }
-
-  {
-    const claimId = await getClaimId({ ...TheRaven }).catch(returnError)
-
-    assert({
-      given: 'a claim with extra publicKey, the new publicKey',
-      should: 'be included in the calculation of the id and should be not equal to the work id',
-      actual: claimId !== TheRaven.id,
-      expected: true,
-    })
-  }
 
   {
     const claimId = await getClaimId({ ...TheRaven, type: 'Asd' as ClaimType }).catch(returnError)
@@ -376,23 +360,25 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    const expectedMessage = 'Cannot sign a claim that has an empty .publicKey field.'
+    const expectedMessage = 'Cannot sign a claim with an invalid creator in the signing options.'
+    const invalidSign = signClaim({})
 
     assert({
       given: 'a claim with publicKey undefined',
       should: `throw an error with the message ${expectedMessage}`,
-      actual: await sign(TheRaven).catch(returnError),
+      actual: await invalidSign(TheRaven).catch(returnError),
       expected: new Error(expectedMessage),
     })
   }
 
   {
     const expectedMessage = `Cannot sign this claim with the provided privateKey. It doesn\'t match the claim's public key.`
+    const invalidSign2 = signClaim({ creator: 'someoneelse' })
 
     assert({
-      given: 'a claim with a different publicKey',
+      given: 'invalid signing options',
       should: `throw an error with the message ${expectedMessage}`,
-      actual: await sign({ ...TheRaven }).catch(returnError),
+      actual: await invalidSign2({ ...TheRaven }).catch(returnError),
       expected: new Error(expectedMessage),
     })
   }
@@ -424,14 +410,14 @@ describe('Claim', async (should: any) => {
     })
   }
 
-  {
-    assert({
-      given: 'a claim with an invalid publicKey',
-      should: `return false`,
-      actual: await isValidClaim({ ...TheRaven }),
-      expected: false,
-    })
-  }
+  // {
+  //   assert({
+  //     given: 'a claim with an invalid publicKey',
+  //     should: `return false`,
+  //     actual: await isValidClaim({ ...TheRaven }),
+  //     expected: false,
+  //   })
+  // }
 
   {
     assert({
