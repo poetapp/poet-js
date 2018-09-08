@@ -238,23 +238,23 @@ describe('Claim', async (should: any) => {
     })
   }
 
-  // {
-  //   assert({
-  //     given: 'a claim with extra id, the new id',
-  //     should: 'be ignored in the calculation of the id and should be equal to the work id',
-  //     actual: await getClaimId({ ...TheRaven, id: '123' }).catch(returnError),
-  //     expected: TheRaven.id,
-  //   })
-  // }
+  {
+    assert({
+      given: 'a claim with extra id, the new id',
+      should: 'be ignored in the calculation of the id and should be equal to the work id',
+      actual: await getClaimId({ ...TheRaven, id: '123' }).catch(returnError),
+      expected: TheRaven.id,
+    })
+  }
 
-  // {
-  //   assert({
-  //     given: 'a claim with extra signature, the new signature',
-  //     should: 'be ignored in the calculation of the id and should be equal to the work id',
-  //     actual: await getClaimId({ ...TheRaven }).catch(returnError),
-  //     expected: TheRaven.id,
-  //   })
-  // }
+  {
+    assert({
+      given: 'a claim with extra signature, the new signature',
+      should: 'be ignored in the calculation of the id and should be equal to the work id',
+      actual: await getClaimId({ ...TheRaven }).catch(returnError),
+      expected: TheRaven.id,
+    })
+  }
 
   {
     const claimId = await getClaimId({ ...TheRaven, type: 'Asd' as ClaimType }).catch(returnError)
