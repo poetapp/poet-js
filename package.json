@@ -1,7 +1,7 @@
 {
   "name": "@po.et/poet-js",
   "version": "1.1.0",
-  "description": "poet-js is a small library that provides methods to easily create and sign Po.et Claims.",
+  "description": "Po.et JS is a small library that provides methods to easily create and sign Po.et Claims.",
   "main": "dist/babel/src/index.js",
   "types": "dist/babel/src/index.d.ts",
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "tslint -p ./tsconfig.json",
     "lint:fix": "tslint -p ./tsconfig.json --fix",
     "test:unit": "ts-node --files ./tests/unit/index.ts",
+    "test": "npm run test:unit",
     "coverage": "nyc --report-dir ./.coverage npm run test:unit",
     "copy-json": "rsync -a --include '*/' --include '*.json' --exclude '*' src/ dist/ts/src",
     "build-clear": "rm -rf dist",
@@ -35,6 +36,7 @@
   },
   "dependencies": {
     "@types/bitcore-lib": "0.15.1",
+    "@types/node-fetch": "1.6.9",
     "babel-cli": "6.26.0",
     "babel-plugin-module-resolver": "3.1.1",
     "bitcore-lib": "0.15.0",
@@ -44,7 +46,6 @@
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.4.1",
-    "@types/node-fetch": "1.6.9",
     "husky": "0.14.3",
     "lint-staged": "7.2.2",
     "nyc": "github:poetapp/nyc#fbc2ed1",
