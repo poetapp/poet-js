@@ -1,5 +1,4 @@
 export * from './Claim'
 export * from './Exceptions'
-export * from './Insight'
 export * from './Interfaces'
 export * from './Interval'
