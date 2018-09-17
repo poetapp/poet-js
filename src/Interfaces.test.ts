@@ -21,7 +21,7 @@ const TheRaven: Work = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   issuer: 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   type: ClaimType.Work,
-  issued: '2017-11-13T15:00:00.000Z',
+  issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
@@ -37,7 +37,7 @@ const Me: Identity = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   issuer: 'did:po.et:1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   type: ClaimType.Identity,
-  issued: '2017-11-13T15:00:00.000Z',
+  issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
     publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
   },

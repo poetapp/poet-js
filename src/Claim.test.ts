@@ -53,21 +53,21 @@ export const Issuer: any = {
 
 const makeClaim = (claim: ClaimAttributes) => {
   const issuer = TheRaven.issuer
-  const issued = '2017-12-11T22:54:40.261Z'
+  const issuanceDate = '2017-12-11T22:54:40.261Z'
   const type = ClaimType.Work
   return {
     issuer,
-    issued,
+    issuanceDate,
     type,
     claim,
   }
 }
 
 const TheRaven: Work = {
-  id: 'c00eead2e2db1f37f1750d98356c389f5f6fc0ee5f376a34597615da62689dd8',
+  id: '77c82940875003fac1cf992c5cb62e0db6b8714738b8a03d64f8eacf22008009',
   type: ClaimType.Work,
   issuer: 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  issued: '2017-11-13T15:00:00.000Z',
+  issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
@@ -109,16 +109,16 @@ const canonicalRaven =
   '_:c14n0 <http://schema.org/text> "Once upon a midnight dreary..." .\n' +
   '_:c14n1 <http://purl.org/dc/terms/created> "2017-11-13T15:00:00.000Z" .\n' +
   '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/Organization> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
+  '_:c14n1 <http://schema.org/additionalType> "Work" .\n' +
+  '_:c14n1 <http://schema.org/string> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n'
 
 const expectedCanonicalDoc =
   '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
   '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
   '_:c14n1 <http://purl.org/dc/terms/created> "2017-12-11T22:54:40.261Z" .\n' +
   '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/Organization> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n'
+  '_:c14n1 <http://schema.org/additionalType> "Work" .\n' +
+  '_:c14n1 <http://schema.org/string> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n'
 
 const sign = signClaim(signingOptions)
 
@@ -203,7 +203,7 @@ describe('Claim', async (should: any) => {
       given: 'A claim',
       should: 'generate an id for the claim',
       actual: await getClaimId(claim),
-      expected: '8500395b29e3ce3dee704cd5ad1dadc7daf0a49e481761a03582807f54bfdfc1',
+      expected: '4d1818b5c17bfc924324dabb08c655a08a14a2d0fda9955dcb35e6abecf5b7f0',
     })
   }
 
@@ -268,7 +268,7 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    const claimId = await getClaimId({ ...TheRaven, issued: '2017-09-13T15:00:00.000Z' }).catch(returnError)
+    const claimId = await getClaimId({ ...TheRaven, issuanceDate: '2017-09-13T15:00:00.000Z' }).catch(returnError)
 
     assert({
       given: 'a claim with extra dateCreated, the new dateCreated',

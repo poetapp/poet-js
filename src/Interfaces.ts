@@ -20,7 +20,7 @@ export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly '@context'?: any
   readonly id?: string
   readonly issuer: string
-  readonly issued: string
+  readonly issuanceDate: string
   readonly type: ClaimType
   readonly 'https://w3id.org/security#proof'?: any
   readonly claim: T
@@ -30,7 +30,7 @@ export interface SignedClaim<T extends ClaimAttributes = ClaimAttributes> {
   readonly '@context': any
   readonly id: string
   readonly issuer: string
-  readonly issued: string
+  readonly issuanceDate: string
   readonly type: ClaimType
   readonly 'https://w3id.org/security#proof': any
   readonly claim: T
@@ -70,7 +70,7 @@ const claimSchema = Joi.object({
     .uri({
       scheme: ['po.et', 'http', 'https', 'did'],
     }),
-  issued: Joi.string()
+  issuanceDate: Joi.string()
     .required()
     .isoDate(),
   type: Joi.string()
@@ -89,8 +89,8 @@ export function isClaim(object: any): object is Claim {
 // Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
 export const ClaimContext: ClaimContext = {
   '@context': {
-    issuer: 'http://schema.org/Organization',
-    issued: 'http://purl.org/dc/terms/created',
+    issuer: 'http://schema.org/string',
+    issuanceDate: 'http://purl.org/dc/terms/created',
     type: 'http://schema.org/additionalType',
     claim: 'http://schema.org/CreativeWork',
     author: 'http://schema.org/author',

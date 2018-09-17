@@ -13,7 +13,7 @@ export const canonizeClaim = async (document: Claim): Promise<string> => {
     '@context': document['@context'],
     type: document.type,
     issuer: document.issuer,
-    issued: document.issued,
+    issuanceDate: document.issuanceDate,
     claim: document.claim,
     ...ClaimContext,
   }
@@ -42,7 +42,7 @@ export const signClaim = (signingOptions: any) => async (document: Claim): Promi
       '@context': document['@context'],
       type: document.type,
       issuer: document.issuer,
-      issued: document.issued,
+      issuanceDate: document.issuanceDate,
       claim: document.claim,
       ...ClaimContext,
     },
@@ -71,7 +71,7 @@ export const createClaim = async (issuer: any, type: ClaimType, claimAttributes:
     id: '',
     type,
     issuer: issuer.id,
-    issued: new Date().toISOString(),
+    issuanceDate: new Date().toISOString(),
     claim: { ...claimAttributes },
   }
   const id = await getClaimId(claim)
