@@ -34,6 +34,8 @@
     "url": "https://github.com/poetapp/poet-js/issues"
   },
   "dependencies": {
+    "@paralleldrive/feature-toggles": "1.0.3",
+    "@types/cuid": "1.3.0",
     "@types/joi": "13.4.4",
     "babel-cli": "6.26.0",
     "babel-plugin-module-resolver": "3.1.1",

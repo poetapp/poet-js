@@ -68,7 +68,7 @@ const claimSchema = Joi.object({
   issuer: Joi.string()
     .required()
     .uri({
-      scheme: ['po.et', 'http', 'https', 'did'],
+      scheme: ['po.et', 'http', 'https', 'did', 'data'],
     }),
   issuanceDate: Joi.string()
     .required()

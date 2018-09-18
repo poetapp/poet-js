@@ -20,8 +20,7 @@ const testPrivateKeyEd25519Base58: string =
 
 const testOwnerUrl = 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8'
 
-export const TestPublicKeyUrl =
-  'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8#publicKey'
+export const TestPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
 
 export const testPublicKeyEd25519: any = {
   '@context': jsig.SECURITY_CONTEXT_URL,
@@ -35,9 +34,6 @@ export const testPublicKeyEd25519Owner: any = {
   '@context': jsig.SECURITY_CONTEXT_URL,
   id: testOwnerUrl,
   publicKey: [testPublicKeyEd25519],
-  'https://example.org/special-authentication': {
-    publicKey: testPublicKeyEd25519.id,
-  },
 }
 
 export const signingOptions: any = {
@@ -66,7 +62,7 @@ const makeClaim = (claim: ClaimAttributes) => {
 const TheRaven: Work = {
   id: '77c82940875003fac1cf992c5cb62e0db6b8714738b8a03d64f8eacf22008009',
   type: ClaimType.Work,
-  issuer: 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
+  issuer: testOwnerUrl,
   issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
     name: 'The Raven',
@@ -84,7 +80,7 @@ const TheRaven: Work = {
         '@value': '2018-09-05T20:19:20Z',
       },
       'http://purl.org/dc/terms/creator': {
-        '@id': testPublicKeyEd25519.id,
+        '@id': `data:,${testPublicKeyEd25519Base58}`,
       },
       'https://w3id.org/security#jws':
         'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
@@ -97,8 +93,6 @@ export const VerificationOptions: object = {
   publicKey: testPublicKeyEd25519,
   publicKeyOwner: testPublicKeyEd25519Owner,
 }
-
-const verifier = isValidSignature(VerificationOptions)
 
 const canonicalRaven =
   '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
@@ -121,6 +115,7 @@ const expectedCanonicalDoc =
   '_:c14n1 <http://schema.org/string> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n'
 
 const sign = signClaim(signingOptions)
+const verify = isValidSignature(VerificationOptions)
 
 describe('Claim', async (should: any) => {
   const { assert } = should('')
@@ -222,9 +217,9 @@ describe('Claim', async (should: any) => {
     const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
 
     assert({
-      given: 'the result of isValidSignature of Claim with a valid signature',
+      given: 'a claim with a valid signature, isValidSignature',
       should: 'should return true',
-      actual: await verifier(claim),
+      actual: await verify(claim),
       expected: true,
     })
   }
@@ -322,17 +317,6 @@ describe('Claim', async (should: any) => {
       actual: claimId1 !== claimId2,
       expected: true,
     })
-  }
-
-  {
-    // const signedClaim = await sign(TheRaven)
-    //
-    // assert({
-    //   given: 'a signature of a Claim',
-    //   should: 'be the signature equal to of work signature',
-    //   actual: signedClaim['https://w3id.org/security#proof']['@graph']['https://w3id.org/security#jws'],
-    //   expected: TheRaven['https://w3id.org/security#proof']['@graph']['https://w3id.org/security#jws'],
-    // })
   }
 
   {

@@ -1,5 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import * as crypto from 'crypto'
+// import * as cuid from 'cuid'
 import * as jsonld from 'jsonld'
 import * as jsig from 'jsonld-signatures'
 
