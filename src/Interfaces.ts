@@ -71,6 +71,7 @@ export function isClaim(object: any): object is Claim {
 // WARNING: This MUST account for ALL of the attributes in a Claim, except for id, @context, and signature.
 // Otherwise those attributes without context will be left out of the canonized/signed claim.
 // Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
+// TODO: make sure we allow customers to attach their own context
 export const ClaimContext: ClaimContext = {
   '@context': {
     issuer: 'http://schema.org/string',
