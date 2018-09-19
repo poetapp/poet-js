@@ -49,12 +49,12 @@
     "node-fetch": "1.7.3"
   },
   "devDependencies": {
-    "@po.et/tslint-rules": "1.4.2",
+    "@po.et/tslint-rules": "1.4.3",
     "@types/node-fetch": "1.6.9",
     "husky": "0.14.3",
     "lint-staged": "7.2.2",
     "nyc": "github:poetapp/nyc#fbc2ed1",
-    "prettier": "1.14.2",
+    "prettier": "1.14.3",
     "riteway": "2.0.7",
     "semantic-release": "15.9.15",
     "sinon": "6.3.4",
