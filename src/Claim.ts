@@ -25,7 +25,7 @@ export const canonizeClaim = async (document: Claim): Promise<string> => {
   signClaim = (signingOptions: any) => async (document: Claim): Promise<Claim>
     signingOptions:
       algorithm: 'Ed25519VerificationKey2018'
-      creator: 'po.et://entities/:entityid/publicKey -OR- did:po.et:<publicKeyValue>
+      creator: 'data:,<base58PublicKeyValue>'
       privateKeyBase58: base58 rendition of an Ed22159 private key
     document: any valid Claim
   NOTE: If you choose to use a different signing algorhithm, the other signingOption keys may differ.
