@@ -10,12 +10,6 @@ export interface ClaimAttributes {
   readonly [key: string]: string
 }
 
-export interface ClaimSignature {
-  readonly '@graph': {
-    readonly [key: string]: any
-  }
-}
-
 export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly '@context'?: any
   readonly id?: string
@@ -23,16 +17,6 @@ export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
   readonly issuanceDate: string
   readonly type: ClaimType
   readonly 'https://w3id.org/security#proof'?: any
-  readonly claim: T
-}
-
-export interface SignedClaim<T extends ClaimAttributes = ClaimAttributes> {
-  readonly '@context': any
-  readonly id: string
-  readonly issuer: string
-  readonly issuanceDate: string
-  readonly type: ClaimType
-  readonly 'https://w3id.org/security#proof': any
   readonly claim: T
 }
 

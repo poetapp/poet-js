@@ -14,6 +14,8 @@ import { Claim, ClaimType, ClaimAttributes, Work, isClaim } from './Interfaces'
 // bs58.encode(keypair.publicKey)
 const testPublicKeyEd25519Base58: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe'
 
+const testBadPublicKey: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWT5'
+
 // bs58.encode(keypair.privateKey)
 const testPrivateKeyEd25519Base58: string =
   'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
@@ -225,6 +227,35 @@ describe('Claim', async (should: any) => {
   }
 
   {
+    const emptyVerify = isValidSignature({})
+    const badClaim = {
+      ...TheRaven,
+      'https://w3id.org/security#proof': {
+        '@graph': {
+          '@type': 'https://w3id.org/security#Ed25519Signature2018',
+          created: {
+            '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+            '@value': '2018-09-05T20:19:20Z',
+          },
+          'http://purl.org/dc/terms/creator': {
+            '@id': `data:,${testBadPublicKey}`,
+          },
+          'https://w3id.org/security#jws':
+            'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
+            'gzo084pGpKmbOewYFrXfmAVhXnC4UPzaPUjaU9BDw',
+        },
+      },
+    }
+
+    assert({
+      given: 'a claim with an invalid public key, isValidSignature',
+      should: 'return false',
+      actual: await emptyVerify(badClaim),
+      expected: false,
+    })
+  }
+
+  {
     assert({
       given: 'a claim id',
       should: 'be equal to the work id',
@@ -394,14 +425,33 @@ describe('Claim', async (should: any) => {
     })
   }
 
-  // {
-  //   assert({
-  //     given: 'a claim with an invalid publicKey',
-  //     should: `return false`,
-  //     actual: await isValidClaim({ ...TheRaven }),
-  //     expected: false,
-  //   })
-  // }
+  {
+    const badClaim = {
+      ...TheRaven,
+      'https://w3id.org/security#proof': {
+        '@graph': {
+          '@type': 'https://w3id.org/security#Ed25519Signature2018',
+          created: {
+            '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+            '@value': '2018-09-05T20:19:20Z',
+          },
+          'http://purl.org/dc/terms/creator': {
+            '@id': `data:,${testBadPublicKey}`,
+          },
+          'https://w3id.org/security#jws':
+            'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
+            'gzo084pGpKmbOewYFrXfmAVhXnC4UPzaPUjaU9BDw',
+        },
+      },
+    }
+
+    assert({
+      given: 'a claim with an invalid publicKey, isValidClaim',
+      should: `return false`,
+      actual: await isValidClaim(badClaim),
+      expected: false,
+    })
+  }
 
   {
     assert({

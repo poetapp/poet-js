@@ -1,6 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import * as crypto from 'crypto'
-// import * as cuid from 'cuid'
+import * as cuid from 'cuid'
 import * as jsonld from 'jsonld'
 import * as jsig from 'jsonld-signatures'
 
@@ -51,8 +51,8 @@ export const signClaim = (signingOptions: any) => async (document: Claim): Promi
   )
 }
 
-export const isValidSignature = (verfiedOptions: any) => async (claim: Claim): Promise<boolean> => {
-  const results = await jsig.verify(claim, verfiedOptions)
+export const isValidSignature = (verfiedOptions: any = {}) => async (claim: Claim): Promise<boolean> => {
+  const results = await jsig.verify(claim, { checkNonce: cuid.isCuid, ...verfiedOptions })
   return results.verified
 }
 
@@ -76,13 +76,14 @@ export const createClaim = async (issuer: any, type: ClaimType, claimAttributes:
     claim: { ...claimAttributes },
   }
   const id = await getClaimId(claim)
-  const sign = signClaim(issuer.signingOptions)
+  const sign = signClaim({ nonce: cuid(), ...issuer.signingOptions })
   return await sign({
     ...claim,
     id,
   })
 }
 
-// Duplicate of poet-js?
-export const isValidClaim = async (claim: {}): Promise<boolean> =>
-  isClaim(claim) && isValidSignature(claim) && (await getClaimId(claim)) === claim.id
+export const isValidClaim = async (claim: {}, verificationOptions: any = {}): Promise<boolean> =>
+  isClaim(claim) &&
+  (await isValidSignature({ checkNonce: cuid.isCuid, ...verificationOptions })(claim)) &&
+  (await getClaimId(claim)) === claim.id
