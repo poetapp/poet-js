@@ -51,8 +51,8 @@ export const signClaim = (signingOptions: any) => async (document: Claim): Promi
   )
 }
 
-export const isValidSignature = (verfiedOptions: any = {}) => async (claim: Claim): Promise<boolean> => {
-  const results = await jsig.verify(claim, { checkNonce: cuid.isCuid, ...verfiedOptions })
+export const isValidSignature = (verifiedOptions: any = {}) => async (claim: Claim): Promise<boolean> => {
+  const results = await jsig.verify(claim, { checkNonce: cuid.isCuid, ...verifiedOptions })
   return results.verified
 }
 
