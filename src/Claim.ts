@@ -84,6 +84,4 @@ export const createClaim = async (issuer: any, type: ClaimType, claimAttributes:
 }
 
 export const isValidClaim = async (claim: {}, verificationOptions: any = {}): Promise<boolean> =>
-  isClaim(claim) &&
-  (await isValidSignature({ checkNonce: cuid.isCuid, ...verificationOptions })(claim)) &&
-  (await getClaimId(claim)) === claim.id
+  isClaim(claim) && (await isValidSignature(verificationOptions)(claim)) && (await getClaimId(claim)) === claim.id
