@@ -63,10 +63,10 @@ const response = await fetch(poetNodeUrl + '/works/', {
   body: JSON.stringify(claim)
 })
 ```
-Note, if you are creating an identity claim, your IDP will be the issuer of the claim. Frost is be one such IDP. If you are self-serving your own
-IDP, you will have to create an IdentityClaim for the IDP from which you can issue all further identities. Currently the
-Po.et network uses the [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), which requires a Base58 form
-of the Ed25519 Public Key.
+Note, if you are creating an identity claim, your IDP will be the issuer of the claim. Frost is one such IDP.
+If you are self-serving your own identity calim, your identity provider (IDP) will have to create an IdentityClaim for 
+itself from which you can issue all further identities. Currently the Po.et network uses the [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), 
+which requires a Base58 form of the Ed25519 Public Key.
 
 ### Example 2: createClaim for Identity Claims <!-- TODO: link to glossary -->
 

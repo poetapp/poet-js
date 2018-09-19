@@ -33,11 +33,11 @@ export const canonizeClaim = async (document: Claim): Promise<string> => {
 */
 export const signClaim = (signingOptions: any) => async (document: Claim): Promise<Claim> => {
   if (!document.id) throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field')
-  const generatedId = await getClaimId(document)
-  if (document.id !== generatedId)
-    throw new IllegalArgumentException('Cannot sign a claim whose id hasa been altered or generated incorrectly.')
   if (signingOptions.creater === null || signingOptions.creator === '')
     throw new IllegalArgumentException('Cannot sign a claim with an invalid creator in the signing options.')
+  const generatedId = await getClaimId(document)
+  if (document.id !== generatedId)
+    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
   return await jsig.sign(
     {
       '@context': document['@context'],
@@ -69,7 +69,6 @@ export const getClaimId = async (claim: Claim): Promise<string> => {
 export const createClaim = async (issuer: any, type: ClaimType, claimAttributes: ClaimAttributes): Promise<Claim> => {
   const claim: Claim = {
     ...ClaimContext,
-    id: '',
     type,
     issuer: issuer.id,
     issuanceDate: new Date().toISOString(),
