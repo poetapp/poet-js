@@ -78,6 +78,7 @@ export function isIdentity(claim: Claim): claim is Identity {
 export interface PoetAnchor {
   readonly prefix: string
   readonly version: ReadonlyArray<number>
+  readonly storageProtocol: StorageProtocol
   readonly ipfsDirectoryHash: string
 }
 
@@ -88,4 +89,8 @@ export interface PoetTransactionAnchor extends PoetAnchor {
 export interface PoetBlockAnchor extends PoetTransactionAnchor {
   readonly blockHeight: number
   readonly blockHash: string
+}
+
+export enum StorageProtocol {
+  IPFS = 0,
 }
