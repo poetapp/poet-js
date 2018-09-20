@@ -75,16 +75,17 @@ export function isIdentity(claim: Claim): claim is Identity {
   return claim.type === ClaimType.Identity
 }
 
-export interface TransactionPoetTimestamp {
-  readonly transactionId: string
-  readonly outputIndex: number
+export interface PoetAnchor {
   readonly prefix: string
   readonly version: ReadonlyArray<number>
   readonly ipfsDirectoryHash: string
 }
 
-export interface PoetTimestamp extends TransactionPoetTimestamp {
+export interface PoetTransactionAnchor extends PoetAnchor {
+  readonly transactionId: string
+}
+
+export interface PoetBlockAnchor extends PoetTransactionAnchor {
   readonly blockHeight: number
   readonly blockHash: string
-  readonly ipfsFileHash?: string
 }
