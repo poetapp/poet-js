@@ -46,7 +46,8 @@
     "joi": "13.6.0",
     "jsonld": "1.1.0",
     "jsonld-signatures": "2.3.0",
-    "node-fetch": "1.7.3"
+    "node-fetch": "1.7.3",
+    "parse-data-url": "1.0.0"
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.4.3",
