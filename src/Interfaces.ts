@@ -7,23 +7,72 @@ export enum ClaimType {
 }
 
 export interface ClaimAttributes {
-  readonly [key: string]: string
+  readonly [key: string]: unknown
 }
 
-export interface Claim<T extends ClaimAttributes = ClaimAttributes> {
+export interface Claim {
   readonly '@context'?: any
   readonly id?: string
   readonly issuer: string
   readonly issuanceDate: string
   readonly type: ClaimType
   readonly 'https://w3id.org/security#proof'?: any
-  readonly claim: T
+  readonly claim: ClaimAttributes
 }
 
-interface ClaimContext {
+export interface ClaimContext {
   readonly '@context': {
-    readonly [key: string]: string
+    readonly [key: string]: unknown
   }
+}
+
+export interface ClaimTypeContexts {
+  readonly [key: string]: ClaimContext
+}
+
+// WARNING: This MUST account for ALL of the attributes in a Claim, except for id, @context, and signature.
+// Otherwise those attributes without context will be left out of the canonized/signed claim.
+// Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
+// TODO: make sure we allow customers to attach their own context
+export const DefaultClaimContext: ClaimContext = {
+  '@context': {
+    cred: 'https://w3id.org/credentials#',
+    schema: 'http://schema.org/',
+
+    issuer: 'cred:issuer',
+    issuanceDate: 'cred:issued',
+    type: 'http://schema.org/additionalType',
+    claim: 'http://schema.org/Thing', // The most generic definition in schema.org
+  },
+}
+
+export const DefaultWorkClaimContext: ClaimContext = {
+  '@context': {
+    schema: 'http://schema.org/',
+
+    author: 'schema:author',
+    claim: 'http://schema.org/CreativeWork',
+    dateCreated: 'schema:dateCreated',
+    datePublished: 'schema:datePublished',
+    name: 'schema:name',
+    keywords: 'schema:keywords',
+    text: 'schema:text',
+    url: 'schema:url',
+  },
+}
+
+export const DefaultIdentityClaimContext: ClaimContext = {
+  '@context': {
+    sec: 'https://w3id.org/security#',
+
+    publicKey: 'sec:publicKeyBase58',
+    profileUrl: 'sec:owner',
+  },
+}
+
+export const claimTypeDefaults: ClaimTypeContexts = {
+  Work: DefaultWorkClaimContext,
+  Identity: DefaultIdentityClaimContext,
 }
 
 const signatureSchema = {
@@ -68,44 +117,9 @@ export function isClaim(object: any): object is Claim {
   return Joi.validate(object, claimSchema).error === null
 }
 
-// WARNING: This MUST account for ALL of the attributes in a Claim, except for id, @context, and signature.
-// Otherwise those attributes without context will be left out of the canonized/signed claim.
-// Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
-// TODO: make sure we allow customers to attach their own context
-export const ClaimContext: ClaimContext = {
-  '@context': {
-    issuer: 'http://schema.org/string',
-    issuanceDate: 'http://purl.org/dc/terms/created',
-    type: 'http://schema.org/additionalType',
-    claim: 'http://schema.org/CreativeWork',
-    author: 'http://schema.org/author',
-    dateCreated: 'http://schema.org/dateCreated',
-    datePublished: 'http://schema.org/datePublished',
-    name: 'http://schema.org/name',
-    keywords: 'http://schema.org/keywords',
-    text: 'http://schema.org/text',
-    url: 'http://schema.org/url',
-  },
-}
+export interface Work extends Claim {}
 
-export interface WorkAttributes extends ClaimAttributes {
-  readonly author: string
-  readonly dateCreated: string
-  readonly datePublished: string
-  readonly keywords?: string
-  readonly name: string
-  readonly text?: string
-  readonly url?: string
-}
-
-export interface Work extends Claim<WorkAttributes> {}
-
-export interface Identity extends Claim<IdentityAttributes> {}
-
-export interface IdentityAttributes extends ClaimAttributes {
-  readonly profileUrl?: string
-  readonly publicKey: string
-}
+export interface Identity extends Claim {}
 
 export function isWork(claim: Claim): claim is Work {
   return claim.type === ClaimType.Work
