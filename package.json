@@ -17,7 +17,8 @@
     "build-babel": "cp .babelrc dist/ts && babel dist/ts/ -d dist/babel --copy-files",
     "prepublish": "npm run build && npm run test:unit",
     "semantic-release": "semantic-release",
-    "precommit": "npm run build && lint-staged"
+    "precommit": "npm run build && lint-staged",
+    "travis-deploy-once": "travis-deploy-once"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -53,6 +54,7 @@
     "riteway": "2.0.7",
     "semantic-release": "15.9.16",
     "sinon": "6.3.4",
+    "travis-deploy-once": "5.0.8",
     "ts-node": "7.0.1",
     "typescript": "3.0.3"
   },
