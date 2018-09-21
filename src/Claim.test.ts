@@ -1,10 +1,8 @@
 /* tslint:disable:no-relative-imports */
 import * as jsig from 'jsonld-signatures'
 import { describe } from 'riteway'
-
-// import { createClaim, isValidSignature, getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
-import { createClaim, isValidSignature, getClaimId, signClaim, isValidClaim, canonizeClaim } from './Claim'
-import { Claim, ClaimType, ClaimAttributes, Work, isClaim } from './Interfaces'
+import { canonizeClaim, createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
+import { Claim, ClaimAttributes, ClaimType, Identity, isClaim, Work } from './Interfaces'
 
 // Generated:
 // const forge = require('node-forge')
@@ -20,7 +18,7 @@ const testBadPublicKey: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWT5'
 const testPrivateKeyEd25519Base58: string =
   'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
-const testOwnerUrl = 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8'
+const testOwnerUrl = `data:,${testPublicKeyEd25519Base58}`
 
 export const TestPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
 
@@ -30,12 +28,6 @@ export const testPublicKeyEd25519: any = {
   type: 'Ed25519VerificationKey2018',
   owner: testOwnerUrl,
   publicKeyBase58: testPublicKeyEd25519Base58,
-}
-
-export const testPublicKeyEd25519Owner: any = {
-  '@context': jsig.SECURITY_CONTEXT_URL,
-  id: testOwnerUrl,
-  publicKey: [testPublicKeyEd25519],
 }
 
 export const signingOptions: any = {
@@ -62,7 +54,7 @@ const makeClaim = (claim: ClaimAttributes) => {
 }
 
 const TheRaven: Work = {
-  id: '77c82940875003fac1cf992c5cb62e0db6b8714738b8a03d64f8eacf22008009',
+  id: '2b28274e3e88304f7baacec37c9959f8b237955c4e242f882150090b033966f4',
   type: ClaimType.Work,
   issuer: testOwnerUrl,
   issuanceDate: '2017-11-13T15:00:00.000Z',
@@ -91,33 +83,59 @@ const TheRaven: Work = {
   },
 }
 
-export const VerificationOptions: object = {
-  publicKey: testPublicKeyEd25519,
-  publicKeyOwner: testPublicKeyEd25519Owner,
+const Me: Identity = {
+  id: '2b28274e3e88304f7baacec37c9959f8b237955c4e242f882150090b033966f4',
+  type: ClaimType.Identity,
+  issuer: testOwnerUrl,
+  issuanceDate: '2017-11-13T15:00:00.000Z',
+  claim: {
+    publicKey: testPublicKeyEd25519Base58,
+  },
+  'https://w3id.org/security#proof': {
+    '@graph': {
+      '@type': 'https://w3id.org/security#Ed25519Signature2018',
+      created: {
+        '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+        '@value': '2018-09-05T20:19:20Z',
+      },
+      'http://purl.org/dc/terms/creator': {
+        '@id': `data:,${testPublicKeyEd25519Base58}`,
+      },
+      'https://w3id.org/security#jws':
+        'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
+        'gzo084pGpKmbOewYFrXfmAVhXnC4UPzaPUjaU9BDw',
+    },
+  },
 }
 
 const canonicalRaven =
-  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n0 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n0 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n0 <http://schema.org/keywords> "poem" .\n' +
-  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n0 <http://schema.org/text> "Once upon a midnight dreary..." .\n' +
-  '_:c14n1 <http://purl.org/dc/terms/created> "2017-11-13T15:00:00.000Z" .\n' +
-  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n1 <http://schema.org/string> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n'
+  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
+  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
+  '_:c14n0 <https://w3id.org/credentials#issued> "2017-11-13T15:00:00.000Z" .\n' +
+  '_:c14n0 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
+  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
+  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
+  '_:c14n1 <http://schema.org/keywords> "poem" .\n' +
+  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
+  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
 
 const expectedCanonicalDoc =
-  '_:c14n0 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n0 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n1 <http://purl.org/dc/terms/created> "2017-12-11T22:54:40.261Z" .\n' +
-  '_:c14n1 <http://schema.org/CreativeWork> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n1 <http://schema.org/string> "po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8" .\n'
+  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
+  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
+  '_:c14n0 <https://w3id.org/credentials#issued> "2017-12-11T22:54:40.261Z" .\n' +
+  '_:c14n0 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
+  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
+  '_:c14n1 <http://schema.org/name> "The Raven" .\n'
+
+const canonicalMe =
+  '_:c14n0 <https://w3id.org/security#publicKeyBase58> "JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
+  '_:c14n1 <http://schema.org/Thing> _:c14n0 .\n' +
+  '_:c14n1 <http://schema.org/additionalType> "Identity" .\n' +
+  '_:c14n1 <https://w3id.org/credentials#issued> "2017-11-13T15:00:00.000Z" .\n' +
+  '_:c14n1 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n'
 
 const sign = signClaim(signingOptions)
-const verify = isValidSignature(VerificationOptions)
 
 describe('Claim', async (should: any) => {
   const { assert } = should('')
@@ -125,10 +143,17 @@ describe('Claim', async (should: any) => {
 
   {
     assert({
-      given: 'a complete claim',
+      given: 'a complete work claim',
       should: 'include all items in canonical doc',
       actual: await canonizeClaim(TheRaven),
       expected: canonicalRaven,
+    })
+
+    assert({
+      given: 'a complete identity claim',
+      should: 'include all items in canonical doc',
+      actual: await canonizeClaim(Me),
+      expected: canonicalMe,
     })
   }
 
@@ -191,26 +216,35 @@ describe('Claim', async (should: any) => {
   }
 
   {
-    const claim = makeClaim({
+    const workClaim = makeClaim({
       name: TheRaven.claim.name,
       author: TheRaven.claim.author,
     })
 
     assert({
-      given: 'A claim',
+      given: 'A work claim',
       should: 'generate an id for the claim',
-      actual: await getClaimId(claim),
-      expected: '4d1818b5c17bfc924324dabb08c655a08a14a2d0fda9955dcb35e6abecf5b7f0',
+      actual: await getClaimId(workClaim),
+      expected: '3129d8056c04a00d3a84beaf38eed8aa25e2b7296ac08f8881a67c5cfcb1525e',
+    })
+
+    const identityClaim = makeClaim({ ...Me.claim })
+
+    assert({
+      given: 'an identity claim',
+      should: 'generate an identityClaim for the claim',
+      actual: await getClaimId(identityClaim),
+      expected: 'bcc2843e20994e8c686c99fb92cd2feb0f3ab8c69e79e09e41f83635a6cd7fb9',
     })
   }
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+    const workClaim: any = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
 
     assert({
       given: 'the public key of a Claim',
       should: 'be equal to public key of key',
-      actual: claim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
+      actual: workClaim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
       expected: TestPublicKeyUrl,
     })
   }
@@ -221,13 +255,12 @@ describe('Claim', async (should: any) => {
     assert({
       given: 'a claim with a valid signature, isValidSignature',
       should: 'should return true',
-      actual: await verify(claim),
+      actual: await isValidSignature(claim),
       expected: true,
     })
   }
 
   {
-    const emptyVerify = isValidSignature({})
     const badClaim = {
       ...TheRaven,
       'https://w3id.org/security#proof': {
@@ -250,7 +283,7 @@ describe('Claim', async (should: any) => {
     assert({
       given: 'a claim with an invalid public key, isValidSignature',
       should: 'return false',
-      actual: await emptyVerify(badClaim),
+      actual: await isValidSignature(badClaim),
       expected: false,
     })
   }

@@ -5,18 +5,31 @@ import * as jsonld from 'jsonld'
 import * as jsig from 'jsonld-signatures'
 
 import { IllegalArgumentException } from './Exceptions'
-import { Claim, ClaimAttributes, ClaimType, ClaimContext, isClaim } from './Interfaces'
+import {
+  Claim,
+  ClaimAttributes,
+  ClaimType,
+  ClaimContext,
+  DefaultClaimContext,
+  claimTypeDefaults,
+  isClaim,
+} from './Interfaces'
+import { DataParser } from './util/DataParser'
 
+DataParser(jsonld)
 jsig.use('jsonld', jsonld)
 
 export const canonizeClaim = async (document: Claim): Promise<string> => {
   const contextualClaim = {
-    '@context': document['@context'],
+    '@context': {
+      ...DefaultClaimContext['@context'],
+      ...claimTypeDefaults[document.type]['@context'],
+      ...document['@context'],
+    },
     type: document.type,
     issuer: document.issuer,
     issuanceDate: document.issuanceDate,
     claim: document.claim,
-    ...ClaimContext,
   }
   return jsonld.canonize(contextualClaim)
 }
@@ -45,14 +58,14 @@ export const signClaim = (signingOptions: any) => async (document: Claim): Promi
       issuer: document.issuer,
       issuanceDate: document.issuanceDate,
       claim: document.claim,
-      ...ClaimContext,
     },
     signingOptions
   )
 }
 
-export const isValidSignature = (verifiedOptions: any = {}) => async (claim: Claim): Promise<boolean> => {
-  const results = await jsig.verify(claim, { checkNonce: cuid.isCuid, ...verifiedOptions })
+export const isValidSignature = async (claim: Claim): Promise<boolean> => {
+  const results: any = await jsig.verify(claim, { checkNonce: cuid.isCuid })
+
   return results.verified
 }
 
@@ -66,9 +79,14 @@ export const getClaimId = async (claim: Claim): Promise<string> => {
     .toString('hex')
 }
 
-export const createClaim = async (issuer: any, type: ClaimType, claimAttributes: ClaimAttributes): Promise<Claim> => {
+export const createClaim = async (
+  issuer: any,
+  type: ClaimType,
+  claimAttributes: ClaimAttributes,
+  context: ClaimContext = { '@context': {} }
+): Promise<Claim> => {
   const claim: Claim = {
-    ...ClaimContext,
+    '@context': { ...DefaultClaimContext['@context'], ...claimTypeDefaults[type]['@context'], ...context['@context'] },
     type,
     issuer: issuer.id,
     issuanceDate: new Date().toISOString(),
@@ -82,5 +100,5 @@ export const createClaim = async (issuer: any, type: ClaimType, claimAttributes:
   })
 }
 
-export const isValidClaim = async (claim: {}, verificationOptions: any = {}): Promise<boolean> =>
-  isClaim(claim) && (await isValidSignature(verificationOptions)(claim)) && (await getClaimId(claim)) === claim.id
+export const isValidClaim = async (claim: {}): Promise<boolean> =>
+  isClaim(claim) && (await isValidSignature(claim)) && (await getClaimId(claim)) === claim.id
