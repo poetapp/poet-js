@@ -10,4 +10,5 @@ script:
   - npm run build
   - npm run coverage
 after_success:
-  - npm run travis-deploy-once "npm run semantic-release"
+  - '[[ $TRAVIS_BRANCH = "master" && $TRAVIS_PULL_REQUEST_BRANCH = "" ]] &&
+    (npm run travis-deploy-once "npm run semantic-release")'
