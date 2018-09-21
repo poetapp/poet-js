@@ -5,7 +5,38 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![Join the chat at https://gitter.im/poetapp/Lobby](https://badges.gitter.im/poetapp/Lobby.svg)](https://gitter.im/poetapp/Lobby)
 
-Po.et JS is a small library that provides methods to easily create and sign Po.et Claims. 
+Po.et JS is a small library that provides methods to easily create and sign Po.et Claims according to the 
+[Verifiable Credentials Data Model](https://w3c.github.io/vc-data-model). These claims are [JSON-LD](https://w3c.github.io/json-ld-syntax/)
+documents. As such, you can define your own JSON-LD `@context` to map your submitted Claims.
+
+Po.et does provide a default `@context object` that you can extend or override in the `createClaim` function. The current defaults are as follows:
+
+```ts  
+'@context': {
+   cred: 'https://w3id.org/credentials#',
+   schema: 'http://schema.org/',
+   sec: 'https://w3id.org/security#',
+   
+   // Verifiable Credentials (Claim) metadata
+   issuer: 'cred:issuer',
+   issuanceDate: 'cred:issued',
+   type: 'http://schema.org/additionalType',
+   claim: 'http://schema.org/Thing', // The most generic definition in schema.org
+   
+   // Work Claim Defaults
+   author: 'schema:author',
+   dateCreated: 'schema:dateCreated',
+   datePublished: 'schema:datePublished',
+   name: 'schema:name',
+   keywords: 'schema:keywords',
+   text: 'schema:text',
+   url: 'schema:url',
+   
+   // Identity Claim Defaults
+   publicKey: 'sec:publicKeyBase58',
+   profileUrl: 'sec:owner',
+},
+```
 
 ## Installation
 
@@ -15,13 +46,13 @@ npm i @po.et/poet-js
 
 ## Usage
 
-The main function you'll be using is `createClaim`:
-
 The supported mechanism for identifying an Issuer is:
 
 * Use the [data URL scheme](https://tools.ietf.org/html/rfc2397) to specify the Issuer's public key. Note that the 
 Po.et network currently uses [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), which requires a Base58
 form of the Ed25519 Public Key.
+
+The main function you'll be using is `createClaim`:
 
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
 
@@ -40,7 +71,7 @@ const Issuer = {
   id: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
   signingOptions: {
     algorithm: 'Ed25519Signature2018',
-    creator: 'po.et://entities/:identityClaimId/publicKey',
+    creator: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',,
     privateKeyBase58: 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 }
 
@@ -63,6 +94,11 @@ const response = await fetch(poetNodeUrl + '/works/', {
   body: JSON.stringify(claim)
 })
 ```
+
+### Example 2: createClaim for Work Claim, with overriding context
+
+
+
 Note, if you are creating an identity claim, your IDP will be the issuer of the claim. Frost is one such IDP.
 If you are self-serving your own identity calim, your identity provider (IDP) will have to create an IdentityClaim for 
 itself from which you can issue all further identities. Currently the Po.et network uses the [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), 
@@ -85,10 +121,10 @@ const identityAttributes = {
 }
 
 const Issuer = {
-  id: 'data:,${publicKey}',
+  id: `data:,${publicKey}`,
   signingOptions: {
     algorithm: 'Ed25519Signature2018',
-    creator: 'data:,${publicKey}',
+    creator: `data:,${publicKey}`,
     privateKeyBase58: privateKey,
 }
 
