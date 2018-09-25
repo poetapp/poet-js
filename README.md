@@ -59,7 +59,7 @@ The main function you'll be using is `createClaim`:
 ```ts
 import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
 
-const workAttributes = {
+const workClaim = {
   name: 'The Raven',
   author: 'Edgar Allan Poe',
   tags: 'poem',
@@ -78,7 +78,7 @@ const Issuer = {
 const claim = createClaim(
   Issuer,
   ClaimType.Work,
-  workAttributes
+  workClaim
 )
 ```
 
