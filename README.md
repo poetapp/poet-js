@@ -73,6 +73,7 @@ const Issuer = {
     algorithm: 'Ed25519Signature2018',
     creator: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
     privateKeyBase58: 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
+  }
 }
 
 const claim = createClaim(
@@ -126,6 +127,7 @@ const Issuer = {
     algorithm: 'Ed25519Signature2018',
     creator: `data:,${publicKey}`,
     privateKeyBase58: privateKey,
+  }
 }
 
 const claim = createClaim(
