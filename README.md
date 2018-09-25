@@ -121,7 +121,7 @@ const identityAttributes = {
   publicKey,
 }
 
-const Issuer = {
+const issuer = {
   id: `data:,${publicKey}`,
   signingOptions: {
     algorithm: 'Ed25519Signature2018',
@@ -131,7 +131,7 @@ const Issuer = {
 }
 
 const claim = createClaim(
-  Issuer,
+  issuer,
   ClaimType.Identity,
   identityAttributes
 )
