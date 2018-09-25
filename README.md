@@ -65,15 +65,16 @@ const workClaim = {
   tags: 'poem',
   dateCreated: '',
   datePublished: '1845-01-29T03:00:00.000Z',
-  text: 'Once upon a midnight dreary...'
+  text: 'Once upon a midnight dreary...',
 }
+
 const issuer = {
   id: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
   signingOptions: {
     algorithm: 'Ed25519Signature2018',
     creator: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
     privateKeyBase58: 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
-  }
+  },
 }
 
 const claim = createClaim(
@@ -97,8 +98,6 @@ const response = await fetch(poetNodeUrl + '/works/', {
 ```
 
 ### Example 2: createClaim for Work Claim, with overriding context
-
-
 
 Note, if you are creating an identity claim, your IDP will be the issuer of the claim. [Frost](https://frost.po.et/) is one such IDP.
 If you are self-serving your own identity calim, your identity provider (IDP) will have to create an IdentityClaim for 
@@ -127,7 +126,7 @@ const issuer = {
     algorithm: 'Ed25519Signature2018',
     creator: `data:,${publicKey}`,
     privateKeyBase58: privateKey,
-  }
+  },
 }
 
 const claim = createClaim(
