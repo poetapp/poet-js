@@ -67,7 +67,7 @@ const workClaim = {
   datePublished: '1845-01-29T03:00:00.000Z',
   text: 'Once upon a midnight dreary...'
 }
-const Issuer = {
+const issuer = {
   id: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
   signingOptions: {
     algorithm: 'Ed25519Signature2018',
@@ -77,7 +77,7 @@ const Issuer = {
 }
 
 const claim = createClaim(
-  Issuer,
+  issuer,
   ClaimType.Work,
   workClaim
 )
