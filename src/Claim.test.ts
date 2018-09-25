@@ -4,6 +4,8 @@ import { describe } from 'riteway'
 import { canonizeClaim, createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
 import { Claim, ClaimAttributes, ClaimType, Identity, isClaim, Work } from './Interfaces'
 
+const returnError = (err: Error): Error => err
+
 // Generated:
 // const forge = require('node-forge')
 // const ed25519 = forge.pki.ed25519
@@ -166,9 +168,8 @@ const canonicalMe =
 
 const sign = signClaim(signingOptions)
 
-describe('Claim', async (should: any) => {
+describe('Claim.canonizeClaim', async (should: any) => {
   const { assert } = should('')
-  const returnError = (err: Error): Error => err
 
   {
     assert({
@@ -263,127 +264,10 @@ describe('Claim', async (should: any) => {
       expected: canonicalRavenBook,
     })
   }
+})
 
-  {
-    const workClaim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
-    })
-
-    const TheRavenId = '3129d8056c04a00d3a84beaf38eed8aa25e2b7296ac08f8881a67c5cfcb1525e'
-
-    assert({
-      given: 'A work claim',
-      should: 'generate an id for the claim',
-      actual: await getClaimId(workClaim),
-      expected: TheRavenId,
-    })
-
-    const identityClaim = makeClaim({ ...Me.claim })
-
-    assert({
-      given: 'an identity claim',
-      should: 'generate an identityClaim for the claim',
-      actual: await getClaimId(identityClaim),
-      expected: 'bcc2843e20994e8c686c99fb92cd2feb0f3ab8c69e79e09e41f83635a6cd7fb9',
-    })
-
-    const workClaim2 = makeClaim({
-      name: TheRavenBook.claim.name,
-      author: TheRavenBook.claim.author,
-      isbn: TheRavenBook.claim.isbn,
-      edition: TheRavenBook.claim.edition,
-    })
-
-    assert({
-      given: 'an extended work claim WITHOUT proper context',
-      should: 'generate the id without the extra attributes',
-      actual: await getClaimId(workClaim2),
-      expected: TheRavenId,
-    })
-
-    assert({
-      given: 'an extended work claim WITH proper context',
-      should: 'generate a different id',
-      actual: (await getClaimId({ ...workClaim2, '@context': externalContext })) !== TheRavenId,
-      expected: true,
-    })
-  }
-
-  {
-    const workClaim: any = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
-
-    assert({
-      given: 'the public key of a Claim',
-      should: 'be equal to public key of key',
-      actual: workClaim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
-      expected: TestPublicKeyUrl,
-    })
-  }
-
-  {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
-
-    assert({
-      given: 'a claim with a valid signature, isValidSignature',
-      should: 'return true',
-      actual: await isValidSignature(claim),
-      expected: true,
-    })
-
-    const claim2 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, { '@context': externalContext })
-    assert({
-      given: 'a claim with an external context, isValidSignature',
-      should: 'return true',
-      actual: await isValidSignature(claim2),
-      expected: true,
-    })
-
-    assert({
-      given: 'a claim with an external context, createClaim',
-      should: 'include all fields in the claim',
-      actual:
-        JSON.stringify(Object.keys(claim2.claim).sort()) === JSON.stringify(Object.keys(TheRavenBook.claim).sort()),
-      expected: true,
-    })
-
-    const claim3 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(returnError)
-
-    assert({
-      given: 'an extended claim without an external context, createClaim',
-      should: 'will return an Error()',
-      actual: claim3,
-      expected: new Error('The property "edition" in the input was not defined in the context.'),
-    })
-  }
-
-  {
-    const badClaim = {
-      ...TheRaven,
-      'https://w3id.org/security#proof': {
-        '@graph': {
-          '@type': 'https://w3id.org/security#Ed25519Signature2018',
-          created: {
-            '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-            '@value': '2018-09-05T20:19:20Z',
-          },
-          'http://purl.org/dc/terms/creator': {
-            '@id': `data:,${testBadPublicKey}`,
-          },
-          'https://w3id.org/security#jws':
-            'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
-            'gzo084pGpKmbOewYFrXfmAVhXnC4UPzaPUjaU9BDw',
-        },
-      },
-    }
-
-    assert({
-      given: 'a claim with an invalid public key, isValidSignature',
-      should: 'return false',
-      actual: await isValidSignature(badClaim),
-      expected: false,
-    })
-  }
+describe('Claim.getClaimId', async (should: any) => {
+  const { assert } = should('')
 
   {
     assert({
@@ -400,17 +284,6 @@ describe('Claim', async (should: any) => {
       should: 'be ignored in the calculation of the id and should be equal to the work id',
       actual: await getClaimId({ ...TheRaven, id: '123' }),
       expected: TheRaven.id,
-    })
-  }
-
-  {
-    const claimId = await getClaimId({ ...TheRaven, type: 'Asd' as ClaimType }).catch(returnError)
-
-    assert({
-      given: 'a claim with extra type, the new type',
-      should: 'be included in the calculation of the id and should be not equal to the work id',
-      actual: claimId !== TheRaven.id,
-      expected: true,
     })
   }
 
@@ -472,6 +345,140 @@ describe('Claim', async (should: any) => {
   }
 
   {
+    const workClaim = makeClaim({
+      name: TheRaven.claim.name,
+      author: TheRaven.claim.author,
+    })
+
+    const TheRavenId = '3129d8056c04a00d3a84beaf38eed8aa25e2b7296ac08f8881a67c5cfcb1525e'
+
+    assert({
+      given: 'A work claim',
+      should: 'generate an id for the claim',
+      actual: await getClaimId(workClaim),
+      expected: TheRavenId,
+    })
+
+    const identityClaim = makeClaim({ ...Me.claim })
+
+    assert({
+      given: 'an identity claim',
+      should: 'generate an identityClaim for the claim',
+      actual: await getClaimId(identityClaim),
+      expected: 'bcc2843e20994e8c686c99fb92cd2feb0f3ab8c69e79e09e41f83635a6cd7fb9',
+    })
+
+    const workClaim2 = makeClaim({
+      name: TheRavenBook.claim.name,
+      author: TheRavenBook.claim.author,
+      isbn: TheRavenBook.claim.isbn,
+      edition: TheRavenBook.claim.edition,
+    })
+
+    assert({
+      given: 'an extended work claim WITHOUT proper context',
+      should: 'generate the id without the extra attributes',
+      actual: await getClaimId(workClaim2),
+      expected: TheRavenId,
+    })
+
+    assert({
+      given: 'an extended work claim WITH proper context',
+      should: 'generate a different id',
+      actual: (await getClaimId({ ...workClaim2, '@context': externalContext })) !== TheRavenId,
+      expected: true,
+    })
+  }
+})
+
+describe('Claim.createClaim', async (should: any) => {
+  const { assert } = should('')
+
+  {
+    const workClaim: any = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+
+    assert({
+      given: 'the public key of a Claim',
+      should: 'be equal to public key of key',
+      actual: workClaim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
+      expected: TestPublicKeyUrl,
+    })
+  }
+
+  {
+    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, { '@context': externalContext })
+    assert({
+      given: 'a claim with an external context',
+      should: 'include all fields in the claim',
+      actual:
+        JSON.stringify(Object.keys(claim.claim).sort()) === JSON.stringify(Object.keys(TheRavenBook.claim).sort()),
+      expected: true,
+    })
+  }
+
+  {
+    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(returnError)
+
+    assert({
+      given: 'an extended claim without an external context',
+      should: 'will return an Error()',
+      actual: claim,
+      expected: new Error('The property "edition" in the input was not defined in the context.'),
+    })
+  }
+})
+
+describe('Claim.isValidSignature', async (should: any) => {
+  const { assert } = should('')
+
+  {
+    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+
+    assert({
+      given: 'a claim with a valid signature',
+      should: 'return true',
+      actual: await isValidSignature(claim),
+      expected: true,
+    })
+
+    const claim2 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, { '@context': externalContext })
+    assert({
+      given: 'a claim with an external context',
+      should: 'return true',
+      actual: await isValidSignature(claim2),
+      expected: true,
+    })
+  }
+
+  {
+    const badClaim = {
+      ...TheRaven,
+      'https://w3id.org/security#proof': {
+        '@graph': {
+          '@type': 'https://w3id.org/security#Ed25519Signature2018',
+          created: {
+            '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+            '@value': '2018-09-05T20:19:20Z',
+          },
+          'http://purl.org/dc/terms/creator': {
+            '@id': `data:,${testBadPublicKey}`,
+          },
+          'https://w3id.org/security#jws':
+            'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
+            'gzo084pGpKmbOewYFrXfmAVhXnC4UPzaPUjaU9BDw',
+        },
+      },
+    }
+
+    assert({
+      given: 'a claim with an invalid public key',
+      should: 'return false',
+      actual: await isValidSignature(badClaim),
+      expected: false,
+    })
+  }
+
+  {
     const expectedMessage = 'Cannot sign a claim that has an empty .id field.'
 
     assert({
@@ -518,6 +525,10 @@ describe('Claim', async (should: any) => {
       expected: new Error(expectedMessage),
     })
   }
+})
+
+describe('Claim.isClaim', async (should: any) => {
+  const { assert } = should('')
 
   {
     assert({
@@ -527,6 +538,10 @@ describe('Claim', async (should: any) => {
       expected: true,
     })
   }
+})
+
+describe('Claim.isValidClaim', async (should: any) => {
+  const { assert } = should('')
 
   {
     assert({
@@ -567,7 +582,7 @@ describe('Claim', async (should: any) => {
     }
 
     assert({
-      given: 'a claim with an invalid publicKey, isValidClaim',
+      given: 'a claim with an invalid publicKey',
       should: `return false`,
       actual: await isValidClaim(badClaim),
       expected: false,
