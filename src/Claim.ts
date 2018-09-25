@@ -19,7 +19,7 @@ import { DataParser } from './util/DataParser'
 DataParser(jsonld)
 jsig.use('jsonld', jsonld)
 
-export const canonizeClaim = async (document: Claim): Promise<string> => {
+const canonizeClaim = async (document: Claim): Promise<string> => {
   const contextualClaim = {
     '@context': {
       ...DefaultClaimContext['@context'],

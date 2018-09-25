@@ -1,7 +1,7 @@
 /* tslint:disable:no-relative-imports */
 import * as jsig from 'jsonld-signatures'
 import { describe } from 'riteway'
-import { canonizeClaim, createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
+import { createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
 import { Claim, ClaimAttributes, ClaimType, Identity, isClaim, Work } from './Interfaces'
 
 const returnError = (err: Error): Error => err
@@ -125,146 +125,7 @@ const Me: Identity = {
   },
 }
 
-const canonicalRaven =
-  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
-  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n0 <https://w3id.org/credentials#issued> "2017-11-13T15:00:00.000Z" .\n' +
-  '_:c14n0 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
-  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n1 <http://schema.org/keywords> "poem" .\n' +
-  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
-
-const canonicalRavenBook =
-  '_:c14n0 <http://schema.org/Book> _:c14n1 .\n' +
-  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n0 <https://w3id.org/credentials#issued> "2017-11-13T15:00:00.000Z" .\n' +
-  '_:c14n0 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
-  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n1 <http://schema.org/bookEdition> "1" .\n' +
-  '_:c14n1 <http://schema.org/dateCreated> "" .\n' +
-  '_:c14n1 <http://schema.org/datePublished> "1845-01-29T03:00:00.000Z" .\n' +
-  '_:c14n1 <http://schema.org/isbn> "9781458318404" .\n' +
-  '_:c14n1 <http://schema.org/keywords> "poem" .\n' +
-  '_:c14n1 <http://schema.org/name> "The Raven" .\n' +
-  '_:c14n1 <http://schema.org/text> "Once upon a midnight dreary..." .\n'
-
-const expectedCanonicalDoc =
-  '_:c14n0 <http://schema.org/CreativeWork> _:c14n1 .\n' +
-  '_:c14n0 <http://schema.org/additionalType> "Work" .\n' +
-  '_:c14n0 <https://w3id.org/credentials#issued> "2017-12-11T22:54:40.261Z" .\n' +
-  '_:c14n0 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
-  '_:c14n1 <http://schema.org/author> "Edgar Allan Poe" .\n' +
-  '_:c14n1 <http://schema.org/name> "The Raven" .\n'
-
-const canonicalMe =
-  '_:c14n0 <https://w3id.org/security#publicKeyBase58> "JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n' +
-  '_:c14n1 <http://schema.org/Thing> _:c14n0 .\n' +
-  '_:c14n1 <http://schema.org/additionalType> "Identity" .\n' +
-  '_:c14n1 <https://w3id.org/credentials#issued> "2017-11-13T15:00:00.000Z" .\n' +
-  '_:c14n1 <https://w3id.org/credentials#issuer> "data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe" .\n'
-
 const sign = signClaim(signingOptions)
-
-describe('Claim.canonizeClaim', async (should: any) => {
-  const { assert } = should('')
-
-  {
-    assert({
-      given: 'a complete work claim',
-      should: 'include all items in canonical doc',
-      actual: await canonizeClaim(TheRaven),
-      expected: canonicalRaven,
-    })
-
-    assert({
-      given: 'a complete identity claim',
-      should: 'include all items in canonical doc',
-      actual: await canonizeClaim(Me),
-      expected: canonicalMe,
-    })
-  }
-
-  {
-    const claim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
-    })
-
-    assert({
-      given: 'a claim',
-      should: 'create a canonical string document',
-      actual: await canonizeClaim(claim).catch(returnError),
-      expected: expectedCanonicalDoc,
-    })
-  }
-
-  {
-    const work1: Claim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
-    })
-
-    const work2: Claim = makeClaim({
-      author: TheRaven.claim.author,
-      name: TheRaven.claim.name,
-    })
-
-    const canonicalDocument1 = await canonizeClaim(work1).catch(returnError)
-    const canonicalDocument2 = await canonizeClaim(work2).catch(returnError)
-
-    assert({
-      given: 'two claims with disordered keys',
-      should: 'have the same canonical document',
-      actual: canonicalDocument1 === canonicalDocument2,
-      expected: true,
-    })
-  }
-
-  {
-    const work1: Claim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
-    })
-
-    const work2: Claim = makeClaim({
-      Author: TheRaven.claim.author,
-      NAME: TheRaven.claim.name,
-    })
-
-    const canonicalDocument1 = await canonizeClaim(work1).catch(returnError)
-    const canonicalDocument2 = await canonizeClaim(work2).catch(returnError)
-
-    assert({
-      given: 'two claims with keys casing',
-      should: 'NOT have the same canonical document',
-      actual: canonicalDocument1 !== canonicalDocument2,
-      expected: true,
-    })
-  }
-
-  {
-    const canonicalDocument = await canonizeClaim(TheRavenBook)
-
-    assert({
-      given: 'an extended document without proper context',
-      should: 'NOT include the extra attributes in the canonical document',
-      actual: canonicalDocument,
-      expected: canonicalRaven,
-    })
-
-    const canonicalDocumentWithContext = await canonizeClaim({ ...TheRavenBook, '@context': externalContext })
-
-    assert({
-      given: 'the same extended document WITH proper context',
-      should: 'include the extra attributes in the canonical document',
-      actual: canonicalDocumentWithContext,
-      expected: canonicalRavenBook,
-    })
-  }
-})
 
 describe('Claim.getClaimId', async (should: any) => {
   const { assert } = should('')
@@ -428,6 +289,60 @@ describe('Claim.createClaim', async (should: any) => {
   }
 })
 
+describe('Claim.signClaim', async (should: any) => {
+  const { assert } = should('')
+
+  {
+    {
+      const expectedMessage = 'Cannot sign a claim that has an empty .id field.'
+
+      assert({
+        given: 'a claim without id',
+        should: `throw an error with the message ${expectedMessage}`,
+        actual: await sign({ ...TheRaven, id: '' }).catch(returnError),
+        expected: new Error(expectedMessage),
+      })
+    }
+  }
+
+  {
+    const expectedMessage = 'Cannot sign a claim whose id has been altered or generated incorrectly.'
+
+    assert({
+      given: 'a claim without id',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await sign({ ...TheRaven, id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102' }).catch(
+        returnError
+      ),
+      expected: new Error(expectedMessage),
+    })
+  }
+
+  {
+    const expectedMessage = 'Cannot sign a claim with an invalid creator in the signing options.'
+    const invalidSign = signClaim({})
+
+    assert({
+      given: 'a claim with publicKey undefined',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await invalidSign(TheRaven).catch(returnError),
+      expected: new Error(expectedMessage),
+    })
+  }
+
+  {
+    const expectedMessage = `Cannot sign this claim with the provided privateKey. It doesn\'t match the claim's public key.`
+    const invalidSign2 = signClaim({ creator: 'someoneelse' })
+
+    assert({
+      given: 'invalid signing options',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await invalidSign2({ ...TheRaven }).catch(returnError),
+      expected: new Error(expectedMessage),
+    })
+  }
+})
+
 describe('Claim.isValidSignature', async (should: any) => {
   const { assert } = should('')
 
@@ -475,54 +390,6 @@ describe('Claim.isValidSignature', async (should: any) => {
       should: 'return false',
       actual: await isValidSignature(badClaim),
       expected: false,
-    })
-  }
-
-  {
-    const expectedMessage = 'Cannot sign a claim that has an empty .id field.'
-
-    assert({
-      given: 'a claim without id',
-      should: `throw an error with the message ${expectedMessage}`,
-      actual: await sign({ ...TheRaven, id: '' }).catch(returnError),
-      expected: new Error(expectedMessage),
-    })
-  }
-
-  {
-    const expectedMessage = 'Cannot sign a claim whose id has been altered or generated incorrectly.'
-
-    assert({
-      given: 'a claim without id',
-      should: `throw an error with the message ${expectedMessage}`,
-      actual: await sign({ ...TheRaven, id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102' }).catch(
-        returnError
-      ),
-      expected: new Error(expectedMessage),
-    })
-  }
-
-  {
-    const expectedMessage = 'Cannot sign a claim with an invalid creator in the signing options.'
-    const invalidSign = signClaim({})
-
-    assert({
-      given: 'a claim with publicKey undefined',
-      should: `throw an error with the message ${expectedMessage}`,
-      actual: await invalidSign(TheRaven).catch(returnError),
-      expected: new Error(expectedMessage),
-    })
-  }
-
-  {
-    const expectedMessage = `Cannot sign this claim with the provided privateKey. It doesn\'t match the claim's public key.`
-    const invalidSign2 = signClaim({ creator: 'someoneelse' })
-
-    assert({
-      given: 'invalid signing options',
-      should: `throw an error with the message ${expectedMessage}`,
-      actual: await invalidSign2({ ...TheRaven }).catch(returnError),
-      expected: new Error(expectedMessage),
     })
   }
 })
