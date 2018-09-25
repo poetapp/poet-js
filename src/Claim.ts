@@ -19,8 +19,6 @@ import { DataParser } from './util/DataParser'
 DataParser(jsonld)
 jsig.use('jsonld', jsonld)
 
-const returnError = (err: any) => err
-
 export const canonizeClaim = async (document: Claim): Promise<string> => {
   const contextualClaim = {
     '@context': {
@@ -99,7 +97,7 @@ export const createClaim = async (
   return await sign({
     ...claim,
     id,
-  }).catch(returnError)
+  })
 }
 
 export const isValidClaim = async (claim: {}): Promise<boolean> =>

@@ -347,7 +347,7 @@ describe('Claim', async (should: any) => {
       expected: true,
     })
 
-    const claim3 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim)
+    const claim3 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(returnError)
 
     assert({
       given: 'an extended claim without an external context, createClaim',
