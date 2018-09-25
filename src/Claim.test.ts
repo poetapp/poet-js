@@ -20,9 +20,9 @@ const testPrivateKeyEd25519Base58: string =
 
 const testOwnerUrl = `data:,${testPublicKeyEd25519Base58}`
 
-export const TestPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
+const TestPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
 
-export const testPublicKeyEd25519: any = {
+const testPublicKeyEd25519: any = {
   '@context': jsig.SECURITY_CONTEXT_URL,
   id: TestPublicKeyUrl,
   type: 'Ed25519VerificationKey2018',
@@ -30,19 +30,19 @@ export const testPublicKeyEd25519: any = {
   publicKeyBase58: testPublicKeyEd25519Base58,
 }
 
-export const externalContext: any = {
+const externalContext: any = {
   claim: 'http://schema.org/Book',
   edition: 'http://schema.org/bookEdition',
   isbn: 'http://schema.org/isbn',
 }
 
-export const signingOptions: any = {
+const signingOptions: any = {
   privateKeyBase58: testPrivateKeyEd25519Base58,
   algorithm: 'Ed25519Signature2018',
   creator: testPublicKeyEd25519.id,
 }
 
-export const Issuer: any = {
+const Issuer: any = {
   id: testOwnerUrl,
   signingOptions,
 }
