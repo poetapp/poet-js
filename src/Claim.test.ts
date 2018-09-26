@@ -300,7 +300,7 @@ describe('Claim.signClaim', async (should: any) => {
         given: 'a claim without id',
         should: `throw an error with the message ${expectedMessage}`,
         actual: await sign({ ...TheRaven, id: '' }).catch(returnError),
-        expected: new Error('expectedMessage'),
+        expected: new Error(expectedMessage),
       })
     }
   }
@@ -326,7 +326,7 @@ describe('Claim.signClaim', async (should: any) => {
       given: 'a claim with publicKey undefined',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await invalidSign(TheRaven).catch(returnError),
-      expected: new Error('expectedMessage'),
+      expected: new Error(expectedMessage),
     })
   }
 
@@ -338,7 +338,7 @@ describe('Claim.signClaim', async (should: any) => {
       given: 'invalid signing options',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await invalidSign2({ ...TheRaven }).catch(returnError),
-      expected: new Error('expectedMessage'),
+      expected: new Error(expectedMessage),
     })
   }
 })
