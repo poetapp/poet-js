@@ -4,7 +4,7 @@ import { describe } from 'riteway'
 import { createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
 import { Claim, ClaimAttributes, ClaimType, Identity, isClaim, Work } from './Interfaces'
 
-const returnError = (err: Error): Error => err
+const returnError = (err: Error): string => err.message
 
 // Generated:
 // const forge = require('node-forge')
@@ -300,7 +300,7 @@ describe('Claim.signClaim', async (should: any) => {
         given: 'a claim without id',
         should: `throw an error with the message ${expectedMessage}`,
         actual: await sign({ ...TheRaven, id: '' }).catch(returnError),
-        expected: new Error(expectedMessage),
+        expected: new Error(expectedMessage).message,
       })
     }
   }
@@ -314,7 +314,7 @@ describe('Claim.signClaim', async (should: any) => {
       actual: await sign({ ...TheRaven, id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102' }).catch(
         returnError
       ),
-      expected: new Error('expectedMessage'),
+      expected: new Error(expectedMessage).message,
     })
   }
 
@@ -326,7 +326,7 @@ describe('Claim.signClaim', async (should: any) => {
       given: 'a claim with publicKey undefined',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await invalidSign(TheRaven).catch(returnError),
-      expected: new Error(expectedMessage),
+      expected: new Error(expectedMessage).message,
     })
   }
 
@@ -338,7 +338,7 @@ describe('Claim.signClaim', async (should: any) => {
       given: 'invalid signing options',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await invalidSign2({ ...TheRaven }).catch(returnError),
-      expected: new Error(expectedMessage),
+      expected: new Error(expectedMessage).message,
     })
   }
 })
