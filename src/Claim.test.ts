@@ -284,7 +284,7 @@ describe('Claim.createClaim', async (should: any) => {
       given: 'an extended claim without an external context',
       should: 'will return an Error()',
       actual: claim,
-      expected: new Error('The property "edition" in the input was not defined in the context.'),
+      expected: new Error('The property "edition" in the input was not defined in the context.').message,
     })
   }
 })
