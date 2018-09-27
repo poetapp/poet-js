@@ -22,11 +22,11 @@ const testPrivateKeyEd25519Base58: string =
 
 const testOwnerUrl = `data:,${testPublicKeyEd25519Base58}`
 
-const TestPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
+const testPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
 
 const testPublicKeyEd25519: any = {
   '@context': jsig.SECURITY_CONTEXT_URL,
-  id: TestPublicKeyUrl,
+  id: testPublicKeyUrl,
   type: 'Ed25519VerificationKey2018',
   owner: testOwnerUrl,
   publicKeyBase58: testPublicKeyEd25519Base58,
@@ -44,7 +44,7 @@ const signingOptions: any = {
   creator: testPublicKeyEd25519.id,
 }
 
-const Issuer: any = {
+const issuer: any = {
   id: testOwnerUrl,
   signingOptions,
 }
@@ -259,18 +259,18 @@ describe('Claim.createClaim', async (should: any) => {
   const { assert } = should('')
 
   {
-    const workClaim: any = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+    const workClaim: any = await createClaim(issuer, ClaimType.Work, TheRaven.claim)
 
     assert({
       given: 'the public key of a Claim',
       should: 'be equal to public key of key',
       actual: workClaim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
-      expected: TestPublicKeyUrl,
+      expected: testPublicKeyUrl,
     })
   }
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, externalContext)
+    const claim = await createClaim(issuer, ClaimType.Work, TheRavenBook.claim, externalContext)
     assert({
       given: 'a claim with an external context',
       should: 'include all fields in the claim',
@@ -281,7 +281,7 @@ describe('Claim.createClaim', async (should: any) => {
   }
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(returnError)
+    const claim = await createClaim(issuer, ClaimType.Work, TheRavenBook.claim).catch(returnError)
 
     assert({
       given: 'an extended claim without an external context',
@@ -350,7 +350,7 @@ describe('Claim.isValidSignature', async (should: any) => {
   const { assert } = should('')
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+    const claim = await createClaim(issuer, ClaimType.Work, TheRaven.claim)
 
     assert({
       given: 'a claim with a valid signature',
@@ -359,7 +359,7 @@ describe('Claim.isValidSignature', async (should: any) => {
       expected: true,
     })
 
-    const claim2 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, externalContext)
+    const claim2 = await createClaim(issuer, ClaimType.Work, TheRavenBook.claim, externalContext)
     assert({
       given: 'a claim with an external context',
       should: 'return true',
