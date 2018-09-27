@@ -26,6 +26,22 @@ const canonizeClaim = async (document: Claim): Promise<string> => {
   return jsonld.canonize(contextualClaim)
 }
 
+const signClaimValidateClaimId = async (claim: Claim) => {
+  if (!claim.id) throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field')
+  if ((await getClaimId(claim)) !== claim.id)
+    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
+}
+
+const signClaimValidateSigningOptions = async (signingOptions: any) => {
+  if (signingOptions.creater === null || signingOptions.creator === '')
+    throw new IllegalArgumentException('Cannot sign a claim with an invalid creator in the signing options.')
+}
+
+const signClaimValidateArgs = async (signingOptions: any, claim: Claim) => {
+  await signClaimValidateClaimId(claim)
+  await signClaimValidateSigningOptions(signingOptions)
+}
+
 /*
   signClaim = (signingOptions: any) => async (document: Claim): Promise<Claim>
     signingOptions:
@@ -37,12 +53,8 @@ const canonizeClaim = async (document: Claim): Promise<string> => {
   Refer to the jsonld-signatures library for more detail
 */
 export const signClaim = (signingOptions: any) => async (document: Claim): Promise<Claim> => {
-  if (!document.id) throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field')
-  if (signingOptions.creater === null || signingOptions.creator === '')
-    throw new IllegalArgumentException('Cannot sign a claim with an invalid creator in the signing options.')
-  const generatedId = await getClaimId(document)
-  if (document.id !== generatedId)
-    throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
+  await signClaimValidateArgs(signingOptions, document)
+
   return await jsig.sign(
     {
       '@context': document,
