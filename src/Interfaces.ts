@@ -6,10 +6,6 @@ export enum ClaimType {
   Work = 'Work',
 }
 
-export interface ClaimAttributes {
-  readonly [key: string]: unknown
-}
-
 export interface Claim {
   readonly '@context'?: any
   readonly id?: string
@@ -17,13 +13,11 @@ export interface Claim {
   readonly issuanceDate: string
   readonly type: ClaimType
   readonly 'https://w3id.org/security#proof'?: any
-  readonly claim: ClaimAttributes
+  readonly claim: object
 }
 
 export interface ClaimContext {
-  readonly '@context': {
-    readonly [key: string]: unknown
-  }
+  readonly [key: string]: unknown
 }
 
 export interface ClaimTypeContexts {
@@ -34,39 +28,32 @@ export interface ClaimTypeContexts {
 // Otherwise those attributes without context will be left out of the canonized/signed claim.
 // Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
 export const DefaultClaimContext: ClaimContext = {
-  '@context': {
-    cred: 'https://w3id.org/credentials#',
-    schema: 'http://schema.org/',
+  cred: 'https://w3id.org/credentials#',
+  schema: 'http://schema.org/',
 
-    issuer: 'cred:issuer',
-    issuanceDate: 'cred:issued',
-    type: 'http://schema.org/additionalType',
-    claim: 'http://schema.org/Thing', // The most generic definition in schema.org
-  },
+  issuer: 'cred:issuer',
+  issuanceDate: 'cred:issued',
+  type: 'http://schema.org/additionalType',
+  claim: 'http://schema.org/Thing', // The most generic definition in schema.org,
 }
 
 export const DefaultWorkClaimContext: ClaimContext = {
-  '@context': {
-    schema: 'http://schema.org/',
+  schema: 'http://schema.org/',
 
-    author: 'schema:author',
-    claim: 'http://schema.org/CreativeWork',
-    dateCreated: 'schema:dateCreated',
-    datePublished: 'schema:datePublished',
-    name: 'schema:name',
-    keywords: 'schema:keywords',
-    text: 'schema:text',
-    url: 'schema:url',
-  },
+  author: 'schema:author',
+  claim: 'http://schema.org/CreativeWork',
+  dateCreated: 'schema:dateCreated',
+  datePublished: 'schema:datePublished',
+  name: 'schema:name',
+  keywords: 'schema:keywords',
+  archiveUrl: 'schema:url',
 }
 
 export const DefaultIdentityClaimContext: ClaimContext = {
-  '@context': {
-    sec: 'https://w3id.org/security#',
+  sec: 'https://w3id.org/security#',
 
-    publicKey: 'sec:publicKeyBase58',
-    profileUrl: 'sec:owner',
-  },
+  publicKey: 'sec:publicKeyBase58',
+  profileUrl: 'sec:owner',
 }
 
 export const claimTypeDefaults: ClaimTypeContexts = {
@@ -146,4 +133,8 @@ export interface PoetBlockAnchor extends PoetTransactionAnchor {
 
 export enum StorageProtocol {
   IPFS = 0,
+}
+
+export enum SigningAlgorithm {
+  Ed25519Signature2018 = 'Ed25519Signature2018',
 }

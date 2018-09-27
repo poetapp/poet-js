@@ -5,15 +5,7 @@ import * as jsonld from 'jsonld'
 import * as jsig from 'jsonld-signatures'
 
 import { IllegalArgumentException } from './Exceptions'
-import {
-  Claim,
-  ClaimAttributes,
-  ClaimType,
-  ClaimContext,
-  DefaultClaimContext,
-  claimTypeDefaults,
-  isClaim,
-} from './Interfaces'
+import { Claim, ClaimType, ClaimContext, DefaultClaimContext, claimTypeDefaults, isClaim } from './Interfaces'
 import { DataParser } from './util/DataParser'
 
 DataParser(jsonld)
@@ -22,8 +14,8 @@ jsig.use('jsonld', jsonld)
 const canonizeClaim = async (document: Claim): Promise<string> => {
   const contextualClaim = {
     '@context': {
-      ...DefaultClaimContext['@context'],
-      ...claimTypeDefaults[document.type]['@context'],
+      ...DefaultClaimContext,
+      ...claimTypeDefaults[document.type],
       ...document['@context'],
     },
     type: document.type,
@@ -53,7 +45,7 @@ export const signClaim = (signingOptions: any) => async (document: Claim): Promi
     throw new IllegalArgumentException('Cannot sign a claim whose id has been altered or generated incorrectly.')
   return await jsig.sign(
     {
-      '@context': document['@context'],
+      '@context': document,
       type: document.type,
       issuer: document.issuer,
       issuanceDate: document.issuanceDate,
@@ -82,11 +74,11 @@ export const getClaimId = async (claim: Claim): Promise<string> => {
 export const createClaim = async (
   issuer: any,
   type: ClaimType,
-  claimAttributes: ClaimAttributes,
-  context: ClaimContext = { '@context': {} }
+  claimAttributes: object,
+  context: ClaimContext = {}
 ): Promise<Claim> => {
   const claim: Claim = {
-    '@context': { ...DefaultClaimContext['@context'], ...claimTypeDefaults[type]['@context'], ...context['@context'] },
+    '@context': { ...DefaultClaimContext, ...claimTypeDefaults[type], ...context },
     type,
     issuer: issuer.id,
     issuanceDate: new Date().toISOString(),
