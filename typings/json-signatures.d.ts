@@ -1,5 +1,5 @@
 declare module 'jsonld-signatures' {
-  let suites: any
+  let suites: object
   let SECURITY_CONTEXT_URL: string
   interface VerifiedResults {
     readonly keyResults: ReadonlyArray<any>
