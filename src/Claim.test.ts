@@ -2,7 +2,16 @@
 import * as jsig from 'jsonld-signatures'
 import { describe } from 'riteway'
 import { createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
-import { Claim, ClaimType, Identity, isClaim, Work } from './Interfaces'
+import {
+  Claim,
+  ClaimType,
+  DefaultClaimContext,
+  DefaultWorkClaimContext,
+  Identity,
+  isClaim,
+  SigningAlgorithm,
+  Work,
+} from './Interfaces'
 
 const getErrorMessage = (err: Error): string => err.message
 
@@ -298,23 +307,21 @@ describe('Claim.signClaim', async (should: any) => {
   const { assert } = should('')
 
   {
-    {
-      const expectedMessage = 'Cannot sign a claim that has an empty .id field.'
+    const expectedMessage = 'Cannot sign a claim that has an empty .id field.'
 
-      assert({
-        given: 'a claim without id',
-        should: `throw an error with the message ${expectedMessage}`,
-        actual: await sign({ ...TheRaven, id: '' }).catch(getErrorMessage),
-        expected: expectedMessage,
-      })
-    }
+    assert({
+      given: 'a claim without id',
+      should: `throw an error with the message ${expectedMessage}`,
+      actual: await sign({ ...TheRaven, id: '' }).catch(getErrorMessage),
+      expected: expectedMessage,
+    })
   }
 
   {
     const expectedMessage = 'Cannot sign a claim whose id has been altered or generated incorrectly.'
 
     assert({
-      given: 'a claim without id',
+      given: 'a claim with an altered id',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await sign({ ...TheRaven, id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102' }).catch(
         getErrorMessage
@@ -325,10 +332,13 @@ describe('Claim.signClaim', async (should: any) => {
 
   {
     const expectedMessage = 'Cannot sign a claim with an invalid creator in the signing options.'
-    const invalidSign = signClaim({})
+    const invalidSign = signClaim({
+      algorithm: SigningAlgorithm.Ed25519Signature2018,
+      privateKeyBase58: testPrivateKeyEd25519Base58,
+    })
 
     assert({
-      given: 'a claim with publicKey undefined',
+      given: 'a claim with creator undefined',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await invalidSign(TheRaven).catch(getErrorMessage),
       expected: expectedMessage,
@@ -336,14 +346,22 @@ describe('Claim.signClaim', async (should: any) => {
   }
 
   {
-    const expectedMessage = `Cannot sign this claim with the provided privateKey. It doesn\'t match the claim's public key.`
-    const invalidSign2 = signClaim({ creator: 'someoneelse' })
+    const invalidSign2 = signClaim({
+      algorithm: SigningAlgorithm.Ed25519Signature2018,
+      creator: 'data:,someoneelse',
+      privateKeyBase58: testPrivateKeyEd25519Base58,
+    })
+
+    const signedClaim = await invalidSign2({
+      ...TheRaven,
+      '@context': { ...DefaultClaimContext, ...DefaultWorkClaimContext },
+    }).catch(e => e)
 
     assert({
-      given: 'invalid signing options',
-      should: `throw an error with the message ${expectedMessage}`,
-      actual: await invalidSign2({ ...TheRaven }).catch(getErrorMessage),
-      expected: expectedMessage,
+      given: 'an invalid public key in creator',
+      should: `create a claim that can not be verified`,
+      actual: await isValidSignature(signedClaim),
+      expected: false,
     })
   }
 })
