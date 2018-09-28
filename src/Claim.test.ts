@@ -62,7 +62,7 @@ const makeClaim = (claim: object) => {
 }
 
 const TheRaven: Work = {
-  id: 'de1c818f9be211a78dff90a03b9e297bbb61b3c292f1c1bbc3a5283e9b203cb1',
+  id: '996efc4bd089f62e596f3c2c15bda3002d45540481df3be2c11192a6963ee8a7',
   type: ClaimType.Work,
   issuer: testOwnerUrl,
   issuanceDate: '2017-11-13T15:00:00.000Z',
@@ -72,6 +72,8 @@ const TheRaven: Work = {
     keywords: 'poem',
     dateCreated: '',
     datePublished: '1845-01-29T03:00:00.000Z',
+    hash: 'de1c818f9be211a78dff90a03b9e297bbb61b3c292f1c1bbc3a5283e9b203cb1',
+    archiveUrl: 'ipfs:/theRaven',
   },
   'https://w3id.org/security#proof': {
     '@graph': {
@@ -264,7 +266,7 @@ describe('Claim.createClaim', async (should: any) => {
     assert({
       given: 'the public key of a Claim',
       should: 'be equal to public key of key',
-      actual: workClaim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
+      actual: workClaim['sec:proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
       expected: testPublicKeyUrl,
     })
   }

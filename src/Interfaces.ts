@@ -30,6 +30,7 @@ export interface ClaimTypeContexts {
 export const DefaultClaimContext: ClaimContext = {
   cred: 'https://w3id.org/credentials#',
   schema: 'http://schema.org/',
+  sec: 'https://w3id.org/security#',
 
   issuer: 'cred:issuer',
   issuanceDate: 'cred:issued',
@@ -38,8 +39,6 @@ export const DefaultClaimContext: ClaimContext = {
 }
 
 export const DefaultWorkClaimContext: ClaimContext = {
-  schema: 'http://schema.org/',
-
   author: 'schema:author',
   claim: 'http://schema.org/CreativeWork',
   dateCreated: 'schema:dateCreated',
@@ -47,11 +46,10 @@ export const DefaultWorkClaimContext: ClaimContext = {
   name: 'schema:name',
   keywords: 'schema:keywords',
   archiveUrl: 'schema:url',
+  hash: 'sec:digestValue',
 }
 
 export const DefaultIdentityClaimContext: ClaimContext = {
-  sec: 'https://w3id.org/security#',
-
   publicKey: 'sec:publicKeyBase58',
   profileUrl: 'sec:owner',
 }

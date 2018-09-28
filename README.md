@@ -55,6 +55,7 @@ form of the Ed25519 Public Key.
 The main function you'll be using is `createClaim`:
 
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
+The Po.et network uses [multihash](https://github.com/multiformats/multihash) to compare the hash against the content.
 
 ```ts
 import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
@@ -65,7 +66,8 @@ const workClaim = {
   tags: 'poem',
   dateCreated: '',
   datePublished: '1845-01-29T03:00:00.000Z',
-  text: 'Once upon a midnight dreary...',
+  archiveUrl: 'https://example.com/raven',
+  hash: '<hash of content>',
 }
 
 const issuer = {
