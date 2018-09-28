@@ -1,6 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
-import { ClaimType, Identity, isClaim, isIdentity, Work } from './Interfaces'
+import { ClaimType, Identity, isClaim, isIdentity, isWork, Work } from './Interfaces'
 
 const signatureBlock = {
   '@graph': {
@@ -55,7 +55,7 @@ const InvalidClaim = {
   },
 }
 
-describe('Interfaces', async (should: any) => {
+describe('Interfaces.isClaim', async (should: any) => {
   const { assert } = should('')
 
   {
@@ -85,22 +85,6 @@ describe('Interfaces', async (should: any) => {
 
   {
     assert({
-      given: 'a valid Identity claim, isIdentity',
-      should: 'return true',
-      actual: isIdentity(Me),
-      expected: true,
-    })
-
-    assert({
-      given: 'a valid Work claim, isIdentity',
-      should: 'return false',
-      actual: isIdentity(TheRaven),
-      expected: false,
-    })
-  }
-
-  {
-    assert({
       given: 'a valid claim with a context',
       should: 'return true',
       actual: isClaim(TheRaven),
@@ -118,4 +102,46 @@ describe('Interfaces', async (should: any) => {
       })
     }
   })
+})
+
+describe('Interfaces.isIdentity', async (should: any) => {
+  const { assert } = should('')
+
+  {
+    assert({
+      given: 'a valid Identity claim',
+      should: 'return true',
+      actual: isIdentity(Me),
+      expected: true,
+    })
+
+    assert({
+      given: 'a valid Work claim',
+      should: 'return false',
+      actual: isIdentity(TheRaven),
+      expected: false,
+    })
+  }
+})
+
+describe('Interfaces.isWork', async (should: any) => {
+  const { assert } = should('')
+
+  {
+    assert({
+      given: 'a valid Work claim',
+      should: 'return true',
+      actual: isWork(TheRaven),
+      expected: true,
+    })
+  }
+
+  {
+    assert({
+      given: 'a valid Identity Claim',
+      should: 'return false',
+      actual: isWork(Me),
+      expected: false,
+    })
+  }
 })

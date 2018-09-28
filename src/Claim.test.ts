@@ -2,7 +2,7 @@
 import * as jsig from 'jsonld-signatures'
 import { describe } from 'riteway'
 import { createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
-import { Claim, ClaimAttributes, ClaimType, Identity, isClaim, Work } from './Interfaces'
+import { Claim, ClaimType, Identity, isClaim, Work } from './Interfaces'
 
 const getErrorMessage = (err: Error): string => err.message
 
@@ -22,11 +22,11 @@ const testPrivateKeyEd25519Base58: string =
 
 const testOwnerUrl = `data:,${testPublicKeyEd25519Base58}`
 
-const TestPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
+const testPublicKeyUrl = `data:,${testPublicKeyEd25519Base58}`
 
 const testPublicKeyEd25519: any = {
   '@context': jsig.SECURITY_CONTEXT_URL,
-  id: TestPublicKeyUrl,
+  id: testPublicKeyUrl,
   type: 'Ed25519VerificationKey2018',
   owner: testOwnerUrl,
   publicKeyBase58: testPublicKeyEd25519Base58,
@@ -44,12 +44,12 @@ const signingOptions: any = {
   creator: testPublicKeyEd25519.id,
 }
 
-const Issuer: any = {
+const issuer: any = {
   id: testOwnerUrl,
   signingOptions,
 }
 
-const makeClaim = (claim: ClaimAttributes) => {
+const makeClaim = (claim: object) => {
   const issuer = TheRaven.issuer
   const issuanceDate = '2017-12-11T22:54:40.261Z'
   const type = ClaimType.Work
@@ -62,7 +62,7 @@ const makeClaim = (claim: ClaimAttributes) => {
 }
 
 const TheRaven: Work = {
-  id: '2b28274e3e88304f7baacec37c9959f8b237955c4e242f882150090b033966f4',
+  id: '996efc4bd089f62e596f3c2c15bda3002d45540481df3be2c11192a6963ee8a7',
   type: ClaimType.Work,
   issuer: testOwnerUrl,
   issuanceDate: '2017-11-13T15:00:00.000Z',
@@ -72,7 +72,8 @@ const TheRaven: Work = {
     keywords: 'poem',
     dateCreated: '',
     datePublished: '1845-01-29T03:00:00.000Z',
-    text: 'Once upon a midnight dreary...',
+    hash: 'de1c818f9be211a78dff90a03b9e297bbb61b3c292f1c1bbc3a5283e9b203cb1',
+    archiveUrl: 'ipfs:/theRaven',
   },
   'https://w3id.org/security#proof': {
     '@graph': {
@@ -91,6 +92,8 @@ const TheRaven: Work = {
   },
 }
 
+const ravenClaim: any = { ...TheRaven.claim }
+
 const TheRavenBook: Work = {
   ...TheRaven,
   claim: {
@@ -99,6 +102,8 @@ const TheRavenBook: Work = {
     isbn: '9781458318404',
   },
 }
+
+const ravenBookClaim: any = { ...TheRavenBook.claim }
 
 const Me: Identity = {
   id: '2b28274e3e88304f7baacec37c9959f8b237955c4e242f882150090b033966f4',
@@ -161,13 +166,13 @@ describe('Claim.getClaimId', async (should: any) => {
 
   {
     const work1: Claim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
+      name: ravenClaim.name,
+      author: ravenClaim.author,
     })
 
     const work2: Claim = makeClaim({
-      author: TheRaven.claim.author,
-      name: TheRaven.claim.name,
+      author: ravenClaim.author,
+      name: ravenClaim.name,
     })
 
     const claimId1 = await getClaimId(work1).catch(getErrorMessage)
@@ -183,15 +188,15 @@ describe('Claim.getClaimId', async (should: any) => {
 
   {
     const work1: Claim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
+      name: ravenClaim.name,
+      author: ravenClaim.author,
     })
 
     const work2: Claim = makeClaim({
-      author: TheRaven.claim.author,
-      nAME: TheRaven.claim.name,
-      dateCreated: TheRaven.claim.dateCreated,
-      datePublished: TheRaven.claim.datePublished,
+      author: ravenClaim.author,
+      nAME: ravenClaim.name,
+      dateCreated: ravenClaim.dateCreated,
+      datePublished: ravenClaim.datePublished,
     })
 
     const claimId1 = await getClaimId(work1).catch(getErrorMessage)
@@ -207,8 +212,8 @@ describe('Claim.getClaimId', async (should: any) => {
 
   {
     const workClaim = makeClaim({
-      name: TheRaven.claim.name,
-      author: TheRaven.claim.author,
+      name: ravenClaim.name,
+      author: ravenClaim.author,
     })
 
     const TheRavenId = '3129d8056c04a00d3a84beaf38eed8aa25e2b7296ac08f8881a67c5cfcb1525e'
@@ -230,10 +235,10 @@ describe('Claim.getClaimId', async (should: any) => {
     })
 
     const workClaim2 = makeClaim({
-      name: TheRavenBook.claim.name,
-      author: TheRavenBook.claim.author,
-      isbn: TheRavenBook.claim.isbn,
-      edition: TheRavenBook.claim.edition,
+      name: ravenBookClaim.name,
+      author: ravenBookClaim.author,
+      isbn: ravenBookClaim.isbn,
+      edition: ravenBookClaim.edition,
     })
 
     assert({
@@ -256,18 +261,18 @@ describe('Claim.createClaim', async (should: any) => {
   const { assert } = should('')
 
   {
-    const workClaim: any = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+    const workClaim: any = await createClaim(issuer, ClaimType.Work, TheRaven.claim)
 
     assert({
       given: 'the public key of a Claim',
       should: 'be equal to public key of key',
-      actual: workClaim['https://w3id.org/security#proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
-      expected: TestPublicKeyUrl,
+      actual: workClaim['sec:proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
+      expected: testPublicKeyUrl,
     })
   }
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, { '@context': externalContext })
+    const claim = await createClaim(issuer, ClaimType.Work, TheRavenBook.claim, externalContext)
     assert({
       given: 'a claim with an external context',
       should: 'include all fields in the claim',
@@ -278,7 +283,7 @@ describe('Claim.createClaim', async (should: any) => {
   }
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(getErrorMessage)
+    const claim = await createClaim(issuer, ClaimType.Work, TheRavenBook.claim).catch(getErrorMessage)
 
     assert({
       given: 'an extended claim without an external context',
@@ -347,7 +352,7 @@ describe('Claim.isValidSignature', async (should: any) => {
   const { assert } = should('')
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRaven.claim)
+    const claim = await createClaim(issuer, ClaimType.Work, TheRaven.claim)
 
     assert({
       given: 'a claim with a valid signature',
@@ -356,7 +361,7 @@ describe('Claim.isValidSignature', async (should: any) => {
       expected: true,
     })
 
-    const claim2 = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim, { '@context': externalContext })
+    const claim2 = await createClaim(issuer, ClaimType.Work, TheRavenBook.claim, externalContext)
     assert({
       given: 'a claim with an external context',
       should: 'return true',
