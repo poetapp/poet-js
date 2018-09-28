@@ -4,7 +4,7 @@ import { describe } from 'riteway'
 import { createClaim, getClaimId, isValidClaim, isValidSignature, signClaim } from './Claim'
 import { Claim, ClaimAttributes, ClaimType, Identity, isClaim, Work } from './Interfaces'
 
-const returnError = (err: Error): string => err.message
+const getErrorMessage = (err: Error): string => err.message
 
 // Generated:
 // const forge = require('node-forge')
@@ -134,7 +134,7 @@ describe('Claim.getClaimId', async (should: any) => {
     assert({
       given: 'a claim id',
       should: 'be equal to the work id',
-      actual: await getClaimId(TheRaven).catch(returnError),
+      actual: await getClaimId(TheRaven).catch(getErrorMessage),
       expected: TheRaven.id,
     })
   }
@@ -149,7 +149,7 @@ describe('Claim.getClaimId', async (should: any) => {
   }
 
   {
-    const claimId = await getClaimId({ ...TheRaven, issuanceDate: '2017-09-13T15:00:00.000Z' }).catch(returnError)
+    const claimId = await getClaimId({ ...TheRaven, issuanceDate: '2017-09-13T15:00:00.000Z' }).catch(getErrorMessage)
 
     assert({
       given: 'a claim with extra dateCreated, the new dateCreated',
@@ -170,8 +170,8 @@ describe('Claim.getClaimId', async (should: any) => {
       name: TheRaven.claim.name,
     })
 
-    const claimId1 = await getClaimId(work1).catch(returnError)
-    const claimId2 = await getClaimId(work2).catch(returnError)
+    const claimId1 = await getClaimId(work1).catch(getErrorMessage)
+    const claimId2 = await getClaimId(work2).catch(getErrorMessage)
 
     assert({
       given: 'two claims with disordered keys',
@@ -194,8 +194,8 @@ describe('Claim.getClaimId', async (should: any) => {
       datePublished: TheRaven.claim.datePublished,
     })
 
-    const claimId1 = await getClaimId(work1).catch(returnError)
-    const claimId2 = await getClaimId(work2).catch(returnError)
+    const claimId1 = await getClaimId(work1).catch(getErrorMessage)
+    const claimId2 = await getClaimId(work2).catch(getErrorMessage)
 
     assert({
       given: 'two claims with keys casing',
@@ -278,13 +278,13 @@ describe('Claim.createClaim', async (should: any) => {
   }
 
   {
-    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(returnError)
+    const claim = await createClaim(Issuer, ClaimType.Work, TheRavenBook.claim).catch(getErrorMessage)
 
     assert({
       given: 'an extended claim without an external context',
       should: 'will return an Error()',
-      actual: claim,
-      expected: new Error('The property "edition" in the input was not defined in the context.').message,
+      actual: getErrorMessage(claim),
+      expected: 'The property "edition" in the input was not defined in the context.',
     })
   }
 })
@@ -299,8 +299,8 @@ describe('Claim.signClaim', async (should: any) => {
       assert({
         given: 'a claim without id',
         should: `throw an error with the message ${expectedMessage}`,
-        actual: await sign({ ...TheRaven, id: '' }).catch(returnError),
-        expected: new Error(expectedMessage).message,
+        actual: await sign({ ...TheRaven, id: '' }).catch(getErrorMessage),
+        expected: expectedMessage,
       })
     }
   }
@@ -312,9 +312,9 @@ describe('Claim.signClaim', async (should: any) => {
       given: 'a claim without id',
       should: `throw an error with the message ${expectedMessage}`,
       actual: await sign({ ...TheRaven, id: 'be81cc75bcf6ca0f1fdd356f460e6ec920ba36ec78bd9e70c4d04a19f8943102' }).catch(
-        returnError
+        getErrorMessage
       ),
-      expected: new Error(expectedMessage).message,
+      expected: expectedMessage,
     })
   }
 
@@ -325,8 +325,8 @@ describe('Claim.signClaim', async (should: any) => {
     assert({
       given: 'a claim with publicKey undefined',
       should: `throw an error with the message ${expectedMessage}`,
-      actual: await invalidSign(TheRaven).catch(returnError),
-      expected: new Error(expectedMessage).message,
+      actual: await invalidSign(TheRaven).catch(getErrorMessage),
+      expected: expectedMessage,
     })
   }
 
@@ -337,8 +337,8 @@ describe('Claim.signClaim', async (should: any) => {
     assert({
       given: 'invalid signing options',
       should: `throw an error with the message ${expectedMessage}`,
-      actual: await invalidSign2({ ...TheRaven }).catch(returnError),
-      expected: new Error(expectedMessage).message,
+      actual: await invalidSign2({ ...TheRaven }).catch(getErrorMessage),
+      expected: expectedMessage,
     })
   }
 })
