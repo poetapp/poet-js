@@ -1,13 +1,13 @@
 /* tslint:disable:no-relative-imports */
 import * as crypto from 'crypto'
 import * as cuid from 'cuid'
+import JSONLD = require('jsonld')
 import * as jsig from 'jsonld-signatures'
 
 import { IllegalArgumentException } from './Exceptions'
 import { Claim, ClaimType, ClaimContext, DefaultClaimContext, claimTypeDefaults, isClaim } from './Interfaces'
 import { DataParser } from './util/DataParser'
 
-const JSONLD = require('jsonld')
 const jsonld = JSONLD()
 DataParser(jsonld)
 jsig.use('jsonld', jsonld)
