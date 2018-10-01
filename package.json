@@ -47,7 +47,7 @@
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.4.4",
-    "husky": "1.0.1",
+    "husky": "1.1.0",
     "lint-staged": "7.3.0",
     "nyc": "github:poetapp/nyc#fbc2ed1",
     "prettier": "1.14.3",
