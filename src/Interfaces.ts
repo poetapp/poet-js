@@ -1,5 +1,7 @@
 import * as Joi from 'joi'
-import * as jsigs from 'jsonld-signatures'
+import JSIG = require('jsonld-signatures')
+
+const jsigs = JSIG()
 
 export enum ClaimType {
   Identity = 'Identity',
