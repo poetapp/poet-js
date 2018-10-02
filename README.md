@@ -48,12 +48,13 @@ npm i @po.et/poet-js
 
 First create a `ClaimSigner` to sign and verify your claims. Note that the Po.et network currently uses 
 [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), which requires a Base58
-form of the Ed25519 Private Key. You can use the KeyHelper utility to generate a base58 public/privateKey pair.
+form of the Ed25519 Private Key. You can use the KeyHelper utility to generate a base58 public/privateKey pair, if you
+do not yet have one.
 
 ```typescript
 import { ClaimSigner, KeyHelper } from '@po.et/poet-js'
 
-const { privateKey } = KeyHelper.generateED25519Base58Keys('password')
+const { privateKey } = KeyHelper.generateED25519Base58Keys('password') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
 const claimSigner = ClaimSigner(privateKey)
 ```
@@ -64,7 +65,10 @@ The main function you'll be using is `createClaim`, which requires the above cla
 The Po.et network uses [multihash](https://github.com/multiformats/multihash) to compare the hash against the content.
 
 ```typescript
-import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
+import { Claim, ClaimSigner, ClaimType, createClaim } from '@po.et/poet-js'
+
+// Issuer's private key
+const claimSigner = ClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
 
 const workClaim = {
   name: 'The Raven',
@@ -98,15 +102,20 @@ const response = await fetch(poetNodeUrl + '/works/', {
 
 ### Example 2: createClaim for Work Claim, with overriding context
 
+**Coming Soon**
+
+### Example 3: createClaim for Identity Claims <!-- TODO: link to glossary -->
 Note, if you are creating an identity claim, your IDP will be the issuer of the claim. [Frost](https://frost.po.et/) is one such IDP.
 If you are self-serving your own identity calim, your identity provider (IDP) will have to create an IdentityClaim for 
 itself from which you can issue all further identities. Currently the Po.et network uses the [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), 
 which requires a Base58 form of the Ed25519 Public Key.
 
-### Example 2: createClaim for Identity Claims <!-- TODO: link to glossary -->
 
 ```typescript
-import { Claim, ClaimType, createClaim, KeyHelper } from '@po.et/poet-js'
+import { Claim, ClaimSigner, ClaimType, createClaim, KeyHelper } from '@po.et/poet-js'
+
+// Issuer's private Key: IDP's private Key
+const claimSigner = ClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
 
 // Store the privateKey for signing future claims
 const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('password')
