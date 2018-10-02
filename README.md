@@ -46,18 +46,24 @@ npm i @po.et/poet-js
 
 ## Usage
 
-The supported mechanism for identifying an Issuer is:
+First create a `ClaimSigner` to sign and verify your claims. Note that the Po.et network currently uses 
+[Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), which requires a Base58
+form of the Ed25519 Private Key. You can use the KeyHelper utility to generate a base58 public/privateKey pair.
 
-* Use the [data URL scheme](https://tools.ietf.org/html/rfc2397) to specify the Issuer's public key. Note that the 
-Po.et network currently uses [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), which requires a Base58
-form of the Ed25519 Public Key.
+```typescript
+import { ClaimSigner, KeyHelper } from '@po.et/poet-js'
 
-The main function you'll be using is `createClaim`:
+const { privateKey } = KeyHelper.generateED25519Base58Keys('password')
+
+const claimSigner = ClaimSigner(privateKey)
+```
+
+The main function you'll be using is `createClaim`, which requires the above claimSigner:
 
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
 The Po.et network uses [multihash](https://github.com/multiformats/multihash) to compare the hash against the content.
 
-```ts
+```typescript
 import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
 
 const workClaim = {
@@ -70,19 +76,10 @@ const workClaim = {
   hash: '<hash of content>',
 }
 
-const issuer = {
-  id: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
-  signingOptions: {
-    algorithm: 'Ed25519Signature2018',
-    creator: 'data:,JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe',
-    privateKeyBase58: 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
-  },
-}
-
 const claim = createClaim(
-  issuer,
   ClaimType.Work,
-  workClaim
+  workClaim,
+  claimSigner,
 )
 ```
 
@@ -108,33 +105,20 @@ which requires a Base58 form of the Ed25519 Public Key.
 
 ### Example 2: createClaim for Identity Claims <!-- TODO: link to glossary -->
 
-```ts
-import { Claim, ClaimType, createClaim } from '@po.et/poet-js'
-import * as forge from 'node-forge'
-import * as bs58 from 'bs58'
+```typescript
+import { Claim, ClaimType, createClaim, KeyHelper } from '@po.et/poet-js'
 
-const ed25519 = forge.pki.ed25519
-const keypair = ed25519.generateKeyPair()
-const publicKey = bs58.encode(keypair.publicKey)
-const privateKey = bs58.encode(keypair.privateKey)
+// Store the privateKey for signing future claims
+const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('password')
 
 const identityAttributes = {
   publicKey,
 }
 
-const issuer = {
-  id: `data:,${publicKey}`,
-  signingOptions: {
-    algorithm: 'Ed25519Signature2018',
-    creator: `data:,${publicKey}`,
-    privateKeyBase58: privateKey,
-  },
-}
-
 const claim = createClaim(
-  issuer,
   ClaimType.Identity,
-  identityAttributes
+  identityAttributes,
+  claimSigner,
 )
 ```
 
