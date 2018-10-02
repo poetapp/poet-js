@@ -20,6 +20,6 @@ declare module 'node-forge' {
     }
   }
   namespace random {
-    function getBytesSync(count: number): ByteString
+    function getBytesSync(count: number): string
   }
 }
