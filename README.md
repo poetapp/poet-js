@@ -58,7 +58,7 @@ use the example private key, others can make additional claims using the same ke
 ```typescript
 import { KeyHelper } from '@po.et/poet-js'
 
-const { privateKey } = KeyHelper.generateED25519Base58Keys('password') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
+const { privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
 ```
 
@@ -125,7 +125,7 @@ const { createClaim } = getClaimSigner()
 const idpPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
 // Store the privateKey for signing future claims
-const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy')
+const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase')
 
 const identityAttributes = {
   publicKey,
