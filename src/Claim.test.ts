@@ -1,48 +1,11 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
 
-import { externalContext, getErrorMessage, validClaimSigner, TheRaven, TheRavenBook } from '../tests/unit/shared'
-import { createClaim, isValidClaim } from './Claim'
-import { Claim, ClaimType, isClaim } from './Interfaces'
+import { TheRaven } from '../tests/unit/shared'
+import { isValidClaim } from './Claim'
+import { isClaim } from './Interfaces'
 
 const testBadPublicKey: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWT5'
-
-describe('Claim.createClaim', async (should: any) => {
-  const { assert } = should('')
-
-  {
-    const workClaim: any = await createClaim(ClaimType.Work, TheRaven.claim, validClaimSigner)
-
-    assert({
-      given: 'the public key of a Claim',
-      should: 'be equal to public key of key',
-      actual: workClaim['sec:proof']['@graph']['http://purl.org/dc/terms/creator']['@id'],
-      expected: validClaimSigner.getIssuerId(),
-    })
-  }
-
-  {
-    const claim = await createClaim(ClaimType.Work, TheRavenBook.claim, validClaimSigner, externalContext)
-    assert({
-      given: 'a claim with an external context',
-      should: 'include all fields in the claim',
-      actual:
-        JSON.stringify(Object.keys(claim.claim).sort()) === JSON.stringify(Object.keys(TheRavenBook.claim).sort()),
-      expected: true,
-    })
-  }
-
-  {
-    const claim = await createClaim(ClaimType.Work, TheRavenBook.claim, validClaimSigner).catch(getErrorMessage)
-
-    assert({
-      given: 'an extended claim without an external context',
-      should: 'will return an Error()',
-      actual: claim,
-      expected: 'The property "edition" in the input was not defined in the context.',
-    })
-  }
-})
 
 describe('Claim.isClaim', async (should: any) => {
   const { assert } = should('')

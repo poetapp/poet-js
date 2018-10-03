@@ -19,31 +19,35 @@ export const makeClaim = (claim: object) => {
 export const testPrivateKeyEd25519Base58: string =
   'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
-export const validClaimSigner = getClaimSigner(testPrivateKeyEd25519Base58)
+export const validClaimSigner = getClaimSigner()
+const { getIssuerId } = validClaimSigner
 
 export const TheRaven: Work = {
-  id: '996efc4bd089f62e596f3c2c15bda3002d45540481df3be2c11192a6963ee8a7',
+  id: '01a2ca357d8cac322e55d4ec2f6c4d80bdcd3676c6fe8ef7376210bd531f8dac',
   type: ClaimType.Work,
-  issuer: validClaimSigner.getIssuerId(),
+  issuer: validClaimSigner.getIssuerId(testPrivateKeyEd25519Base58),
   issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
-    keywords: 'poem',
+    tags: 'poem',
     dateCreated: '',
+    copyrightHolder: validClaimSigner.getIssuerId(testPrivateKeyEd25519Base58),
+    license: 'https://creativecommons.org/licenses/by/2.0/',
     datePublished: '1845-01-29T03:00:00.000Z',
     hash: 'de1c818f9be211a78dff90a03b9e297bbb61b3c292f1c1bbc3a5283e9b203cb1',
     archiveUrl: 'ipfs:/theRaven',
+    canonicalUrl: 'https://amazon.com/TheRaven',
   },
-  'https://w3id.org/security#proof': {
+  'sec:proof': {
     '@graph': {
-      '@type': 'https://w3id.org/security#Ed25519Signature2018',
-      created: {
+      '@type': 'sec:Ed25519Signature2018',
+      'http://purl.org/dc/terms/created': {
         '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
         '@value': '2018-09-05T20:19:20Z',
       },
       'http://purl.org/dc/terms/creator': {
-        '@id': validClaimSigner.getIssuerId(),
+        '@id': validClaimSigner.getIssuerId(testPrivateKeyEd25519Base58),
       },
       'https://w3id.org/security#jws':
         'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..TSHkMOwbWZvIp8Hd-MyebaMgItf4Iyl3dgUSlHBBlnidw' +
@@ -58,6 +62,7 @@ export const TheRavenBook: Work = {
     ...TheRaven.claim,
     edition: '1',
     isbn: '9781458318404',
+    contributors: [getIssuerId(testPrivateKeyEd25519Base58)],
   },
 }
 

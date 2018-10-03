@@ -1,18 +1,81 @@
 /* tslint:disable:no-relative-imports */
+import * as crypto from 'crypto'
 import * as cuid from 'cuid'
+import JSONLD = require('jsonld')
+import JSONLD_SIGS = require('jsonld-signatures')
+import * as ParseDataUrl from 'parse-data-url'
 
 import { IllegalArgumentException } from '../Exceptions'
-import { Claim } from '../Interfaces'
+import { Claim, ClaimContext, ClaimType, claimTypeDefaults, DefaultClaimContext } from '../Interfaces'
 import { getBase58ED25519PublicKeyFromPrivateKey } from '../util/KeyHelper'
-import { getJsonLD } from './JsonLdHelper'
 
 export interface ClaimSigner {
-  readonly getIssuerId: () => string
-  readonly signClaim: (document: Claim) => Promise<Claim>
+  readonly createClaim: (type: ClaimType, claimAttributes: object, context: ClaimContext) => Claim
 }
 
-export const getClaimSigner = (privateKey: string) => {
-  const { jsig, getClaimId, isValidSignature } = getJsonLD()
+export const getClaimSigner = () => {
+  const jsonld = JSONLD()
+
+  const getDataDocumentLoader = (jsonld: any) => {
+    const nodeDocumentLoader = jsonld.documentLoaders.node({ usePromise: true })
+
+    return async (url: string, callback: (error: any, data: any) => any) => {
+      const parsedData = ParseDataUrl(url)
+      if (parsedData) {
+        const publicKey = {
+          id: url,
+          type: 'Ed25519VerificationKey2018',
+          owner: url,
+          publicKeyBase58: parsedData.data,
+        }
+        return callback(null, {
+          contextUrl: ['https://w3id.org/security/v2'],
+          document: {
+            owner: {
+              id: url,
+              publicKey: [publicKey],
+            },
+            publicKey,
+          },
+        })
+      }
+      nodeDocumentLoader(url, callback)
+    }
+  }
+  jsonld.documentLoader = getDataDocumentLoader(jsonld)
+  const jsig = JSONLD_SIGS()
+  jsig.use('jsonld', jsonld)
+
+  const canonizeClaim = async (document: Claim, jsonld: any): Promise<string> => {
+    const contextualClaim = {
+      type: document.type,
+      '@context': {
+        ...DefaultClaimContext,
+        ...claimTypeDefaults[document.type],
+        ...document['@context'],
+      },
+      issuer: document.issuer,
+      issuanceDate: document.issuanceDate,
+      claim: document.claim,
+    }
+    return jsonld.canonize(contextualClaim)
+  }
+
+  const getClaimId = async (claim: Claim): Promise<string> => {
+    const canonizedClaim = await canonizeClaim(claim, jsonld)
+    const buffer = Buffer.from(canonizedClaim)
+    return crypto
+      .createHash('sha256')
+      .update(buffer)
+      .digest()
+      .toString('hex')
+  }
+
+  const isValidSignature = async (claim: Claim): Promise<boolean> => {
+    const results: any = await jsig.verify(claim, { checkNonce: cuid.isCuid })
+
+    return results.verified
+  }
 
   const signClaimValidateClaimId = async (claim: Claim) => {
     if (!claim.id) throw new IllegalArgumentException('Cannot sign a claim that has an empty .id field.')
@@ -30,30 +93,59 @@ export const getClaimSigner = (privateKey: string) => {
     await signClaimValidateSigningOptions(signingOptions)
   }
 
-  const signingOptions = {
+  const signingOptions = (privateKey: string) => ({
     privateKeyBase58: privateKey,
     algorithm: 'Ed25519Signature2018',
     creator: `data:,${getBase58ED25519PublicKeyFromPrivateKey(privateKey)}`,
     nonce: cuid(),
+  })
+
+  const getIssuerId = (privateKey: string): string => signingOptions(privateKey).creator
+
+  const signClaim = async (document: Claim, signingOptions: any = {}): Promise<Claim> => {
+    await signClaimValidateArgs(signingOptions, document)
+
+    const signedClaim = await jsig.sign(
+      {
+        '@context': document['@context'],
+        id: document.id,
+        type: document.type,
+        issuer: document.issuer,
+        issuanceDate: document.issuanceDate,
+        claim: document.claim,
+      },
+      signingOptions
+    )
+    if (isValidSignature(signedClaim)) return signedClaim
+    throw new IllegalArgumentException('Claim signature is invalid')
   }
 
   return {
-    getIssuerId: (): string => signingOptions.creator,
-    signClaim: async (document: Claim): Promise<Claim> => {
-      await signClaimValidateArgs(signingOptions, document)
-
-      const signedClaim = await jsig.sign(
+    createClaim: async (
+      privateKey: string,
+      type: ClaimType,
+      claimAttributes: object,
+      context: ClaimContext = {}
+    ): Promise<Claim> => {
+      const claim: Claim = {
+        '@context': { ...DefaultClaimContext, ...claimTypeDefaults[type], ...context },
+        type,
+        issuer: getIssuerId(privateKey),
+        issuanceDate: new Date().toISOString(),
+        claim: { ...claimAttributes },
+      }
+      const id = await getClaimId(claim)
+      return await signClaim(
         {
-          '@context': document['@context'],
-          type: document.type,
-          issuer: document.issuer,
-          issuanceDate: document.issuanceDate,
-          claim: document.claim,
+          ...claim,
+          id,
         },
-        signingOptions
+        signingOptions(privateKey)
       )
-      if (isValidSignature(signedClaim)) return signedClaim
-      else throw new IllegalArgumentException('Claim signature is invalid')
     },
+    getClaimId,
+    getIssuerId,
+    isValidSignature,
+    signClaim,
   }
 }

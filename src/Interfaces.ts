@@ -14,7 +14,7 @@ export interface Claim {
   readonly issuer: string
   readonly issuanceDate: string
   readonly type: ClaimType
-  readonly 'https://w3id.org/security#proof'?: any
+  readonly 'sec:proof'?: any
   readonly claim: object
 }
 
@@ -31,23 +31,33 @@ export interface ClaimTypeContexts {
 // Refer to https://www.w3.org/2018/jsonld-cg-reports/json-ld/#the-context
 export const DefaultClaimContext: ClaimContext = {
   cred: 'https://w3id.org/credentials#',
+  dc: 'http://purl.org/dc/terms/',
   schema: 'http://schema.org/',
   sec: 'https://w3id.org/security#',
 
+  id: 'sec:digestValue',
   issuer: 'cred:issuer',
   issuanceDate: 'cred:issued',
-  type: 'http://schema.org/additionalType',
-  claim: 'http://schema.org/Thing', // The most generic definition in schema.org,
+  type: 'schema:additionalType',
+  claim: 'schema:Thing', // The most generic definition in schema.org,
 }
 
 export const DefaultWorkClaimContext: ClaimContext = {
+  archiveUrl: 'schema:url',
   author: 'schema:author',
-  claim: 'http://schema.org/CreativeWork',
+  canonicalUrl: 'schema:url',
+  claim: 'schema:CreativeWork',
+  contributors: {
+    '@id': 'schema:ItemList',
+    '@container': '@list',
+    '@type': 'schema:contributor',
+  },
+  copyrightHolder: 'schema:copyrightHolder',
   dateCreated: 'schema:dateCreated',
   datePublished: 'schema:datePublished',
+  license: 'schema:license',
   name: 'schema:name',
-  keywords: 'schema:keywords',
-  archiveUrl: 'schema:url',
+  tags: 'schema:keywords',
   hash: 'sec:digestValue',
 }
 
@@ -63,8 +73,8 @@ export const claimTypeDefaults: ClaimTypeContexts = {
 
 const signatureSchema = {
   '@graph': Joi.object().keys({
-    '@type': Joi.string().only(Object.keys(jsigs.suites).map(suite => `https://w3id.org/security#${suite}`)),
-    created: Joi.object().keys({
+    '@type': Joi.string().only(Object.keys(jsigs.suites).map(suite => `sec:${suite}`)),
+    'http://purl.org/dc/terms/created': Joi.object().keys({
       '@type': Joi.string().uri(),
       '@value': Joi.string()
         .required()
@@ -73,13 +83,27 @@ const signatureSchema = {
     'http://purl.org/dc/terms/creator': Joi.object({
       '@id': Joi.string()
         .required()
-        .uri(),
-    }).required(),
+        .uri({ scheme: ['po.et', 'http', 'https', 'did', 'data'] }),
+    }),
+    'dc:creator': Joi.object({
+      '@id': Joi.string()
+        .required()
+        .uri({ scheme: ['po.et', 'http', 'https', 'did', 'data'] }),
+    }),
     'https://w3id.org/security#jws': Joi.string(),
+    'dc:created': Joi.object().keys({
+      '@type': Joi.string().uri(),
+      '@value': Joi.string()
+        .required()
+        .isoDate(),
+    }),
+    'sec:jws': Joi.string(),
+    'sec:nonce': Joi.string(),
   }),
 }
 
 const claimSchema = Joi.object({
+  '@context': Joi.object(),
   id: Joi.string()
     .required()
     .alphanum()
@@ -96,7 +120,7 @@ const claimSchema = Joi.object({
     .required()
     .only([ClaimType.Identity, ClaimType.Work]),
   claim: Joi.object().required(),
-  'https://w3id.org/security#proof': Joi.object(signatureSchema).required(),
+  'sec:proof': Joi.object(signatureSchema),
 })
 
 export function isClaim(object: any): object is Claim {
@@ -137,4 +161,5 @@ export enum StorageProtocol {
 
 export enum SigningAlgorithm {
   Ed25519Signature2018 = 'Ed25519Signature2018',
+  RsaSignature2018 = 'RsaSignature2018',
 }

@@ -4,8 +4,8 @@ import { ClaimType, Identity, isClaim, isIdentity, isWork, Work } from './Interf
 
 const signatureBlock = {
   '@graph': {
-    '@type': 'https://w3id.org/security#Ed25519Signature2018',
-    created: {
+    '@type': 'sec:Ed25519Signature2018',
+    'http://purl.org/dc/terms/created': {
       '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
       '@value': '2018-09-05T20:19:20Z',
     },
@@ -19,18 +19,17 @@ const signatureBlock = {
 
 const TheRaven: Work = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  issuer: 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
+  issuer: 'data:,1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   type: ClaimType.Work,
   issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
     name: 'The Raven',
     author: 'Edgar Allan Poe',
-    keywords: 'poem',
+    tags: 'poem',
     dateCreated: '',
     datePublished: '1845-01-29T03:00:00.000Z',
-    text: 'Once upon a midnight dreary...',
   },
-  'https://w3id.org/security#proof': signatureBlock,
+  'sec:proof': signatureBlock,
 }
 
 const Me: Identity = {
@@ -41,7 +40,7 @@ const Me: Identity = {
   claim: {
     publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
   },
-  'https://w3id.org/security#proof': signatureBlock,
+  'sec:proof': signatureBlock,
 }
 
 const InvalidClaim = {
