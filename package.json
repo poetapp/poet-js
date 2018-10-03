@@ -46,7 +46,7 @@
     "protobufjs": "6.8.8"
   },
   "devDependencies": {
-    "@po.et/tslint-rules": "1.4.4",
+    "@po.et/tslint-rules": "1.4.5",
     "husky": "1.1.0",
     "lint-staged": "7.3.0",
     "nyc": "github:poetapp/nyc#fbc2ed1",
