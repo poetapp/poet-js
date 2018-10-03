@@ -46,20 +46,25 @@ npm i @po.et/poet-js
 
 ## Usage
 
-First create a `ClaimSigner` to sign and verify your claims. Note that the Po.et network currently uses 
+Note that the Po.et network currently uses 
 [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), which requires a Base58
 form of the Ed25519 Private Key. You can use the KeyHelper utility to generate a base58 public/privateKey pair, if you
 do not yet have one.
 
+**WARNING**
+Do not use the example private key in these documents. No one should have access to your private key, and it certainly should not be in the example documents of a library. If you
+use the example private key, others can make additional claims using the same key.
+
 ```typescript
-import { getClaimSigner, KeyHelper } from '@po.et/poet-js'
+import { KeyHelper } from '@po.et/poet-js'
 
 const { privateKey } = KeyHelper.generateED25519Base58Keys('password') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
-const claimSigner = getClaimSigner(privateKey)
 ```
 
-Once you have your claimSigner, the main function you'll be using is `createClaim`:
+----
+
+Use `getClaimSigner()` to create a `ClaimSigner` to sign and verify your claims. Once you have your claimSigner, the main function you'll be using is `createClaim`:
 
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
 The Po.et network uses [multihash](https://github.com/multiformats/multihash) to compare the hash against the content.
@@ -67,8 +72,10 @@ The Po.et network uses [multihash](https://github.com/multiformats/multihash) to
 ```typescript
 import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
 
+const { createClaim } = getClaimSigner()
+
 // Issuer's private key
-const claimSigner = getClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
+const privateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
 
 const workClaim = {
   name: 'The Raven',
@@ -80,7 +87,8 @@ const workClaim = {
   hash: '<hash of content>',
 }
 
-const claim = claimSigner.createClaim(
+const claim = createClaim(
+  privateKey,
   ClaimType.Work,
   workClaim,
 )
@@ -114,7 +122,8 @@ which requires a Base58 form of the Ed25519 Public Key.
 import { Claim, ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
 
 // Issuer's private Key: IDP's private Key
-const claimSigner = getClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
+const { createClaim } = getClaimSigner()
+const idpPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
 // Store the privateKey for signing future claims
 const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy')
@@ -123,7 +132,8 @@ const identityAttributes = {
   publicKey,
 }
 
-const claim = claimSigner.createClaim(
+const claim = createClaim(
+  privateKey: idpPrivateKey,
   ClaimType.Identity,
   identityAttributes,
 )
