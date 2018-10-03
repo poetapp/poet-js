@@ -67,7 +67,6 @@ const { privateKey } = KeyHelper.generateED25519Base58Keys('password') // e.g 'L
 Use `getClaimSigner()` to create a `ClaimSigner` to sign and verify your claims. Once you have your claimSigner, the main function you'll be using is `createClaim`:
 
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
-The Po.et network uses [multihash](https://github.com/multiformats/multihash) to compare the hash against the content.
 
 ```typescript
 import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
