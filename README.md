@@ -120,8 +120,9 @@ which requires a Base58 form of the Ed25519 Public Key.
 ```typescript
 import { Claim, ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
 
-// Issuer's private Key: IDP's private Key
 const { createClaim } = getClaimSigner()
+
+// Issuer's private Key: IDP's private Key
 const idpPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
 // Store the privateKey for signing future claims
@@ -132,7 +133,7 @@ const identityAttributes = {
 }
 
 const claim = createClaim(
-  privateKey: idpPrivateKey,
+  idpPrivateKey,
   ClaimType.Identity,
   identityAttributes,
 )
