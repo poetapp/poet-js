@@ -52,23 +52,23 @@ form of the Ed25519 Private Key. You can use the KeyHelper utility to generate a
 do not yet have one.
 
 ```typescript
-import { ClaimSigner, KeyHelper } from '@po.et/poet-js'
+import { getClaimSigner, KeyHelper } from '@po.et/poet-js'
 
 const { privateKey } = KeyHelper.generateED25519Base58Keys('password') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
-const claimSigner = ClaimSigner(privateKey)
+const claimSigner = getClaimSigner(privateKey)
 ```
 
-The main function you'll be using is `createClaim`, which requires the above claimSigner:
+Once you have your claimSigner, the main function you'll be using is `createClaim`:
 
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
 The Po.et network uses [multihash](https://github.com/multiformats/multihash) to compare the hash against the content.
 
 ```typescript
-import { Claim, ClaimSigner, ClaimType, createClaim } from '@po.et/poet-js'
+import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
 
 // Issuer's private key
-const claimSigner = ClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
+const claimSigner = getClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
 
 const workClaim = {
   name: 'The Raven',
@@ -80,10 +80,9 @@ const workClaim = {
   hash: '<hash of content>',
 }
 
-const claim = createClaim(
+const claim = claimSigner.createClaim(
   ClaimType.Work,
   workClaim,
-  claimSigner,
 )
 ```
 
@@ -112,22 +111,21 @@ which requires a Base58 form of the Ed25519 Public Key.
 
 
 ```typescript
-import { Claim, ClaimSigner, ClaimType, createClaim, KeyHelper } from '@po.et/poet-js'
+import { Claim, ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
 
 // Issuer's private Key: IDP's private Key
-const claimSigner = ClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
+const claimSigner = getClaimSigner('LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6')
 
 // Store the privateKey for signing future claims
-const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('password')
+const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy')
 
 const identityAttributes = {
   publicKey,
 }
 
-const claim = createClaim(
+const claim = claimSigner.createClaim(
   ClaimType.Identity,
   identityAttributes,
-  claimSigner,
 )
 ```
 
