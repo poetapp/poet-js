@@ -120,7 +120,41 @@ const response = await fetch(poetNodeUrl + '/works/', {
 
 ### Example 2: createClaim for Work Claim, with overriding context
 
-**Coming Soon**
+If you want to extend or override the default context defined by Po.et, you simply need to pass a context object into 
+the `createClaim` function:
+
+```typescript
+import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
+
+const { createClaim } = getClaimSigner()
+
+const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
+
+const externalContext: any = {
+  claim: 'schema:Book',
+  edition: 'schema:bookEdition',
+  isbn: 'schema.org/isbn',
+}
+
+const workClaim = {
+  name: 'The Raven',
+  author: 'Edgar Allan Poe',
+  tags: 'poem',
+  dateCreated: '',
+  datePublished: '1845-01-29T03:00:00.000Z',
+  archiveUrl: 'https://example.com/raven',
+  hash: '<hash of content>',
+  isbn: '9781458318404',
+  edition: '1',
+}
+
+const claim = createClaim(
+  issuerPrivateKey,
+  ClaimType.Work,
+  workClaim,
+  externalContext,
+)
+```
 
 ### Example 3: createClaim for Identity Claims <!-- TODO: link to glossary -->
 Note, if you are creating an identity claim, your IDP will be the issuer of the claim. [Frost](https://frost.po.et/) is one such IDP.
