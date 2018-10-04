@@ -82,7 +82,7 @@ Use `getClaimSigner()` to create a `ClaimSigner` to sign and verify your claims.
 ### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
 
 ```typescript
-import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
+import { getClaimSigner, ClaimType } from '@po.et/poet-js'
 
 const { createClaim } = getClaimSigner()
 
@@ -124,7 +124,7 @@ If you want to extend or override the default context defined by Po.et, you simp
 the `createClaim` function:
 
 ```typescript
-import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
+import { getClaimSigner, ClaimType } from '@po.et/poet-js'
 
 const { createClaim } = getClaimSigner()
 
@@ -164,7 +164,7 @@ which requires a Base58 form of the Ed25519 Public Key.
 
 
 ```typescript
-import { Claim, ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
+import { ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
 
 const { createClaim } = getClaimSigner()
 
