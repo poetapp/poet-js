@@ -73,8 +73,7 @@ import { Claim, getClaimSigner, ClaimType } from '@po.et/poet-js'
 
 const { createClaim } = getClaimSigner()
 
-// Issuer's private key
-const privateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
+const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
 
 const workClaim = {
   name: 'The Raven',
@@ -87,7 +86,7 @@ const workClaim = {
 }
 
 const claim = createClaim(
-  privateKey,
+  issuerPrivateKey,
   ClaimType.Work,
   workClaim,
 )
@@ -122,10 +121,10 @@ import { Claim, ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
 
 const { createClaim } = getClaimSigner()
 
-// Issuer's private Key: IDP's private Key
-const idpPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
+// Issuer is the IDP
+const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
 
-// Store the privateKey for signing future claims
+// Store the privateKey for this profile for signing future claims
 const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase')
 
 const identityAttributes = {
@@ -133,7 +132,7 @@ const identityAttributes = {
 }
 
 const claim = createClaim(
-  idpPrivateKey,
+  issuerPrivateKey,
   ClaimType.Identity,
   identityAttributes,
 )

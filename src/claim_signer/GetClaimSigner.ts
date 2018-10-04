@@ -122,7 +122,7 @@ export const getClaimSigner = () => {
 
   return {
     createClaim: async (
-      privateKey: string,
+      issuerPrivateKey: string,
       type: ClaimType,
       claimAttributes: object,
       context: ClaimContext = {}
@@ -130,7 +130,7 @@ export const getClaimSigner = () => {
       const claim: Claim = {
         '@context': { ...DefaultClaimContext, ...claimTypeDefaults[type], ...context },
         type,
-        issuer: getIssuerId(privateKey),
+        issuer: getIssuerId(issuerPrivateKey),
         issuanceDate: new Date().toISOString(),
         claim: { ...claimAttributes },
       }
@@ -140,7 +140,7 @@ export const getClaimSigner = () => {
           ...claim,
           id,
         },
-        signingOptions(privateKey)
+        signingOptions(issuerPrivateKey)
       )
     },
     getClaimId,
