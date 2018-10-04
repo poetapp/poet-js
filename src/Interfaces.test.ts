@@ -34,7 +34,7 @@ const TheRaven: Work = {
 
 const Me: Identity = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  issuer: 'did:po.et:1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
+  issuer: 'data:,1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
   type: ClaimType.Identity,
   issuanceDate: '2017-11-13T15:00:00.000Z',
   claim: {
