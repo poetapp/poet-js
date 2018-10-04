@@ -9,33 +9,46 @@ Po.et JS is a small library that provides methods to easily create and sign Po.e
 [Verifiable Credentials Data Model](https://w3c.github.io/vc-data-model). These claims are [JSON-LD](https://w3c.github.io/json-ld-syntax/)
 documents. As such, you can define your own JSON-LD `@context` to map your submitted Claims.
 
-Po.et does provide a default `@context object` that you can extend or override in the `createClaim` function. The current defaults are as follows:
+Po.et does provide a few default `@context` objects that you can extend or override in the `createClaim` function. The current defaults are as follows:
 
-```ts  
-'@context': {
-   cred: 'https://w3id.org/credentials#',
-   schema: 'http://schema.org/',
-   sec: 'https://w3id.org/security#',
-   
-   // Verifiable Credentials (Claim) metadata
-   issuer: 'cred:issuer',
-   issuanceDate: 'cred:issued',
-   type: 'http://schema.org/additionalType',
-   claim: 'http://schema.org/Thing', // The most generic definition in schema.org
-   
-   // Work Claim Defaults
-   author: 'schema:author',
-   dateCreated: 'schema:dateCreated',
-   datePublished: 'schema:datePublished',
-   name: 'schema:name',
-   keywords: 'schema:keywords',
-   text: 'schema:text',
-   url: 'schema:url',
-   
-   // Identity Claim Defaults
-   publicKey: 'sec:publicKeyBase58',
-   profileUrl: 'sec:owner',
-},
+```typescript
+export const DefaultClaimContext: ClaimContext = {
+  cred: 'https://w3id.org/credentials#',
+  dc: 'http://purl.org/dc/terms/',
+  schema: 'http://schema.org/',
+  sec: 'https://w3id.org/security#',
+
+  id: 'sec:digestValue',
+  issuer: 'cred:issuer',
+  issuanceDate: 'cred:issued',
+  type: 'schema:additionalType',
+  claim: 'schema:Thing', // The most generic definition in schema.org,
+}
+
+export const DefaultWorkClaimContext: ClaimContext = {
+  archiveUrl: 'schema:url',
+  author: 'schema:author',
+  canonicalUrl: 'schema:url',
+  claim: 'schema:CreativeWork',
+  contributors: {
+    '@id': 'schema:ItemList',
+    '@container': '@list',
+    '@type': 'schema:contributor',
+  },
+  copyrightHolder: 'schema:copyrightHolder',
+  dateCreated: 'schema:dateCreated',
+  datePublished: 'schema:datePublished',
+  license: 'schema:license',
+  name: 'schema:name',
+  tags: 'schema:keywords',
+  hash: 'sec:digestValue',
+}
+
+export const DefaultIdentityClaimContext: ClaimContext = {
+  publicKey: 'sec:publicKeyBase58',
+  profileUrl: 'sec:owner',
+}
+
 ```
 
 ## Installation
