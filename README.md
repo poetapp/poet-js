@@ -69,24 +69,28 @@ Do not use the example private key in these documents. No one should have access
 use the example private key, others can make additional claims using the same key.
 
 ```typescript
-import { KeyHelper } from '@po.et/poet-js'
+import { createIssuerFromPrivateKey, generateED25519Base58Keys } from '@po.et/poet-js'
 
-const { privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
+const { privateKey } = generateED25519Base58Keys('entropy_phrase') // e.g 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
+
+const issuer = createIssuerFromPrivateKey(privateKey)
 
 ```
 
 ----
 
-Use `getClaimSigner()` to create a `ClaimSigner` to sign and verify your claims. Once you have your claimSigner, the main function you'll be using is `createClaim`:
+Use `configureCreateVerifiableClaim()` to create a `createVerifiableClaim` function to create an unsigned Verifiable Claim.
+Then use `configureSignVerifiableClaim` from `getVerifiableClaimSigner()` to create the proper function to sign and verify your claims.
 
-### Example 1: createClaim for Work Claims <!-- TODO: link to glossary -->
+### Example 1: Create and Sign a Verifiable Work Claims <!-- TODO: link to glossary -->
 
 ```typescript
-import { getClaimSigner, ClaimType } from '@po.et/poet-js'
+import { configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner } from '@po.et/poet-js'
 
-const { createClaim } = getClaimSigner()
-
+const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
 const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
+const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
+const createVerifiableWorkClaim = configureCreateVerifiableClaim(issuer)
 
 const workClaim = {
   name: 'The Raven',
@@ -98,11 +102,11 @@ const workClaim = {
   hash: '<hash of content>',
 }
 
-const claim = createClaim(
-  issuerPrivateKey,
-  ClaimType.Work,
-  workClaim,
-)
+const unsignedVerifiableClaim = createVerifiableWorkClaim(workClaim)
+
+const signVerifiableClaim = configureSignVerifiableClaim(issuerPrivateKey)
+
+const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
 Once this claim is created, you can publish it to a Po.et Node:
@@ -114,27 +118,29 @@ const response = await fetch(poetNodeUrl + '/works/', {
 	'Accept': 'application/json',
 	'Content-Type': 'application/json'
   },
-  body: JSON.stringify(claim)
+  body: JSON.stringify(signedWorkClaim)
 })
 ```
 
-### Example 2: createClaim for Work Claim, with overriding context
+### Example 2: Create and sign a Verifiable Work Claim with overriding context
 
 If you want to extend or override the default context defined by Po.et, you simply need to pass a context object into 
-the `createClaim` function:
+the `configureCreateVerifiableClaim` function:
 
 ```typescript
-import { getClaimSigner, ClaimType } from '@po.et/poet-js'
+import { ClaimType, configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner } from '@po.et/poet-js'
 
-const { createClaim } = getClaimSigner()
-
+const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
 const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
+const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
 
 const externalContext: any = {
   claim: 'schema:Book',
   edition: 'schema:bookEdition',
   isbn: 'schema.org/isbn',
 }
+
+const createVerifiableWorkClaim = configureCreateVerifiableClaim(issuer, ClaimType.Work, externalContext)
 
 const workClaim = {
   name: 'The Raven',
@@ -148,12 +154,11 @@ const workClaim = {
   edition: '1',
 }
 
-const claim = createClaim(
-  issuerPrivateKey,
-  ClaimType.Work,
-  workClaim,
-  externalContext,
-)
+const unsignedVerifiableClaim = createVerifiableWorkClaim(workClaim)
+
+const signVerifiableClaim = configureSignVerifiableClaim(issuerPrivateKey)
+
+const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
 ### Example 3: createClaim for Identity Claims <!-- TODO: link to glossary -->
@@ -164,25 +169,27 @@ which requires a Base58 form of the Ed25519 Public Key.
 
 
 ```typescript
-import { ClaimType, getClaimSigner, KeyHelper } from '@po.et/poet-js'
+import { ClaimType, configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner, KeyHelper } from '@po.et/poet-js'
 
-const { createClaim } = getClaimSigner()
-
+const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
+const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
 // Issuer is the IDP
-const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
+const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
 
 // Store the privateKey for this profile for signing future claims
 const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase')
 
-const identityAttributes = {
+const identityClaim= {
   publicKey,
 }
 
-const claim = createClaim(
-  issuerPrivateKey,
-  ClaimType.Identity,
-  identityAttributes,
-)
+const createVerifiableIdentityClaim = configureCreateVerifiableClaim(issuer, ClaimType.Identity)
+
+const unsignedVerifiableClaim = createVerifiableIdentityClaim(identityClaim)
+
+const signVerifiableClaim = configureSignVerifiableClaim(issuerPrivateKey)
+
+const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
 Once this claim is created, you can publish it to a Po.et Node:
@@ -198,7 +205,8 @@ const response = await fetch(poetNodeUrl + '/identities/', {
 })
 ```
 
-Notice you don't need to wait for the server's response to know the claim's ID. You don't even need to publish it! `claim.id` is readily available right after calling `createClaim`.
+Notice you don't need to wait for the server's response to know the claim's ID. You don't even need to publish it! 
+`claim.id` is readily available right after creating the unsigned verifiable claim.
 
 ## Contributing
 
