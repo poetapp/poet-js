@@ -5,6 +5,7 @@ declare module 'jsonld-signatures' {
   }
 
   interface JsonldSignatureFactory {
+    (): JsonldSignatureFactory
     suites: object
     SECURITY_CONTEXT_URL: string
     sign: (doc: any, signingOptions: any) => Promise<any>
@@ -12,7 +13,7 @@ declare module 'jsonld-signatures' {
     verify: (doc: any, verificationOptions: any) => Promise<VerifiedResults>
   }
 
-  function factory(): JsonldSignatureFactory
+  const jsonLdSignatureFactory: JsonldSignatureFactory
 
-  export = factory
+  export = jsonLdSignatureFactory
 }
