@@ -179,7 +179,7 @@ const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
 // Store the privateKey for this profile for signing future claims
 const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase')
 
-const identityClaim= {
+const identityClaim = {
   publicKey,
 }
 
