@@ -1,47 +1,7 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
-import { ClaimType, Identity, isClaim, isIdentity, isWork, Work } from './Interfaces'
-
-const signatureBlock = {
-  '@graph': {
-    '@type': 'sec:Ed25519Signature2018',
-    'http://purl.org/dc/terms/created': {
-      '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-      '@value': '2018-09-05T20:19:20Z',
-    },
-    'http://purl.org/dc/terms/creator': {
-      '@id': 'po.et://entities/1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-    },
-    'https://w3id.org/security#jws':
-      'eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..neh08G8ljeqeEnqqPS06tgV7OGrlVRDa6ZfidRy8cGztWX9QbzwYz5VXtdO8SLy-H8alKeRiwGy67Q_QyEtuCg',
-  },
-}
-
-const TheRaven: Work = {
-  id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  issuer: 'data:,1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  type: ClaimType.Work,
-  issuanceDate: '2017-11-13T15:00:00.000Z',
-  claim: {
-    name: 'The Raven',
-    author: 'Edgar Allan Poe',
-    tags: 'poem',
-    dateCreated: '',
-    datePublished: '1845-01-29T03:00:00.000Z',
-  },
-  'sec:proof': signatureBlock,
-}
-
-const Me: Identity = {
-  id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  issuer: 'data:,1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
-  type: ClaimType.Identity,
-  issuanceDate: '2017-11-13T15:00:00.000Z',
-  claim: {
-    publicKey: '02badf4650ba545608242c2d303d587cf4f778ae3cf2b3ef99fbda37555a400fd2',
-  },
-  'sec:proof': signatureBlock,
-}
+import { MyIdentity, TheRaven, SignedRaven } from '../tests/unit/shared'
+import { ClaimType, isIdentity, isSignedVerifiableClaim, isVerifiableClaim, isWork } from './Interfaces'
 
 const InvalidClaim = {
   id: '1bb5e7959c7cb28936ec93eb6893094241a5bc396f08845b4f52c86034f0ddf8',
@@ -54,55 +14,6 @@ const InvalidClaim = {
   },
 }
 
-describe('Interfaces.isClaim', async (should: any) => {
-  const { assert } = should('')
-
-  {
-    assert({
-      given: 'a valid claim',
-      should: 'return true',
-      actual: isClaim(TheRaven),
-      expected: true,
-    })
-
-    assert({
-      given: 'an invalid claim, isClaim',
-      should: 'return false',
-      actual: isClaim(InvalidClaim),
-      expected: false,
-    })
-  }
-
-  {
-    assert({
-      given: 'a valid Identity claim, isClaim',
-      should: 'return true',
-      actual: isClaim(Me),
-      expected: true,
-    })
-  }
-
-  {
-    assert({
-      given: 'a valid claim with a context',
-      should: 'return true',
-      actual: isClaim(TheRaven),
-      expected: true,
-    })
-  }
-
-  ;['', false, null, undefined].forEach(value => {
-    {
-      assert({
-        given: 'a claim with an invalid date',
-        should: `return false`,
-        actual: isClaim({ ...TheRaven, created: value }),
-        expected: false,
-      })
-    }
-  })
-})
-
 describe('Interfaces.isIdentity', async (should: any) => {
   const { assert } = should('')
 
@@ -110,7 +21,7 @@ describe('Interfaces.isIdentity', async (should: any) => {
     assert({
       given: 'a valid Identity claim',
       should: 'return true',
-      actual: isIdentity(Me),
+      actual: isIdentity(MyIdentity),
       expected: true,
     })
 
@@ -139,8 +50,78 @@ describe('Interfaces.isWork', async (should: any) => {
     assert({
       given: 'a valid Identity Claim',
       should: 'return false',
-      actual: isWork(Me),
+      actual: isWork(MyIdentity),
       expected: false,
     })
   }
+})
+
+describe('Interfaces.isVerifiableClaim', async (should: any) => {
+  const { assert } = should('')
+
+  {
+    assert({
+      given: 'a valid Verifiable Claim',
+      should: `return true`,
+      actual: isVerifiableClaim(TheRaven),
+      expected: true,
+    })
+
+    assert({
+      given: 'an invalid Verifiable Claim',
+      should: 'return false',
+      actual: isVerifiableClaim(InvalidClaim),
+      expected: false,
+    })
+  }
+
+  {
+    assert({
+      given: 'a valid Identity Verifiable Claim',
+      should: 'return true',
+      actual: isVerifiableClaim(MyIdentity),
+      expected: true,
+    })
+  }
+
+  ;['', false, null, undefined].forEach(value => {
+    {
+      assert({
+        given: 'a claim with an invalid date',
+        should: `return false`,
+        actual: isVerifiableClaim({ ...TheRaven, issuanceDate: value }),
+        expected: false,
+      })
+    }
+  })
+})
+
+describe('Interfaces.isSignedVerifiableClaim', async (should: any) => {
+  const { assert } = should('')
+
+  assert({
+    given: 'a Singed Verifiable Claim',
+    should: 'return true',
+    actual: isSignedVerifiableClaim(SignedRaven),
+    expected: true,
+  })
+
+  assert({
+    given: 'an unsigned VerifiableClaim',
+    should: 'return false',
+    actual: isSignedVerifiableClaim(TheRaven),
+    expected: false,
+  })
+
+  const badObject = {
+    ...SignedRaven,
+    id: 'something too short',
+  }
+
+  assert({
+    given: 'a signed Verifiable Claim in an invalid id',
+    should: 'return false',
+    actual: isSignedVerifiableClaim(badObject),
+    expected: false,
+  })
 })

@@ -5,9 +5,9 @@ import { describe } from 'riteway'
 
 import {
   generateED25519Base58Keys,
-  getBase58ED25519PublicKeyFromPrivateKey,
-  generateRsaKeyPEMs,
-  getPubicRsaPEMFromPrivatePEM,
+  getED25519Base58PublicKeyFromBase58PrivateKey,
+  generateRsaKeyPems,
+  getRsaPublicPemFromPrivatePem,
 } from './KeyHelper'
 
 type NativeBuffer = Buffer | Uint8Array | number[]
@@ -85,11 +85,11 @@ describe('KeyHelper.generateED25519Base58Keys', async (should: any) => {
   }
 })
 
-describe('KeyHelper.getBase58ED25519PublicKeyFromPrivateKey', async (should: any) => {
+describe('KeyHelper.getED25519Base58PublicKeyFromBase58PrivateKey', async (should: any) => {
   const { assert } = should('')
 
   const keyPair = generateED25519Base58Keys()
-  const publicKey = getBase58ED25519PublicKeyFromPrivateKey(keyPair.privateKey)
+  const publicKey = getED25519Base58PublicKeyFromBase58PrivateKey(keyPair.privateKey)
   const signature = ed25519Sign(bs58.decode(keyPair.privateKey))
   const verified = verify(bs58.decode(publicKey), signature)
 
@@ -101,12 +101,12 @@ describe('KeyHelper.getBase58ED25519PublicKeyFromPrivateKey', async (should: any
   })
 })
 
-describe('KeyHelper.generateRsaKeyPEMs', async (should: any) => {
+describe('KeyHelper.generateRsaKeyPems', async (should: any) => {
   const { assert } = should('')
-  const keyPair = generateRsaKeyPEMs()
+  const keyPair = generateRsaKeyPems()
 
   assert({
-    given: 'generateRsaKeyPEMs',
+    given: 'generateRsaKeyPems',
     should: 'return a pair of public/private key PEMS',
     actual:
       keyPair.publicKey.includes('-----BEGIN PUBLIC KEY-----', 0) &&
@@ -115,10 +115,10 @@ describe('KeyHelper.generateRsaKeyPEMs', async (should: any) => {
   })
 })
 
-describe('KeyHelper.getPubicRsaPEMFromPrivatePEM', async (should: any) => {
+describe('KeyHelper.getRsaPublicPemFromPrivatePem', async (should: any) => {
   const { assert } = should('')
-  const keyPair = generateRsaKeyPEMs()
-  const derivedPublicKeyPEM = getPubicRsaPEMFromPrivatePEM(keyPair.privateKey)
+  const keyPair = generateRsaKeyPems()
+  const derivedPublicKeyPEM = getRsaPublicPemFromPrivatePem(keyPair.privateKey)
 
   assert({
     given: 'a valid private key PEM',
