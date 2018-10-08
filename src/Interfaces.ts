@@ -1,21 +1,27 @@
+/* tslint:disable:no-relative-imports */
 import * as Joi from 'joi'
-import JSIG = require('jsonld-signatures')
+import * as JSONLD_SIGS from 'jsonld-signatures'
 
-const jsigs = JSIG()
+import { IllegalArgumentException } from './Exceptions'
 
 export enum ClaimType {
   Identity = 'Identity',
   Work = 'Work',
 }
 
-export interface Claim {
-  readonly '@context'?: any
-  readonly id?: string
+export interface BaseVerifiableClaim {
+  readonly '@context': any
   readonly issuer: string
   readonly issuanceDate: string
   readonly type: ClaimType
-  readonly 'sec:proof'?: any
   readonly claim: object
+}
+export interface VerifiableClaim extends BaseVerifiableClaim {
+  readonly id: string
+}
+
+export interface SignedVerifiableClaim extends VerifiableClaim {
+  readonly 'sec:proof': any
 }
 
 export interface ClaimContext {
@@ -24,6 +30,19 @@ export interface ClaimContext {
 
 export interface ClaimTypeContexts {
   readonly [key: string]: ClaimContext
+}
+
+export interface SigningOptions {
+  readonly algorithm: SigningAlgorithm
+  readonly nonce: string
+}
+
+export interface Ed25519SigningOptions extends SigningOptions {
+  readonly privateKeyBase58: string
+}
+
+export interface RsaSigningOptions extends SigningOptions {
+  readonly privateKeyPem: string
 }
 
 // WARNING: This MUST account for ALL of the attributes in a Claim, except for id, @context, and signature.
@@ -61,19 +80,29 @@ export const DefaultWorkClaimContext: ClaimContext = {
   hash: 'sec:digestValue',
 }
 
-export const DefaultIdentityClaimContext: ClaimContext = {
-  publicKey: 'sec:publicKeyBase58',
-  profileUrl: 'sec:owner',
-}
-
-export const claimTypeDefaults: ClaimTypeContexts = {
-  Work: DefaultWorkClaimContext,
-  Identity: DefaultIdentityClaimContext,
+const verifiableClaimSchema = {
+  '@context': Joi.object(),
+  id: Joi.string()
+    .required()
+    .alphanum()
+    .min(64),
+  issuer: Joi.string()
+    .required()
+    .uri({
+      scheme: ['po.et', 'http', 'https', 'did', 'data'],
+    }),
+  issuanceDate: Joi.string()
+    .required()
+    .isoDate(),
+  type: Joi.string()
+    .required()
+    .only([ClaimType.Identity, ClaimType.Work]),
+  claim: Joi.object().required(),
 }
 
 const signatureSchema = {
   '@graph': Joi.object().keys({
-    '@type': Joi.string().only(Object.keys(jsigs.suites).map(suite => `sec:${suite}`)),
+    '@type': Joi.string().only(Object.keys(JSONLD_SIGS.suites).map(suite => `sec:${suite}`)),
     'http://purl.org/dc/terms/created': Joi.object().keys({
       '@type': Joi.string().uri(),
       '@value': Joi.string()
@@ -102,41 +131,45 @@ const signatureSchema = {
   }),
 }
 
-const claimSchema = Joi.object({
-  '@context': Joi.object(),
-  id: Joi.string()
-    .required()
-    .alphanum()
-    .min(64),
-  issuer: Joi.string()
-    .required()
-    .uri({
-      scheme: ['po.et', 'http', 'https', 'did', 'data'],
-    }),
-  issuanceDate: Joi.string()
-    .required()
-    .isoDate(),
-  type: Joi.string()
-    .required()
-    .only([ClaimType.Identity, ClaimType.Work]),
-  claim: Joi.object().required(),
-  'sec:proof': Joi.object(signatureSchema),
-})
-
-export function isClaim(object: any): object is Claim {
-  return Joi.validate(object, claimSchema).error === null
+const signedVerifiableClaimSchema = {
+  ...verifiableClaimSchema,
+  'sec:proof': Joi.object(signatureSchema).required(),
 }
 
-export interface Work extends Claim {}
-
-export interface Identity extends Claim {}
-
-export function isWork(claim: Claim): claim is Work {
-  return claim.type === ClaimType.Work
+export interface CreateVerifiableClaimConfig {
+  readonly issuer: string
+  readonly type?: ClaimType
+  readonly context?: ClaimContext
 }
 
-export function isIdentity(claim: Claim): claim is Identity {
-  return claim.type === ClaimType.Identity
+export const isVerifiableClaim = (object: any): object is VerifiableClaim => {
+  return Joi.validate(object, verifiableClaimSchema).error === null
+}
+
+export const isSignedVerifiableClaim = (object: any): object is SignedVerifiableClaim => {
+  return Joi.validate(object, signedVerifiableClaimSchema).error === null
+}
+
+export const DefaultIdentityClaimContext: ClaimContext = {
+  publicKey: 'sec:publicKeyBase58',
+  profileUrl: 'sec:owner',
+}
+
+export const claimTypeDefaults: ClaimTypeContexts = {
+  Work: DefaultWorkClaimContext,
+  Identity: DefaultIdentityClaimContext,
+}
+
+export interface Work extends VerifiableClaim {}
+
+export interface Identity extends VerifiableClaim {}
+
+export function isWork(verifiableClaim: VerifiableClaim): verifiableClaim is Work {
+  return verifiableClaim.type === ClaimType.Work
+}
+
+export function isIdentity(verifiableClaim: VerifiableClaim): verifiableClaim is Identity {
+  return verifiableClaim.type === ClaimType.Identity
 }
 
 export interface PoetAnchor {
@@ -162,4 +195,23 @@ export enum StorageProtocol {
 export enum SigningAlgorithm {
   Ed25519Signature2018 = 'Ed25519Signature2018',
   RsaSignature2018 = 'RsaSignature2018',
+}
+
+export const getSigningAlgorithm = (algorithmName: string): SigningAlgorithm => {
+  switch (algorithmName) {
+    case SigningAlgorithm.Ed25519Signature2018: {
+      return SigningAlgorithm.Ed25519Signature2018
+    }
+    case SigningAlgorithm.RsaSignature2018: {
+      return SigningAlgorithm.RsaSignature2018
+    }
+    default: {
+      throw new IllegalArgumentException(`Unsupported Signing Algorithm ${algorithmName}`)
+    }
+  }
+}
+
+export enum AlgorithmPublicKeyType {
+  Ed25519VerificationKey2018 = 'Ed25519VerificationKey2018',
+  RsaVerificationKey2018 = 'RsaVerificationKey2018',
 }
