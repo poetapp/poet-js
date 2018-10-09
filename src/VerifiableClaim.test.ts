@@ -85,12 +85,10 @@ describe('VerifiableClaim.generateClaimId', async (assert: any) => {
     const work2: BaseVerifiableClaim = makeClaim({
       author: ravenClaim.author,
       nAME: ravenClaim.name,
-      dateCreated: ravenClaim.dateCreated,
-      datePublished: ravenClaim.datePublished,
     })
 
-    const id1 = await generateClaimId(work1).catch(getErrorMessage)
-    const id2 = await generateClaimId(work2).catch(getErrorMessage)
+    const id1 = await generateClaimId(work1)
+    const id2 = await generateClaimId(work2)
 
     assert({
       given: 'two claims with different keys casing',
