@@ -2,13 +2,13 @@
 import { describe } from 'riteway'
 
 import {
-  BaseRavenClaim,
+  BaseEd25519RavenClaim,
   externalContext,
   getErrorMessage,
   makeClaim,
   MyIdentity,
-  testPrivateKeyEd25519Base58,
-  TheRaven,
+  ed25519Base58PrivateKey,
+  Ed25519TheRaven,
   TheRavenBook,
   TheRavenClaim,
 } from '../tests/unit/shared'
@@ -16,31 +16,31 @@ import { BaseVerifiableClaim, isVerifiableClaim, SigningAlgorithm } from './Inte
 import { configureCreateVerifiableClaim, generateClaimId } from './VerifiableClaim'
 import { createIssuerFromPrivateKey, generateRsaKeyPems } from './util/KeyHelper'
 
-const ravenClaim: any = { ...TheRaven.claim }
+const ravenClaim: any = { ...Ed25519TheRaven.claim }
 
 const ravenBookClaim: any = { ...TheRavenBook.claim }
 
-describe('Claim.generateClaimId', async (should: any) => {
+describe('VerifiableClaim.generateClaimId', async (should: any) => {
   const { assert } = should('')
 
   {
     assert({
       given: 'a claim id',
       should: 'be equal to the work id',
-      actual: await generateClaimId(TheRaven).catch(getErrorMessage),
-      expected: TheRaven.id,
+      actual: await generateClaimId(Ed25519TheRaven).catch(getErrorMessage),
+      expected: Ed25519TheRaven.id,
     })
   }
 
   {
-    const id = await generateClaimId({ ...BaseRavenClaim, issuanceDate: '2017-09-13T15:00:00.000Z' }).catch(
+    const id = await generateClaimId({ ...BaseEd25519RavenClaim, issuanceDate: '2017-09-13T15:00:00.000Z' }).catch(
       getErrorMessage
     )
 
     assert({
       given: 'a claim with extra dateCreated, the new dateCreated',
       should: 'be included in the calculation of the id and should be not equal to the work id',
-      actual: id !== TheRaven.id,
+      actual: id !== Ed25519TheRaven.id,
       expected: true,
     })
   }
@@ -142,7 +142,7 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (shou
   const { assert } = should('')
 
   {
-    const issuer = createIssuerFromPrivateKey(testPrivateKeyEd25519Base58)
+    const issuer = createIssuerFromPrivateKey(ed25519Base58PrivateKey)
     const createWorkClaim = configureCreateVerifiableClaim({ issuer })
     const verifiableClaim = await createWorkClaim(TheRavenClaim)
 

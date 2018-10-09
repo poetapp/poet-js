@@ -1,6 +1,6 @@
 /* tslint:disable:no-relative-imports */
 import { describe } from 'riteway'
-import { MyIdentity, TheRaven, SignedRaven } from '../tests/unit/shared'
+import { MyIdentity, Ed25519TheRaven, Ed25519SignedRaven, RsaTheRaven, RsaSignedRaven } from '../tests/unit/shared'
 import { ClaimType, isIdentity, isSignedVerifiableClaim, isVerifiableClaim, isWork } from './Interfaces'
 
 const InvalidClaim = {
@@ -28,7 +28,14 @@ describe('Interfaces.isIdentity', async (should: any) => {
     assert({
       given: 'a valid Work claim',
       should: 'return false',
-      actual: isIdentity(TheRaven),
+      actual: isIdentity(Ed25519TheRaven),
+      expected: false,
+    })
+
+    assert({
+      given: 'a valid Work claim',
+      should: 'return false',
+      actual: isIdentity(RsaTheRaven),
       expected: false,
     })
   }
@@ -41,7 +48,14 @@ describe('Interfaces.isWork', async (should: any) => {
     assert({
       given: 'a valid Work claim',
       should: 'return true',
-      actual: isWork(TheRaven),
+      actual: isWork(Ed25519TheRaven),
+      expected: true,
+    })
+
+    assert({
+      given: 'a valid Work Claim',
+      should: 'return true',
+      actual: isWork(RsaTheRaven),
       expected: true,
     })
   }
@@ -61,9 +75,23 @@ describe('Interfaces.isVerifiableClaim', async (should: any) => {
 
   {
     assert({
-      given: 'a valid Verifiable Claim',
+      given: 'a valid Verifiable Work Claim',
       should: `return true`,
-      actual: isVerifiableClaim(TheRaven),
+      actual: isVerifiableClaim(Ed25519TheRaven),
+      expected: true,
+    })
+
+    assert({
+      given: 'a valid Verifiable RSA Work Claim',
+      should: 'return true',
+      actual: isVerifiableClaim(RsaTheRaven),
+      expected: true,
+    })
+
+    assert({
+      given: 'a valid Verifiable Identity Claim',
+      should: 'return true',
+      actual: isVerifiableClaim(MyIdentity),
       expected: true,
     })
 
@@ -75,21 +103,12 @@ describe('Interfaces.isVerifiableClaim', async (should: any) => {
     })
   }
 
-  {
-    assert({
-      given: 'a valid Identity Verifiable Claim',
-      should: 'return true',
-      actual: isVerifiableClaim(MyIdentity),
-      expected: true,
-    })
-  }
-
   ;['', false, null, undefined].forEach(value => {
     {
       assert({
         given: 'a claim with an invalid date',
         should: `return false`,
-        actual: isVerifiableClaim({ ...TheRaven, issuanceDate: value }),
+        actual: isVerifiableClaim({ ...Ed25519TheRaven, issuanceDate: value }),
         expected: false,
       })
     }
@@ -100,21 +119,28 @@ describe('Interfaces.isSignedVerifiableClaim', async (should: any) => {
   const { assert } = should('')
 
   assert({
-    given: 'a Singed Verifiable Claim',
+    given: 'a Singed Verifiable Ed25519 Claim',
     should: 'return true',
-    actual: isSignedVerifiableClaim(SignedRaven),
+    actual: isSignedVerifiableClaim(Ed25519SignedRaven),
+    expected: true,
+  })
+
+  assert({
+    given: 'a Signed Verifiable Rsa Claim',
+    should: 'return true',
+    actual: isSignedVerifiableClaim(RsaSignedRaven),
     expected: true,
   })
 
   assert({
     given: 'an unsigned VerifiableClaim',
     should: 'return false',
-    actual: isSignedVerifiableClaim(TheRaven),
+    actual: isSignedVerifiableClaim(Ed25519TheRaven),
     expected: false,
   })
 
   const badObject = {
-    ...SignedRaven,
+    ...Ed25519SignedRaven,
     id: 'something too short',
   }
 
