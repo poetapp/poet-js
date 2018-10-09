@@ -88,9 +88,12 @@ Then use `configureSignVerifiableClaim` from `getVerifiableClaimSigner()` to cre
 import { configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner } from '@po.et/poet-js'
 
 const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
+
 const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
 const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
-const createVerifiableWorkClaim = configureCreateVerifiableClaim(issuer)
+
+const createVerifiableWorkClaim = configureCreateVerifiableClaim({ issuer })
+const signVerifiableClaim = configureSignVerifiableClaim({ privateKey: issuerPrivateKey })
 
 const workClaim = {
   name: 'The Raven',
@@ -102,10 +105,7 @@ const workClaim = {
   hash: '<hash of content>',
 }
 
-const unsignedVerifiableClaim = createVerifiableWorkClaim(workClaim)
-
-const signVerifiableClaim = configureSignVerifiableClaim(issuerPrivateKey)
-
+const unsignedVerifiableClaim = await createVerifiableWorkClaim(workClaim)
 const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
@@ -131,6 +131,7 @@ the `configureCreateVerifiableClaim` function:
 import { ClaimType, configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner } from '@po.et/poet-js'
 
 const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
+
 const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
 const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
 
@@ -140,7 +141,9 @@ const externalContext: any = {
   isbn: 'schema.org/isbn',
 }
 
-const createVerifiableWorkClaim = configureCreateVerifiableClaim(issuer, ClaimType.Work, externalContext)
+const createVerifiableWorkClaim = configureCreateVerifiableClaim({ issuer, type: ClaimType.Work, context: externalContext })
+const signVerifiableClaim = configureSignVerifiableClaim({ privateKey: issuerPrivateKey })
+
 
 const workClaim = {
   name: 'The Raven',
@@ -154,10 +157,7 @@ const workClaim = {
   edition: '1',
 }
 
-const unsignedVerifiableClaim = createVerifiableWorkClaim(workClaim)
-
-const signVerifiableClaim = configureSignVerifiableClaim(issuerPrivateKey)
-
+const unsignedVerifiableClaim = await createVerifiableWorkClaim(workClaim)
 const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
@@ -172,9 +172,13 @@ which requires a Base58 form of the Ed25519 Public Key.
 import { ClaimType, configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner, KeyHelper } from '@po.et/poet-js'
 
 const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
+
 const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
 // Issuer is the IDP
 const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
+
+const createVerifiableIdentityClaim = configureCreateVerifiableClaim({ issuer, type: ClaimType.Identity })
+const signVerifiableClaim = configureSignVerifiableClaim({ privateKey: issuerPrivateKey })
 
 // Store the privateKey for this profile for signing future claims
 const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase')
@@ -183,12 +187,7 @@ const identityClaim = {
   publicKey,
 }
 
-const createVerifiableIdentityClaim = configureCreateVerifiableClaim(issuer, ClaimType.Identity)
-
-const unsignedVerifiableClaim = createVerifiableIdentityClaim(identityClaim)
-
-const signVerifiableClaim = configureSignVerifiableClaim(issuerPrivateKey)
-
+const unsignedVerifiableClaim = await createVerifiableIdentityClaim(identityClaim)
 const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
