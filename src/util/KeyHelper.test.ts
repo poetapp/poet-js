@@ -27,9 +27,7 @@ const verify = (publicKey: NativeBuffer, signature: NativeBuffer): boolean =>
     signature,
   })
 
-describe('KeyHelper.generateED25519Base58Keys', async (should: any) => {
-  const { assert } = should('')
-
+describe('KeyHelper.generateED25519Base58Keys', async (assert: any) => {
   {
     const keyPair = generateED25519Base58Keys()
     const signature = ed25519Sign(bs58.decode(keyPair.privateKey))
@@ -85,9 +83,7 @@ describe('KeyHelper.generateED25519Base58Keys', async (should: any) => {
   }
 })
 
-describe('KeyHelper.getED25519Base58PublicKeyFromBase58PrivateKey', async (should: any) => {
-  const { assert } = should('')
-
+describe('KeyHelper.getED25519Base58PublicKeyFromBase58PrivateKey', async (assert: any) => {
   const keyPair = generateED25519Base58Keys()
   const publicKey = getED25519Base58PublicKeyFromBase58PrivateKey(keyPair.privateKey)
   const signature = ed25519Sign(bs58.decode(keyPair.privateKey))
@@ -101,8 +97,7 @@ describe('KeyHelper.getED25519Base58PublicKeyFromBase58PrivateKey', async (shoul
   })
 })
 
-describe('KeyHelper.generateRsaKeyPems', async (should: any) => {
-  const { assert } = should('')
+describe('KeyHelper.generateRsaKeyPems', async (assert: any) => {
   const keyPair = generateRsaKeyPems()
 
   assert({
@@ -115,8 +110,7 @@ describe('KeyHelper.generateRsaKeyPems', async (should: any) => {
   })
 })
 
-describe('KeyHelper.getRsaPublicPemFromPrivatePem', async (should: any) => {
-  const { assert } = should('')
+describe('KeyHelper.getRsaPublicPemFromPrivatePem', async (assert: any) => {
   const keyPair = generateRsaKeyPems()
   const derivedPublicKeyPEM = getRsaPublicPemFromPrivatePem(keyPair.privateKey)
 

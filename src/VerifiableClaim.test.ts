@@ -20,9 +20,7 @@ const ravenClaim: any = { ...Ed25519TheRaven.claim }
 
 const ravenBookClaim: any = { ...TheRavenBook.claim }
 
-describe('VerifiableClaim.generateClaimId', async (should: any) => {
-  const { assert } = should('')
-
+describe('VerifiableClaim.generateClaimId', async (assert: any) => {
   {
     assert({
       given: 'a claim id',
@@ -138,9 +136,7 @@ describe('VerifiableClaim.generateClaimId', async (should: any) => {
   }
 })
 
-describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (should: any) => {
-  const { assert } = should('')
-
+describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (assert: any) => {
   {
     const issuer = createIssuerFromPrivateKey(ed25519Base58PrivateKey)
     const createWorkClaim = configureCreateVerifiableClaim({ issuer })
@@ -155,9 +151,7 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (shou
   }
 })
 
-describe('Claim.configureCreateVerifiableClaim with RSA Issuer', async (should: any) => {
-  const { assert } = should('')
-
+describe('Claim.configureCreateVerifiableClaim with RSA Issuer', async (assert: any) => {
   {
     const rsaPrivateKeyPem = generateRsaKeyPems().privateKey
     const issuer = createIssuerFromPrivateKey(rsaPrivateKeyPem, SigningAlgorithm.RsaSignature2018)

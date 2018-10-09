@@ -28,9 +28,7 @@ import { createIssuerFromPrivateKey } from './util/KeyHelper'
 const { configureSignVerifiableClaim, isValidSignedVerifiableClaim, isValidSignature } = claimSigner
 const rsaIssuer = createIssuerFromPrivateKey(rsaPemPrivateKey, SigningAlgorithm.RsaSignature2018)
 
-describe('VerifiableClaimSigner.configureSignVerifiableClaim - Ed25519', async (should: any) => {
-  const { assert } = should('')
-
+describe('VerifiableClaimSigner.configureSignVerifiableClaim - Ed25519', async (assert: any) => {
   {
     const issuer = createIssuerFromPrivateKey(ed25519Base58PrivateKey)
     const createVerifiableWorkClaim = configureCreateVerifiableClaim({ issuer })
@@ -91,9 +89,7 @@ describe('VerifiableClaimSigner.configureSignVerifiableClaim - Ed25519', async (
   }
 })
 
-describe('VerifiableClaimSigner.configureSignVerifiableClaim - RSA', async (should: any) => {
-  const { assert } = should('')
-
+describe('VerifiableClaimSigner.configureSignVerifiableClaim - RSA', async (assert: any) => {
   {
     const createVerifiableWorkClaim = configureCreateVerifiableClaim({ issuer: rsaIssuer })
     const verifiableWorkClaim = await createVerifiableWorkClaim(TheRavenClaim)
@@ -197,9 +193,7 @@ describe('VerifiableClaimSigner.configureSignVerifiableClaim - RSA', async (shou
   }
 })
 
-describe('VerifiableClaimSigner.isValidSignature - Ed25519', async (should: any) => {
-  const { assert } = should('')
-
+describe('VerifiableClaimSigner.isValidSignature - Ed25519', async (assert: any) => {
   {
     const signWorkClaim = configureSignVerifiableClaim({ privateKey: ed25519Base58PrivateKey })
     const signedWorkClaim = await signWorkClaim(Ed25519TheRaven)
@@ -262,9 +256,7 @@ describe('VerifiableClaimSigner.isValidSignature - Ed25519', async (should: any)
   }
 })
 
-describe('VerifiableClaimSigner.isValidSignature - RSA', async (should: any) => {
-  const { assert } = should('')
-
+describe('VerifiableClaimSigner.isValidSignature - RSA', async (assert: any) => {
   {
     const createVerifiableClaim = configureCreateVerifiableClaim({
       issuer: rsaIssuer,
@@ -346,9 +338,7 @@ describe('VerifiableClaimSigner.isValidSignature - RSA', async (should: any) => 
   }
 })
 
-describe('VerifiableClaimSigner.isValidSignedVerifiableClaim', async (should: any) => {
-  const { assert } = should('')
-
+describe('VerifiableClaimSigner.isValidSignedVerifiableClaim', async (assert: any) => {
   {
     assert({
       given: 'an object that is not a claim',

@@ -14,9 +14,7 @@ const InvalidClaim = {
   },
 }
 
-describe('Interfaces.isIdentity', async (should: any) => {
-  const { assert } = should('')
-
+describe('Interfaces.isIdentity', async (assert: any) => {
   {
     assert({
       given: 'a valid Identity claim',
@@ -41,9 +39,7 @@ describe('Interfaces.isIdentity', async (should: any) => {
   }
 })
 
-describe('Interfaces.isWork', async (should: any) => {
-  const { assert } = should('')
-
+describe('Interfaces.isWork', async (assert: any) => {
   {
     assert({
       given: 'a valid Work claim',
@@ -70,9 +66,7 @@ describe('Interfaces.isWork', async (should: any) => {
   }
 })
 
-describe('Interfaces.isVerifiableClaim', async (should: any) => {
-  const { assert } = should('')
-
+describe('Interfaces.isVerifiableClaim', async (assert: any) => {
   {
     assert({
       given: 'a valid Verifiable Work Claim',
@@ -115,9 +109,7 @@ describe('Interfaces.isVerifiableClaim', async (should: any) => {
   })
 })
 
-describe('Interfaces.isSignedVerifiableClaim', async (should: any) => {
-  const { assert } = should('')
-
+describe('Interfaces.isSignedVerifiableClaim', async (assert: any) => {
   assert({
     given: 'a Singed Verifiable Ed25519 Claim',
     should: 'return true',
