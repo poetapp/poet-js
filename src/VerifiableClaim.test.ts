@@ -3,16 +3,27 @@ import { describe } from 'riteway'
 
 import {
   BaseEd25519RavenClaim,
+  ed25519Base58PrivateKey,
+  Ed25519TheRaven,
   externalContext,
   getErrorMessage,
   makeClaim,
   MyIdentity,
-  ed25519Base58PrivateKey,
-  Ed25519TheRaven,
   TheRavenBook,
+  TheRavenBookClaim,
   TheRavenClaim,
 } from '../tests/unit/shared'
-import { BaseVerifiableClaim, isVerifiableClaim, SigningAlgorithm } from './Interfaces'
+
+import {
+  BaseVerifiableClaim,
+  ClaimType,
+  DefaultClaimContext,
+  DefaultIdentityClaimContext,
+  DefaultWorkClaimContext,
+  isVerifiableClaim,
+  SigningAlgorithm,
+} from './Interfaces'
+
 import { configureCreateVerifiableClaim, generateClaimId } from './VerifiableClaim'
 import { createIssuerFromPrivateKey, generateRsaKeyPems } from './util/KeyHelper'
 
@@ -137,8 +148,9 @@ describe('VerifiableClaim.generateClaimId', async (assert: any) => {
 })
 
 describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (assert: any) => {
+  const issuer = createIssuerFromPrivateKey(ed25519Base58PrivateKey)
+
   {
-    const issuer = createIssuerFromPrivateKey(ed25519Base58PrivateKey)
     const createWorkClaim = configureCreateVerifiableClaim({ issuer })
     const verifiableClaim = await createWorkClaim(TheRavenClaim)
 
@@ -147,6 +159,69 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
       should: 'create a Verifiable Claim',
       actual: isVerifiableClaim(verifiableClaim),
       expected: true,
+    })
+
+    assert({
+      given: 'a verififable work claim without any extended context',
+      should: 'include the DefaultClaimContext and DefaultWorkClaimContext',
+      actual: JSON.stringify(Object.keys(verifiableClaim['@context']).sort()),
+      expected: JSON.stringify(Object.keys({ ...DefaultClaimContext, ...DefaultWorkClaimContext }).sort()),
+    })
+  }
+
+  {
+    const createWorkClaim = configureCreateVerifiableClaim({ issuer, context: externalContext })
+    const verifiableWorkClaim = await createWorkClaim(TheRavenBookClaim)
+
+    assert({
+      given: 'a verifiable work claim with an extended context',
+      should: 'include the extended context and override the default context',
+      actual: JSON.stringify(Object.keys(verifiableWorkClaim['@context']).sort()),
+      expected: JSON.stringify(
+        Object.keys({
+          ...DefaultClaimContext,
+          ...DefaultWorkClaimContext,
+          ...externalContext,
+        }).sort()
+      ),
+    })
+  }
+
+  {
+    const createIdentityClaim = configureCreateVerifiableClaim({ issuer, type: ClaimType.Identity })
+    const verifiableIdentityClaim = await createIdentityClaim(MyIdentity.claim)
+
+    assert({
+      given: 'a verifiable identity claim without any extended context',
+      should: 'include the DefaultClaimContext and DefaultIdentityClaimContext',
+      actual: JSON.stringify(Object.keys(verifiableIdentityClaim['@context']).sort()),
+      expected: JSON.stringify(Object.keys({ ...DefaultClaimContext, ...DefaultIdentityClaimContext }).sort()),
+    })
+  }
+
+  {
+    const externalIdentityContext = { githubUrl: 'schema:url' }
+    const createIdentityClaim = configureCreateVerifiableClaim({
+      issuer,
+      type: ClaimType.Identity,
+      context: externalIdentityContext,
+    })
+    const verifiableIdentityClaim = await createIdentityClaim({
+      ...MyIdentity.claim,
+      githubUrl: 'https://github.com/poetapp',
+    })
+
+    assert({
+      given: 'a verifiable identity claim with an extended context',
+      should: 'include the extended context',
+      actual: JSON.stringify(Object.keys(verifiableIdentityClaim['@context']).sort()),
+      expected: JSON.stringify(
+        Object.keys({
+          ...DefaultClaimContext,
+          ...DefaultIdentityClaimContext,
+          ...externalIdentityContext,
+        }).sort()
+      ),
     })
   }
 })
