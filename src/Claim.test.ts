@@ -59,8 +59,7 @@ const Key = {
 
 const PrivateKeyEAP = 'KxuZJmgVAipi9hfYXHTyGYmmhkbG7fBzmkyVnj6t9j9rDR1nN1vN'
 
-describe('Claim', async (should: any) => {
-  const { assert } = should('')
+describe('Claim', async (assert: any) => {
   const returnError = (err: Error): Error => err
 
   {

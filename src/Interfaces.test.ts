@@ -42,9 +42,7 @@ const InvalidClaim = {
   },
 }
 
-describe('Interfaces', async (should: any) => {
-  const { assert } = should('')
-
+describe('Interfaces', async (assert: any) => {
   {
     assert({
       given: 'a valid claim',
