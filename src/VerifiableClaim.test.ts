@@ -162,8 +162,8 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     assert({
       given: 'a verififable work claim without any extended context',
       should: 'include the DefaultClaimContext and DefaultWorkClaimContext',
-      actual: JSON.stringify(Object.keys(verifiableClaim['@context']).sort()),
-      expected: JSON.stringify(Object.keys({ ...DefaultClaimContext, ...DefaultWorkClaimContext }).sort()),
+      actual: verifiableClaim['@context'],
+      expected: { ...DefaultClaimContext, ...DefaultWorkClaimContext },
     })
   }
 
@@ -174,14 +174,8 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     assert({
       given: 'a verifiable work claim with an extended context',
       should: 'include the extended context and override the default context',
-      actual: JSON.stringify(Object.keys(verifiableWorkClaim['@context']).sort()),
-      expected: JSON.stringify(
-        Object.keys({
-          ...DefaultClaimContext,
-          ...DefaultWorkClaimContext,
-          ...externalContext,
-        }).sort()
-      ),
+      actual: verifiableWorkClaim['@context'],
+      expected: { ...DefaultClaimContext, ...DefaultWorkClaimContext, ...externalContext },
     })
   }
 
@@ -192,8 +186,8 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     assert({
       given: 'a verifiable identity claim without any extended context',
       should: 'include the DefaultClaimContext and DefaultIdentityClaimContext',
-      actual: JSON.stringify(Object.keys(verifiableIdentityClaim['@context']).sort()),
-      expected: JSON.stringify(Object.keys({ ...DefaultClaimContext, ...DefaultIdentityClaimContext }).sort()),
+      actual: verifiableIdentityClaim['@context'],
+      expected: { ...DefaultClaimContext, ...DefaultIdentityClaimContext },
     })
   }
 
@@ -212,14 +206,8 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     assert({
       given: 'a verifiable identity claim with an extended context',
       should: 'include the extended context',
-      actual: JSON.stringify(Object.keys(verifiableIdentityClaim['@context']).sort()),
-      expected: JSON.stringify(
-        Object.keys({
-          ...DefaultClaimContext,
-          ...DefaultIdentityClaimContext,
-          ...externalIdentityContext,
-        }).sort()
-      ),
+      actual: verifiableIdentityClaim['@context'],
+      expected: { ...DefaultClaimContext, ...DefaultIdentityClaimContext, ...externalIdentityContext },
     })
   }
 })
