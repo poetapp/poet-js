@@ -1,4 +1,5 @@
 export * from './Exceptions'
+export * from './util/KeyHelper'
 export * from './Interfaces'
 export * from './Interval'
 export * from './VerifiableClaim'
