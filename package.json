@@ -45,7 +45,7 @@
     "cuid": "2.1.4",
     "joi": "13.7.0",
     "jsonld": "1.1.0",
-    "jsonld-signatures": "2.3.0",
+    "jsonld-signatures": "2.3.1",
     "node-fetch": "1.7.3",
     "parse-data-url": "1.0.0"
   },
