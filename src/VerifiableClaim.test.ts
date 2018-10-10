@@ -160,10 +160,17 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     })
 
     assert({
-      given: 'a verififable work claim without any extended context',
-      should: 'include the DefaultClaimContext and DefaultWorkClaimContext',
+      given: 'a work claim, default work type and context',
+      should: 'return a verifiable work claim with the correct context',
       actual: verifiableClaim['@context'],
       expected: { ...DefaultClaimContext, ...DefaultWorkClaimContext },
+    })
+
+    assert({
+      given: 'a work claim, default work type and context',
+      should: 'return a verifiable claim of type work',
+      actual: verifiableClaim.type,
+      expected: ClaimType.Work,
     })
   }
 
@@ -172,10 +179,17 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     const verifiableWorkClaim = await createWorkClaim(TheRavenBookClaim)
 
     assert({
-      given: 'a verifiable work claim with an extended context',
-      should: 'include the extended context and override the default context',
+      given: 'a work claim, default claim type of work, and an extended context',
+      should: 'return a verifiable work claim with the correct context',
       actual: verifiableWorkClaim['@context'],
       expected: { ...DefaultClaimContext, ...DefaultWorkClaimContext, ...externalContext },
+    })
+
+    assert({
+      given: 'a work claim, default claim type of work, and an extended context',
+      should: 'return a verifiable claim of type work',
+      actual: verifiableWorkClaim.type,
+      expected: ClaimType.Work,
     })
   }
 
@@ -184,10 +198,17 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     const verifiableIdentityClaim = await createIdentityClaim(MyIdentity.claim)
 
     assert({
-      given: 'a verifiable identity claim without any extended context',
-      should: 'include the DefaultClaimContext and DefaultIdentityClaimContext',
+      given: 'an identity claim, identity claim type and default context',
+      should: 'return a verifiable identity claim with the correct context',
       actual: verifiableIdentityClaim['@context'],
       expected: { ...DefaultClaimContext, ...DefaultIdentityClaimContext },
+    })
+
+    assert({
+      given: 'an identity claim, identity claim type and default context',
+      should: 'return a verifiable claim of type Identity',
+      actual: verifiableIdentityClaim.type,
+      expected: ClaimType.Identity,
     })
   }
 
@@ -204,10 +225,17 @@ describe('Claim.configureCreateVerifiableClaim with Ed25519 Issuer', async (asse
     })
 
     assert({
-      given: 'a verifiable identity claim with an extended context',
-      should: 'include the extended context',
+      given: 'an identity claim, identity claim type and an extended context',
+      should: 'return a verifiable claim with the correct context',
       actual: verifiableIdentityClaim['@context'],
       expected: { ...DefaultClaimContext, ...DefaultIdentityClaimContext, ...externalIdentityContext },
+    })
+
+    assert({
+      given: 'an identity claim, identity claim type and an extended context',
+      should: 'return a verifiable claim of type Identity',
+      actual: verifiableIdentityClaim.type,
+      expected: ClaimType.Identity,
     })
   }
 })
