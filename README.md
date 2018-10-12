@@ -161,49 +161,6 @@ const unsignedVerifiableClaim = await createVerifiableWorkClaim(workClaim)
 const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
 ```
 
-### Example 3: createClaim for Identity Claims <!-- TODO: link to glossary -->
-Note, if you are creating an identity claim, your IDP will be the issuer of the claim. [Frost](https://frost.po.et/) is one such IDP.
-If you are self-serving your own identity claim, your identity provider (IDP) will have to create an IdentityClaim for 
-itself from which you can issue all further identities. Currently the Po.et network uses the [Ed25519Signature2018](https://w3c-dvcg.github.io/lds-ed25519-2018/), 
-which requires a Base58 form of the Ed25519 Public Key.
-
-
-```typescript
-import { ClaimType, configureCreateVerifiableClaim, createIssuerFromPrivateKey, getVerifiableClaimSigner, KeyHelper } from '@po.et/poet-js'
-
-const { configureSignVerifiableClaim } = getVerifiableClaimSigner()
-
-const issuerPrivateKey = 'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6' 
-// Issuer is the IDP
-const issuer = createIssuerFromPrivateKey(issuerPrivateKey)
-
-const createVerifiableIdentityClaim = configureCreateVerifiableClaim({ issuer, type: ClaimType.Identity })
-const signVerifiableClaim = configureSignVerifiableClaim({ privateKey: issuerPrivateKey })
-
-// Store the privateKey for this profile for signing future claims
-const { publicKey, privateKey } = KeyHelper.generateED25519Base58Keys('entropy_phrase')
-
-const identityClaim = {
-  publicKey,
-}
-
-const unsignedVerifiableClaim = await createVerifiableIdentityClaim(identityClaim)
-const signedWorkClaim = await signVerifiableClaim(unsignedVerifiableClaim)
-```
-
-Once this claim is created, you can publish it to a Po.et Node:
-
-```ts
-const response = await fetch(poetNodeUrl + '/identities/', {
-  method: 'POST',
-  headers: {
-	'Accept': 'application/json',
-	'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(claim)
-})
-```
-
 Notice you don't need to wait for the server's response to know the claim's ID. You don't even need to publish it! 
 `claim.id` is readily available right after creating the unsigned verifiable claim.
 
