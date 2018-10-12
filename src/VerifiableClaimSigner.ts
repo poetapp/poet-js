@@ -28,9 +28,11 @@ export const getVerifiableClaimSigner = (): VerifiableClaimSigner => {
   jsonld.documentLoader = dataDocumentLoader
   const jsig = JSONLD_SIGS()
   jsig.use('jsonld', jsonld)
+  const checkNonce = (nonce: string, options: any, callback: any) => callback(null, true)
+  const checkDomain = (nonce: string, options: any, callback: any) => callback(null, true)
 
   const isValidSignature = async (claim: SignedVerifiableClaim): Promise<boolean> => {
-    const results: any = await jsig.verify(claim, { checkNonce: false, checkTimestamp: false, checkDomain: false })
+    const results: any = await jsig.verify(claim, { checkNonce, checkDomain, checkTimestamp: false })
 
     return results.verified
   }
