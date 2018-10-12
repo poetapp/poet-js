@@ -1,5 +1,4 @@
 /* tslint:disable:no-relative-imports */
-import * as cuid from 'cuid'
 
 import { IllegalArgumentException } from './Exceptions'
 import { isSignedVerifiableClaim, SignedVerifiableClaim, SigningAlgorithm, VerifiableClaim } from './Interfaces'
@@ -31,7 +30,7 @@ export const getVerifiableClaimSigner = (): VerifiableClaimSigner => {
   jsig.use('jsonld', jsonld)
 
   const isValidSignature = async (claim: SignedVerifiableClaim): Promise<boolean> => {
-    const results: any = await jsig.verify(claim, { checkNonce: cuid.isCuid })
+    const results: any = await jsig.verify(claim, { checkNonce: false, checkTimestamp: false, checkDomain: false })
 
     return results.verified
   }
