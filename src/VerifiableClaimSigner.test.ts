@@ -316,7 +316,7 @@ describe('VerifiableClaimSigner.isValidSignature - Ed25519', async (assert: any)
     }
 
     assert({
-      given: 'a Signed Verifiable claim with an signature creator',
+      given: 'a Signed Verifiable claim with an invalid signature creator',
       should: 'return false',
       actual: await isValidSignature(badClaim),
       expected: false,
