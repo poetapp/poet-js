@@ -18,7 +18,9 @@
     "prepublish": "npm run build && npm run test:unit",
     "semantic-release": "semantic-release",
     "precommit": "npm run build && lint-staged",
-    "travis-deploy-once": "travis-deploy-once"
+    "travis-deploy-once": "travis-deploy-once",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -47,7 +49,8 @@
     "jsonld": "1.1.0",
     "jsonld-signatures": "2.3.1",
     "node-fetch": "1.7.3",
-    "parse-data-url": "1.0.0"
+    "parse-data-url": "1.0.0",
+    "snyk": "^1.103.4"
   },
   "devDependencies": {
     "@po.et/tslint-rules": "1.4.6",
@@ -65,5 +68,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "snyk": true
 }
