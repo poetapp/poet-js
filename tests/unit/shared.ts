@@ -40,20 +40,8 @@ const workContext = {
 }
 
 const ed25519Base58PublicKey = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWTe'
-export const testBadPublicKey: string = 'JAi9YoyDdgBQLenyVzoXWH4C26wKMzHrjertxVrjLWT5'
 export const ed25519Base58PrivateKey: string =
   'LWgo1jraJrCB2QT64UVgRemepsNopBF3eJaYMPYVTxpEoFx7sSzCb1QysHeJkH2fnGFgHirgVR35Hz5A1PpXuH6'
-
-export const badRsaPublicPemKey =
-  '-----BEGIN PUBLIC KEY-----\r\n' +
-  'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjKaGI9riNPd87dly3nvh\r\n' +
-  '2ISSB2i9MVO02nVsfzD+D1kahe/mQMgwwwobs9ArkurFqs4j3fwbSPlRU7F/dPon\r\n' +
-  'yrQTMgKGN+jyNV4fGRI16lFbPTKkasRpB9fQ2InIHZkIpUyZHwJYMS1xf8zdtM1i\r\n' +
-  'p1Brevhw8w6QtPIhFMgebWJ2LhanjwZhgyhAQtO0FkUgdSegolRcrFf1cEaDVEUc\r\n' +
-  '2kcJVnLpExN1VLpE4Vnby4ZrNA0r5NgmCPMx15Fp/Vw6v8H1w+kSmgHAWzRlmhUH\r\n' +
-  'lKCGtvEnKkpFfoWJcn59HotofR6k4LD/pkrNWtfRQIaup8N15lNyY5Pjxni7RE/q\r\n' +
-  'mQIDAQAZ\r\n' +
-  '-----END PUBLIC KEY-----\r\n'
 
 export const rsaPemPrivateKey =
   '-----BEGIN RSA PRIVATE KEY-----\r\n' +
