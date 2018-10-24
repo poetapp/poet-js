@@ -103,17 +103,26 @@ export const SupportedAlgorithms: Algorithms = {
   },
 }
 
-export const createIssuerFromPrivateKey = (
-  privateKey: string,
+export const createIssuerFromPublicKey = (
+  publicKey: string,
   algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018
 ): string => {
   const signingInfo = {
     algorithm,
-    publicKey: SupportedAlgorithms[algorithm].getPublicKeyStringFromPrivateKeyString(privateKey),
+    publicKey,
   }
-  const base64SigningingInfo = Buffer.from(JSON.stringify(signingInfo)).toString('base64')
-  return `data:;base64,${base64SigningingInfo}`
+  const base64SigningInfo = Buffer.from(JSON.stringify(signingInfo)).toString('base64')
+  return `data:;base64,${base64SigningInfo}`
 }
+
+export const createIssuerFromPrivateKey = (
+  privateKey: string,
+  algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018
+): string =>
+  createIssuerFromPublicKey(
+    SupportedAlgorithms[algorithm].getPublicKeyStringFromPrivateKeyString(privateKey),
+    algorithm
+  )
 
 const generateKeyPair = (algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018) => (
   options: GenerateKeyPairOptions = {}
