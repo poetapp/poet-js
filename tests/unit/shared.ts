@@ -1,4 +1,5 @@
 /* tslint:disable:no-relative-imports */
+/* tslint:disable:max-line-length */
 import {
   BaseVerifiableClaim,
   ClaimContext,
@@ -21,7 +22,7 @@ export const getErrorMessage = (err: Error): string => err.message
 export const makeClaim = (
   claim: object,
   type: ClaimType = ClaimType.Work,
-  context: ClaimContext = DefaultClaimContext
+  context: ClaimContext = DefaultClaimContext,
 ): BaseVerifiableClaim => {
   const issuer = Ed25519TheRaven.issuer
   const issuanceDate = '2017-12-11T22:54:40.261Z'

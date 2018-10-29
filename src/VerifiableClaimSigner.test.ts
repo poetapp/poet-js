@@ -1,4 +1,5 @@
 /* tslint:disable:no-relative-imports */
+/* tslint:disable:max-line-length */
 import { describe } from 'riteway'
 
 import {
@@ -480,7 +481,7 @@ describe('VerifiableClaimSigner.isValidSignedVerifiableClaim', async (assert: an
     const signedWorkClaim = await signWorkClaim(Ed25519TheRaven)
 
     const result = await Promise.all(
-      ['', null, undefined].map(value => isValidSignedVerifiableClaim({ ...signedWorkClaim, issuanceDate: value }))
+      ['', null, undefined].map(value => isValidSignedVerifiableClaim({ ...signedWorkClaim, issuanceDate: value })),
     )
 
     assert({

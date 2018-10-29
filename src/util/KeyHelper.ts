@@ -54,7 +54,7 @@ type Algorithms = { [P in SigningAlgorithm]: Algorithm }
 
 interface Algorithm {
   readonly engine: {
-    readonly generateKeyPair: (options: GenerateKeyPairOptions) => KeyPair
+    readonly generateKeyPair: (options: GenerateKeyPairOptions) => KeyPair,
   }
   readonly getPublicKeyFromPrivateKey: (privateKey: any) => any
   readonly getPublicKeyStringFromPrivateKeyString: (privateKey: string) => string
@@ -105,7 +105,7 @@ export const SupportedAlgorithms: Algorithms = {
 
 export const createIssuerFromPrivateKey = (
   privateKey: string,
-  algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018
+  algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018,
 ): string => {
   const signingInfo = {
     algorithm,
@@ -116,7 +116,7 @@ export const createIssuerFromPrivateKey = (
 }
 
 const generateKeyPair = (algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018) => (
-  options: GenerateKeyPairOptions = {}
+  options: GenerateKeyPairOptions = {},
 ): KeyPair => {
   const keyPair = SupportedAlgorithms[algorithm].engine.generateKeyPair(options)
   return {
@@ -130,7 +130,7 @@ const generateED25519KeyPair = generateKeyPair(SigningAlgorithm.Ed25519Signature
 const generateRsaKeyPair = generateKeyPair(SigningAlgorithm.RsaSignature2018)
 
 const getPublicKeyFromPrivateKey = (algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018) => (
-  privateKey: number[]
+  privateKey: number[],
 ): EncodeBuffer => {
   return SupportedAlgorithms[algorithm].getPublicKeyFromPrivateKey({ privateKey })
 }

@@ -11,7 +11,7 @@ import { SupportedAlgorithms } from './util/KeyHelper'
 
 export interface VerifiableClaimSigner {
   readonly configureSignVerifiableClaim: (
-    config: SignVerifiableClaimConfig
+    config: SignVerifiableClaimConfig,
   ) => (verifiableClaim: VerifiableClaim) => Promise<SignedVerifiableClaim>
   readonly isValidSignedVerifiableClaim: (signedVerifiableClaim: SignedVerifiableClaim) => Promise<boolean>
   readonly isValidSignature: (signedVerifiableClaim: SignedVerifiableClaim) => Promise<boolean>
@@ -43,7 +43,7 @@ export const getVerifiableClaimSigner = (): VerifiableClaimSigner => {
   }
 
   const createSigningOptions = (algorithm: SigningAlgorithm = SigningAlgorithm.Ed25519Signature2018) => (
-    privateKey: string
+    privateKey: string,
   ) => SupportedAlgorithms[algorithm].getSigningOptions(privateKey)
 
   const configureSignVerifiableClaim = ({
@@ -64,7 +64,7 @@ export const getVerifiableClaimSigner = (): VerifiableClaimSigner => {
         issuanceDate: verifiableClaim.issuanceDate,
         claim: verifiableClaim.claim,
       },
-      signingOptions
+      signingOptions,
     )
     if (isValidSignature(signedClaim)) return signedClaim
     throw new IllegalArgumentException('Claim signature is invalid')

@@ -1,4 +1,5 @@
 /* tslint:disable:no-relative-imports */
+/* tslint:disable:max-line-length */
 import { describe } from 'riteway'
 import { MyIdentity, Ed25519TheRaven, Ed25519SignedRaven, RsaTheRaven, RsaSignedRaven } from '../tests/unit/shared'
 import { ClaimType, isIdentity, isSignedVerifiableClaim, isVerifiableClaim, isWork } from './Interfaces'
@@ -97,7 +98,7 @@ describe('Interfaces.isVerifiableClaim', async (assert: any) => {
     })
   }
 
-  ;['', false, null, undefined].forEach(value => {
+  ['', false, null, undefined].forEach(value => {
     {
       assert({
         given: 'a claim with an invalid date',
