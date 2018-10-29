@@ -56,7 +56,7 @@
     "@po.et/tslint-rules": "1.4.6",
     "@types/node-fetch": "1.6.9",
     "husky": "1.1.2",
-    "lint-staged": "7.3.0",
+    "lint-staged": "8.0.0",
     "nyc": "github:poetapp/nyc#fbc2ed1",
     "prettier": "1.14.3",
     "riteway": "3.0.1",
