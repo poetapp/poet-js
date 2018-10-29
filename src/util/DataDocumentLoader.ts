@@ -17,7 +17,7 @@ export const dataDocumentLoader = async (url: string, callback: (error: any, dat
     const extractedParsedData = parsedData.base64 ? fromBase64(parsedData.data) : parsedData.data
     const publicKey = SupportedAlgorithms[getSigningAlgorithm(extractedParsedData.algorithm)].publicKey(
       url,
-      extractedParsedData.publicKey
+      extractedParsedData.publicKey,
     )
     return callback(null, {
       contextUrl: ['https://w3id.org/security/v2'],

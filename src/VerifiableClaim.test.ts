@@ -43,7 +43,7 @@ describe('VerifiableClaim.generateClaimId', async (assert: any) => {
 
   {
     const id = await generateClaimId({ ...BaseEd25519RavenClaim, issuanceDate: '2017-09-13T15:00:00.000Z' }).catch(
-      getErrorMessage
+      getErrorMessage,
     )
 
     assert({
