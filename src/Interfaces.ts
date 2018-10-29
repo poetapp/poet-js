@@ -174,7 +174,7 @@ export function isIdentity(verifiableClaim: VerifiableClaim): verifiableClaim is
 
 export interface PoetAnchor {
   readonly prefix: string
-  readonly version: ReadonlyArray<number>
+  readonly version: number
   readonly storageProtocol: StorageProtocol
   readonly ipfsDirectoryHash: string
 }
