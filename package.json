@@ -46,7 +46,7 @@
     "babel-cli": "6.26.0",
     "babel-plugin-module-resolver": "3.1.1",
     "cuid": "2.1.4",
-    "joi": "14.0.3",
+    "joi": "14.0.4",
     "jsonld": "1.1.0",
     "jsonld-signatures": "2.3.1",
     "node-fetch": "1.7.3",
