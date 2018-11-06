@@ -9,12 +9,16 @@ export enum ClaimType {
   Work = 'Work',
 }
 
+export interface Claim {
+  readonly [key: string]: any
+}
+
 export interface BaseVerifiableClaim {
   readonly '@context': any
   readonly issuer: string
   readonly issuanceDate: string
   readonly type: ClaimType
-  readonly claim: object
+  readonly claim: Claim
 }
 export interface VerifiableClaim extends BaseVerifiableClaim {
   readonly id: string
