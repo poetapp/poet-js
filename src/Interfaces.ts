@@ -10,7 +10,7 @@ export enum ClaimType {
 }
 
 export interface Claim {
-  readonly [key: string]: string | number | Claim | Array<number | string | Claim>
+  readonly [key: string]: string | number | Claim | ReadonlyArray<number | string | Claim>
 }
 
 export interface BaseVerifiableClaim {
