@@ -10,6 +10,7 @@ import {
   Identity,
   SignedVerifiableClaim,
   SigningAlgorithm,
+  StringToRecursiveObject,
   Work,
 } from '../../src/Interfaces'
 import { getVerifiableClaimSigner } from '../../src/VerifiableClaimSigner'
@@ -20,7 +21,7 @@ export const claimSigner = getVerifiableClaimSigner()
 export const getErrorMessage = (err: Error): string => err.message
 
 export const makeClaim = (
-  claim: object,
+  claim: StringToRecursiveObject,
   type: ClaimType = ClaimType.Work,
   context: ClaimContext = DefaultClaimContext,
 ): BaseVerifiableClaim => {
@@ -106,7 +107,7 @@ export const MyIdentity: Identity = {
   },
 }
 
-export const TheRavenClaim: object = {
+export const TheRavenClaim: StringToRecursiveObject = {
   name: 'The Raven',
   author: 'Edgar Allan Poe',
   tags: 'poem',
