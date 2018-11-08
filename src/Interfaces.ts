@@ -9,8 +9,8 @@ export enum ClaimType {
   Work = 'Work',
 }
 
-export interface Claim {
-  [key: string]: any
+export interface StringToRecursiveObject {
+  [key: string]: string | number | StringToRecursiveObject | Array<number | string | StringToRecursiveObject>
 }
 
 export interface BaseVerifiableClaim {
@@ -18,7 +18,7 @@ export interface BaseVerifiableClaim {
   readonly issuer: string
   readonly issuanceDate: string
   readonly type: ClaimType
-  readonly claim: Claim
+  readonly claim: StringToRecursiveObject
 }
 export interface VerifiableClaim extends BaseVerifiableClaim {
   readonly id: string
