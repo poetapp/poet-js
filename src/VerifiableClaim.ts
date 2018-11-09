@@ -9,6 +9,7 @@ import {
   CreateVerifiableClaimConfig,
   DefaultClaimContext,
   VerifiableClaim,
+  Claim,
 } from './Interfaces'
 
 const canonizeClaim = async (document: BaseVerifiableClaim): Promise<string> => {
@@ -40,7 +41,7 @@ export const configureCreateVerifiableClaim = ({
   issuer,
   type = ClaimType.Work,
   context = {},
-}: CreateVerifiableClaimConfig) => async (claim: object): Promise<VerifiableClaim> => {
+}: CreateVerifiableClaimConfig) => async (claim: Claim): Promise<VerifiableClaim> => {
   const verifiableClaim = {
     '@context': { ...DefaultClaimContext, ...claimTypeDefaults[type], ...context },
     type,
