@@ -59,7 +59,7 @@
     "lint-staged": "7.3.0",
     "nyc": "github:poetapp/nyc#fbc2ed1",
     "riteway": "4.0.0",
-    "semantic-release": "15.10.8",
+    "semantic-release": "15.11.0",
     "sinon": "7.1.1",
     "travis-deploy-once": "5.0.9",
     "ts-node": "7.0.1",
