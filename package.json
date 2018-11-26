@@ -53,7 +53,7 @@
     "parse-data-url": "1.0.0"
   },
   "devDependencies": {
-    "@po.et/tslint-rules": "2.0.2",
+    "@po.et/tslint-rules": "2.0.3",
     "@types/node-fetch": "1.6.9",
     "husky": "1.2.0",
     "lint-staged": "7.3.0",
