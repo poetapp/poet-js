@@ -63,7 +63,7 @@
     "sinon": "7.1.1",
     "travis-deploy-once": "5.0.9",
     "ts-node": "7.0.1",
-    "typescript": "3.2.1"
+    "typescript": "3.2.2"
   },
   "publishConfig": {
     "access": "public"
