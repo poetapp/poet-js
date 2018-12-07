@@ -57,7 +57,7 @@
     "@types/node-fetch": "1.6.9",
     "husky": "1.2.0",
     "lint-staged": "7.3.0",
-    "nyc": "github:poetapp/nyc#fbc2ed1",
+    "nyc": "13.1.0",
     "riteway": "4.0.1",
     "semantic-release": "15.12.4",
     "sinon": "7.1.1",
