@@ -72,6 +72,9 @@ workflows:
       - package:
           requires:
             - build
+      - coverage:
+          requires:
+            - build
       - release:
           context: semver
           requires:
