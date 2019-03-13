@@ -48,7 +48,7 @@ jobs:
       - restore_cache:
           key: v1-{{ checksum "package-lock.json" }}
       - run:
-          name: Build dist
+          name: Coverage
           command: npm run coverage
 
   release:
@@ -58,7 +58,7 @@ jobs:
       - restore_cache:
           key: v1-{{ checksum "package-lock.json" }}
       - run:
-          name: Build dist
+          name: Semantic-release
           command: npx semantic-release
 
 workflows:
