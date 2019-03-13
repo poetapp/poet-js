@@ -1,9 +1,14 @@
-version: 2
+version: 2.1
+executors:
+  base-node:
+    environment:
+      FOO: bar
+    docker:
+      - image: node:10.14.2 
 
 jobs:
   build:
-    docker:
-      - image: node:10.14.2 
+    executor: base-node
     steps:
       - checkout
       - restore_cache:
@@ -17,8 +22,7 @@ jobs:
             - ./node_modules
 
   lint:
-    docker:
-      - image: node:10.14.2
+    executor: base-node
     steps:
       - checkout
       - restore_cache:
@@ -28,19 +32,20 @@ jobs:
           command: npm run lint
 
   package:
-    docker:
-      - image: node:10.14.2 
+    executor: base-node 
     steps:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
+          name: OS deps
+          command: sudo apt-get install rsync
+      - run:
           name: Build dist
           command: npm run build
 
   coverage:
-    docker:
-      - image: node:10.14.2 
+    executor: base-node 
     steps:
       - checkout
       - restore_cache:
@@ -48,6 +53,16 @@ jobs:
       - run:
           name: Build dist
           command: npm run coverage
+
+  release:
+    executor: base-node 
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: Build dist
+          command: npx semantic-release
 
 workflows:
   version: 2
@@ -60,3 +75,9 @@ workflows:
       - package:
           requires:
             - build
+      - release:
+          requires:
+            - package
+          filters:
+            branches:
+              only: master
