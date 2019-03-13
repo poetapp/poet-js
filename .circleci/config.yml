@@ -50,6 +50,10 @@ jobs:
       - run:
           name: Coverage
           command: npm run coverage
+      - store_artifacts:
+          path: .coverage
+      - store_test_results:
+          path: .coverage
 
   release:
     executor: base-node 
