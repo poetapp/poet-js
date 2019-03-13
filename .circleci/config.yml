@@ -15,7 +15,7 @@ jobs:
       #    key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: OS deps
-          command: apt-get update && apt-get install -y rsync
+          command: sudo apt-get update && sudo apt-get install -y rsync
       - run:
           name: Install deps
           command: npm install
@@ -76,6 +76,7 @@ workflows:
           requires:
             - build
       - release:
+          context: semver
           requires:
             - package
           filters:
