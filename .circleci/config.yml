@@ -11,8 +11,8 @@ jobs:
     executor: base-node
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+      #- restore_cache:
+      #    key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install deps
           command: npm install
